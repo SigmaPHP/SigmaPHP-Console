@@ -1,0 +1,102 @@
+<?php
+
+namespace SigmaPHP\Console\Interfaces;
+
+use SigmaPHP\Console\Command;
+
+/**
+ * App Interface.
+ */
+interface App
+{
+    /**
+     * Initialize the app.
+     *
+     * @return void
+     */
+    public function init();
+
+    /**
+     * Load commands from directory.
+     *
+     * @param string $path
+     * @return void
+     */
+    public function loadCommands($path);
+
+    /**
+     * Add command to app.
+     *
+     * @param Command $command
+     * @return void
+     */
+    public function addCommand($command);
+
+    /**
+     * Run the app.
+     *
+     * @return int
+     */
+    public function run();
+
+    /**
+     * Check if command exists in app.
+     *
+     * @param string $commandName
+     * @return bool
+     */
+    public function hasCommand($commandName);
+
+    /**
+     * Get command from app.
+     *
+     * @param string $name
+     * @return Command $commandName
+     */
+    public function getCommand($commandName);
+
+    /**
+     * Execute command.
+     *
+     * @param string $name
+     * @return int
+     */
+    public function execute($commandName);
+
+    /**
+     * Get all commands from app.
+     *
+     * @param Command $command
+     * @return void
+     */
+    public function getCommands();
+
+    /**
+     * Disable the default functions (version & help).
+     *
+     * @return void
+     */
+    public function disableDefaultFunctions();
+
+    /**
+     * Add intro description for your app, that could include name, copy rights
+     * some ascii-art, whatever :)
+     *
+     * @return void
+     */
+    public function showIntro();
+
+    /**
+     * Do actions before executing any command.
+     *
+     * @return void
+     */
+    public function beforeStart();
+
+    /**
+     * Do actions after completing execution any command.
+     *
+     * @return void
+     */
+    public function afterComplete();
+}

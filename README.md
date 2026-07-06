@@ -16,6 +16,20 @@ composer require sigmaphp/sigmaphp-console
 
 ## Documentation
 
+### Create new Console App
+
+To create a new console app, you can start from the provided template by copy it and rename it
+as you like:
+
+```
+cp bin/app.php.template my-app
+
+chmod +x my-app
+
+./my-app
+```
+before running the app, make sure to edit, add your commands and other functions. 
+
 *In Progress*
 
 ## Example

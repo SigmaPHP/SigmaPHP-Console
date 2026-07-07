@@ -56,20 +56,20 @@ interface App
     public function getCommand($commandName);
 
     /**
-     * Execute command.
-     *
-     * @param string $name
-     * @return int
-     */
-    public function execute($commandName);
-
-    /**
      * Get all commands from app.
      *
      * @param Command $command
      * @return void
      */
     public function getCommands();
+
+    /**
+     * Execute command.
+     *
+     * @param string $name
+     * @return int
+     */
+    public function execute($commandName);
 
     /**
      * Disable the default functions (version & help).
@@ -79,12 +79,12 @@ interface App
     public function disableDefaultFunctions();
 
     /**
-     * Add intro description for your app, that could include name, copy rights
+     * Add app header/title, that could include name, copy rights
      * some ascii-art, whatever :)
      *
      * @return void
      */
-    public function showIntro();
+    public function addHeader();
 
     /**
      * Do actions before executing any command.

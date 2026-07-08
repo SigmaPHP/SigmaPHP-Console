@@ -64,14 +64,6 @@ interface App
     public function getCommands();
 
     /**
-     * Execute command.
-     *
-     * @param string $name
-     * @return int
-     */
-    public function execute($commandName);
-
-    /**
      * Disable the default functions (version & help).
      *
      * @return void

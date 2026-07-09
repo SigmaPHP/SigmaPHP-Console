@@ -12,9 +12,10 @@ interface App
     /**
      * Initialize the app.
      *
+     * @param callable $callback
      * @return void
      */
-    public function init();
+    public function init($callback);
 
     /**
      * Load commands from directory.
@@ -48,20 +49,12 @@ interface App
     public function hasCommand($commandName);
 
     /**
-     * Get command from app.
+     * Get command/s from app.
      *
      * @param string $name
-     * @return Command $commandName
+     * @return array<Command>|Command
      */
-    public function getCommand($commandName);
-
-    /**
-     * Get all commands from app.
-     *
-     * @param Command $command
-     * @return void
-     */
-    public function getCommands();
+    public function getCommands($name);
 
     /**
      * Disable the default functions (version & help).
@@ -74,21 +67,24 @@ interface App
      * Add app header/title, that could include name, copy rights
      * some ascii-art, whatever :)
      *
+     * @param callable $callback
      * @return void
      */
-    public function addHeader();
+    public function addHeader($callback);
 
     /**
      * Do actions before executing any command.
      *
+     * @param callable $callback
      * @return void
      */
-    public function beforeStart();
+    public function beforeStart($callback);
 
     /**
      * Do actions after completing execution any command.
      *
+     * @param callable $callback
      * @return void
      */
-    public function afterComplete();
+    public function afterComplete($callback);
 }

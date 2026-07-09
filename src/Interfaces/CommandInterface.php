@@ -54,6 +54,20 @@ interface CommandInterface
     public function setDescription($description);
 
     /**
+     * Get command's name.
+     *
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * Get command's description.
+     *
+     * @return string
+     */
+    public function getDescription();
+
+    /**
      * Define custom help section of the command.
      *
      * @return void

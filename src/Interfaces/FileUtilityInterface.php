@@ -8,6 +8,14 @@ namespace SigmaPHP\Console\Interfaces;
 interface FileUtilityInterface
 {
     /**
+     * List all files inside a path and its sub-directories.
+     *
+     * @param string $path
+     * @return array<string>
+     */
+    public function list($path);
+
+    /**
      * Create file.
      *
      * @param string $path

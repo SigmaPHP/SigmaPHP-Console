@@ -39,15 +39,17 @@ class FileUtility implements FileUtilityInterface
             $directoryIterator,
             \RecursiveIteratorIterator::CHILD_FIRST
         ) as $file) {
+            $_file = $file->getRealPath();
+
             if (!$includeFullPath) {
-                $file = str_replace($path . '/', '', $file);
+                $_file = str_replace($path . '/', '', $_file);
             }
 
             if (!$withExtension) {
-                $file = str_replace('.php', '', $file);
+                $_file = str_replace('.php', '', $_file);
             }
 
-            $files[] = $file;
+            $files[] = $_file;
         }
 
         return $files;
@@ -62,7 +64,9 @@ class FileUtility implements FileUtilityInterface
      */
     public function create($path, $permission = 0755)
     {
-        return touch($path) & chmod($path, $permission);
+        touch($path);
+        chmod($path, $permission);
+        return true;
     }
 
     /**

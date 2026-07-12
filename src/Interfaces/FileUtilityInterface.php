@@ -11,29 +11,29 @@ interface FileUtilityInterface
      * List all files inside a path and its sub-directories.
      *
      * @param string $path
+     * @param bool $includeFullPath
+     * @param bool $withExtension
      * @return array<string>
      */
-    public function list($path);
+    public function list($path, $includeFullPath, $withExtension);
 
     /**
      * Create file.
      *
      * @param string $path
-     * @param string $name
-     * @param string $permission
+     * @param int $permission
      * @return bool
      */
-    public function create($path, $name, $permission);
+    public function create($path, $permission);
 
     /**
-     * Copy file.
+     * Rename files and directories.
      *
-     * @param string $path
      * @param string $old
      * @param string $new
      * @return bool
      */
-    public function rename($path, $old, $new);
+    public function rename($old, $new);
 
     /**
      * Copy file.
@@ -65,14 +65,14 @@ interface FileUtilityInterface
      * Create directory.
      *
      * @param string $path
-     * @param string $name
-     * @param string $permission
+     * @param int $permission
+     * @param bool $recursive
      * @return bool
      */
-    public function createDir($path, $name, $permission);
+    public function createDir($path, $permission, $recursive);
 
     /**
-     * Remove directory.
+     * Remove directory and its content.
      *
      * @param string $path
      * @return bool

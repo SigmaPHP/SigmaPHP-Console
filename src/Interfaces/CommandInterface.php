@@ -8,18 +8,18 @@ namespace SigmaPHP\Console\Interfaces;
 interface CommandInterface
 {
     /**
+     * Initialize the command.
+     *
+     * @return void
+     */
+    public function init();
+
+    /**
      * Execute.
      *
      * @return void
      */
     public function execute();
-
-    /**
-     * Validate arguments and options.
-     *
-     * @return bool
-     */
-    public function isValidInput();
 
     /**
      * Get Argument/s.

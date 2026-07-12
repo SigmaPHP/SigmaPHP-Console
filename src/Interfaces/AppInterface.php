@@ -34,6 +34,14 @@ interface App
     public function addCommand($command);
 
     /**
+     * Check the provided arguments and options, make sure they are related
+     * to the Command.
+     *
+     * @return bool
+     */
+    public function validateInput();
+
+    /**
      * Run the app.
      *
      * @return int

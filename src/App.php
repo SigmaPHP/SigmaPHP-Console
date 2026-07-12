@@ -70,6 +70,17 @@ class App implements AppInterface
     }
 
     /**
+     * Check the provided arguments and options, make sure they are related
+     * to the Command.
+     *
+     * @return bool
+     */
+    public function validateInput()
+    {
+        // !ToDo
+    }
+
+    /**
      * Run the app.
      *
      * @return int

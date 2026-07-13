@@ -56,6 +56,29 @@ class FileUtility implements FileUtilityInterface
     }
 
     /**
+     * Check if a path exists.
+     *
+     * @param string $path
+     * @return bool
+     */
+    public function exists($path)
+    {
+        return file_exists($path);
+    }
+
+    /**
+     * Check if a directory has a file or sub-directory.
+     *
+     * @param string $path
+     * @param string $target
+     * @return bool
+     */
+    public function dirHas($path, $target)
+    {
+        return in_array($target, $this->list($path));
+    }
+
+    /**
      * Create file.
      *
      * @param string $path
@@ -64,9 +87,7 @@ class FileUtility implements FileUtilityInterface
      */
     public function create($path, $permission = 0755)
     {
-        touch($path);
-        chmod($path, $permission);
-        return true;
+        return touch($path) & chmod($path, $permission);
     }
 
     /**
@@ -138,7 +159,7 @@ class FileUtility implements FileUtilityInterface
     public function removeDir($path)
     {
         // delete content
-        $files = $this->list($path, true, true);
+        $files = $this->list($path, true);
 
         foreach ($files as $key => $file) {
             if (is_dir($file)) {

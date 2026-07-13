@@ -18,6 +18,23 @@ interface FileUtilityInterface
     public function list($path, $includeFullPath, $withExtension);
 
     /**
+     * Check if a path exists.
+     *
+     * @param string $path
+     * @return bool
+     */
+    public function exists($path);
+
+    /**
+     * Check if a directory has a file or subdirectory.
+     *
+     * @param string $path
+     * @param string $target
+     * @return bool
+     */
+    public function dirHas($path, $target);
+
+    /**
      * Create file.
      *
      * @param string $path

@@ -143,7 +143,7 @@ class FileUtilityTest extends TestCase
     public function testDirectoryHasAFile()
     {
         $this->assertTrue(
-            $this->fileUtility->dirHas(__DIR__, 'FileUtilityTest.php')
+            $this->fileUtility->dirHas(__DIR__, 'UtilityTest')
         );
     }
 

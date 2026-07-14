@@ -75,7 +75,13 @@ class FileUtility implements FileUtilityInterface
      */
     public function dirHas($path, $target)
     {
-        return in_array($target, $this->list($path));
+        foreach ($this->list($path) as $file) {
+            if (strpos($file, $target) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

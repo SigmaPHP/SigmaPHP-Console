@@ -11,7 +11,7 @@ interface ConsoleInterface
      * Write to console (STDOUT).
      *
      * @param string $text
-     * @return void
+     * @return bool
      */
     public function write($text);
 
@@ -19,7 +19,7 @@ interface ConsoleInterface
      * Write to console (STDERR).
      *
      * @param string $text
-     * @return void
+     * @return bool
      */
     public function writeErr($text);
 
@@ -33,7 +33,7 @@ interface ConsoleInterface
     /**
      * Check if console supports colors.
      *
-     * @return string // ansi, 256 or empty
+     * @return bool
      */
     public function isSupportColor();
 }

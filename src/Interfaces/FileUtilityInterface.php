@@ -79,6 +79,34 @@ interface FileUtilityInterface
     public function remove($path);
 
     /**
+     * Write content to file.
+     *
+     * @param string $path
+     * @param mixed $content
+     * @return bool
+     */
+    public function write($path, $content);
+
+    /**
+     * Append content to file.
+     *
+     * @param string $path
+     * @param mixed $content
+     * @return bool
+     */
+    public function append($path, $content);
+
+    /**
+     * Read file's content.
+     *
+     * @param string $path
+     * @param int $offset
+     * @param int $length
+     * @return string
+     */
+    public function read($path, $offset, $length);
+
+    /**
      * Create directory.
      *
      * @param string $path

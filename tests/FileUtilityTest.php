@@ -214,6 +214,71 @@ class FileUtilityTest extends TestCase
     }
 
     /**
+     * Test remove file.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testRemoveFile()
+    {
+        $this->fileUtility->create($this->path);
+
+        $this->fileUtility->remove($this->path);
+
+        $this->assertFalse(file_exists($this->path));
+    }
+
+    /**
+     * Test write to file.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWriteToFile()
+    {
+        $this->fileUtility->create($this->path);
+
+        $this->fileUtility->write($this->path, 'Hello SigmaPHP!');
+
+        $this->assertEquals('Hello SigmaPHP!', file_get_contents($this->path));
+    }
+
+    /**
+     * Test append to file.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testAppendToFile()
+    {
+        $this->fileUtility->create($this->path);
+
+        $this->fileUtility->write($this->path, 'Hello ');
+
+        $this->fileUtility->append($this->path, 'SigmaPHP!');
+
+        $this->assertEquals('Hello SigmaPHP!', file_get_contents($this->path));
+    }
+
+    /**
+     * Test read from file.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testReadFromFile()
+    {
+        $this->fileUtility->create($this->path);
+
+        $this->fileUtility->write($this->path, 'Hello SigmaPHP!');
+
+        $this->assertEquals(
+            'Hello SigmaPHP!',
+            $this->fileUtility->read($this->path)
+        );
+    }
+
+    /**
      * Test create directory.
      *
      * @runInSeparateProcess

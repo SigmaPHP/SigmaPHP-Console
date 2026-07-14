@@ -144,6 +144,43 @@ class FileUtility implements FileUtilityInterface
     }
 
     /**
+     * Write content to file.
+     *
+     * @param string $path
+     * @param mixed $content
+     * @return bool
+     */
+    public function write($path, $content)
+    {
+        return file_put_contents($path, $content) !== false;
+    }
+
+    /**
+     * Append content to file.
+     *
+     * @param string $path
+     * @param mixed $content
+     * @return bool
+     */
+    public function append($path, $content)
+    {
+        return file_put_contents($path, $content, FILE_APPEND) !== false;
+    }
+
+    /**
+     * Read file's content.
+     *
+     * @param string $path
+     * @param int $offset
+     * @param int $length
+     * @return string
+     */
+    public function read($path, $offset = 0, $length = null)
+    {
+        return file_get_contents($path, false, null, $offset, $length);
+    }
+
+    /**
      * Create directory.
      *
      * @param string $path

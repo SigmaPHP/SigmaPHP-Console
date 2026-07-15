@@ -8,6 +8,22 @@ namespace SigmaPHP\Console\Interfaces;
 interface ConsoleInterface
 {
     /**
+     * Set the output stream.
+     *
+     * @param resource $stream
+     * @return void
+     */
+    public function setOutputStream($stream);
+
+    /**
+     * Set the error stream.
+     *
+     * @param resource $stream
+     * @return void
+     */
+    public function setErrorStream($stream);
+
+    /**
      * Write to console (STDOUT).
      *
      * @param string $text
@@ -35,5 +51,5 @@ interface ConsoleInterface
      *
      * @return bool
      */
-    public function isSupportColor();
+    public function hasColorSupport();
 }

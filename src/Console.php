@@ -10,6 +10,46 @@ use SigmaPHP\Console\Interfaces\ConsoleInterface;
 class Console implements ConsoleInterface
 {
     /**
+     * @var resource $outputStream
+     */
+    protected $outputStream;
+
+    /**
+     * @var resource $errorStream
+     */
+    protected $errorStream;
+
+    /**
+     * Console Constructor.
+     */
+    public function __construct() {
+        $this->outputStream = \STDOUT;
+        $this->errorStream = \STDERR;
+    }
+
+    /**
+     * Set the output stream.
+     *
+     * @param resource $stream
+     * @return bool
+     */
+    public function setOutputStream($stream)
+    {
+        $this->outputStream = $stream;
+    }
+
+    /**
+     * Set the error stream.
+     *
+     * @param resource $stream
+     * @return bool
+     */
+    public function setErrorStream($stream)
+    {
+        $this->errorStream = $stream;
+    }
+
+    /**
      * Write to console (STDOUT).
      *
      * @param string $text
@@ -17,7 +57,7 @@ class Console implements ConsoleInterface
      */
     public function write($text)
     {
-        return fwrite(STDOUT, $text) !== false;
+        return fwrite($this->outputStream, $text) !== false;
     }
 
     /**
@@ -28,7 +68,7 @@ class Console implements ConsoleInterface
      */
     public function writeErr($text)
     {
-        return fwrite(STDERR, $text) !== false;
+        return fwrite($this->errorStream, $text) !== false;
     }
 
     /**
@@ -38,7 +78,7 @@ class Console implements ConsoleInterface
      */
     public function read()
     {
-        return fgets(STDIN) ?? '';
+        return fgets(\STDIN) ?? '';
     }
 
     /**
@@ -46,10 +86,14 @@ class Console implements ConsoleInterface
      *
      * @return bool
      */
-    public function isSupportColor()
+    public function hasColorSupport()
     {
         return (
-            ((exec('tput colors') != -1) || stream_isatty(STDOUT)) &&
+            (
+                (exec('tput colors') != -1) ||
+                stream_isatty(STDOUT) ||
+                isset($_SERVER['FORCE_COLOR'])
+            ) &&
             !isset($_SERVER['NO_COLOR'])
         );
     }

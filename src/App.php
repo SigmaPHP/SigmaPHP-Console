@@ -20,7 +20,7 @@ class App implements AppInterface
     /**
      * App Constructor.
      */
-    public function _construct()
+    public function __construct()
     {
         $this->commands = [
             'help' => new Help(),

@@ -14,6 +14,11 @@ class ConsoleTest extends TestCase
     private $console;
 
     /**
+     * @var resource $testStream
+     */
+    private $testStream;
+
+    /**
      * ConsoleTest SetUp
      *
      * @return void
@@ -23,6 +28,25 @@ class ConsoleTest extends TestCase
         parent::setUp();
 
         $this->console = new Console();
+
+        touch('tests/fake_stream');
+
+        $this->testStream = fopen('tests/fake_stream', 'r+');
+    }
+
+    /**
+     * ConsoleTest TearDown
+     *
+     * @return void
+     */
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        if (file_exists('tests/fake_stream')) {
+            fclose($this->testStream);
+            unlink('tests/fake_stream');
+        }
     }
 
     /**
@@ -33,41 +57,29 @@ class ConsoleTest extends TestCase
      */
     public function testWrite()
     {
-        stream_filter_register("intercept", InterceptFilter::class);
-
-        $stdout = fopen('php://stdout', 'w');
-        $filter = stream_filter_append($stdout, "intercept");
-
-        // Code executing the stdout write
-        $this->console->setOutputStream($stdout);
+        $this->console->setOutputStream($this->testStream);
         $this->console->write('Hello SigmaPHP-Console');
 
-        stream_filter_remove($filter);
-        $this->assertEquals("Hello SigmaPHP-Console", InterceptFilter::$cache);
+        $this->assertEquals(
+            'Hello SigmaPHP-Console',
+            stream_get_contents($this->testStream, -1, 0)
+        );
     }
-}
 
-/**
- * This class was added specifically to test the output. Unfortunately testing
- * output streams in PHP is tricky, since it bypass the default output buffer
- * used by `echo` and `print`.
- *
- * So basically this interceptor will interrupt the output and make it easier
- * for us to check the result.
- *
- * Source: https://gist.github.com/alfredbez/07b246046c7823a17557c844f21ae989
- */
-class InterceptFilter extends \php_user_filter
-{
-    public static $cache = '';
-
-    public function filter($in, $out, &$consumed, $closing): int
+    /**
+     * Test write error.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWriteError()
     {
-        while ($bucket = stream_bucket_make_writeable($in)) {
-            self::$cache .= $bucket->data;
-            $consumed += $bucket->datalen;
-            stream_bucket_append($out, $bucket);
-        }
-        return PSFS_PASS_ON;
+        $this->console->setErrorStream($this->testStream);
+        $this->console->writeErr('Oops! Something wrong');
+
+        $this->assertEquals(
+            'Oops! Something wrong',
+            stream_get_contents($this->testStream, -1, 0)
+        );
     }
 }

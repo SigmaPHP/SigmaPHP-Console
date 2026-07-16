@@ -20,11 +20,17 @@ class Console implements ConsoleInterface
     protected $errorStream;
 
     /**
+     * @var resource $inputStream
+     */
+    protected $inputStream;
+
+    /**
      * Console Constructor.
      */
     public function __construct() {
         $this->outputStream = \STDOUT;
         $this->errorStream = \STDERR;
+        $this->inputStream = \STDIN;
     }
 
     /**
@@ -47,6 +53,17 @@ class Console implements ConsoleInterface
     public function setErrorStream($stream)
     {
         $this->errorStream = $stream;
+    }
+
+    /**
+     * Set the input stream.
+     *
+     * @param resource $stream
+     * @return bool
+     */
+    public function setInputStream($stream)
+    {
+        $this->inputStream = $stream;
     }
 
     /**
@@ -78,7 +95,7 @@ class Console implements ConsoleInterface
      */
     public function read()
     {
-        return fgets(\STDIN) ?? '';
+        return fgets($this->inputStream) ?? '';
     }
 
     /**

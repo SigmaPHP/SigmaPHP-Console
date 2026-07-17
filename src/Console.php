@@ -28,9 +28,9 @@ class Console implements ConsoleInterface
      * Console Constructor.
      */
     public function __construct() {
-        $this->outputStream = \STDOUT;
-        $this->errorStream = \STDERR;
-        $this->inputStream = \STDIN;
+        $this->outputStream = fopen('php://stdout', 'w');
+        $this->errorStream = fopen('php://stderr', 'w');
+        $this->inputStream = fopen('php://stdin', 'r');
     }
 
     /**
@@ -95,7 +95,7 @@ class Console implements ConsoleInterface
      */
     public function read()
     {
-        return fgets($this->inputStream) ?? '';
+        return fgets($this->inputStream) ?: '';
     }
 
     /**

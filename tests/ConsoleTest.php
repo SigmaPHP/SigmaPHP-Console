@@ -82,4 +82,37 @@ class ConsoleTest extends TestCase
             stream_get_contents($this->testStream, -1, 0)
         );
     }
+
+    /**
+     * Test read.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testRead()
+    {
+        $this->console->setInputStream($this->testStream);
+        fwrite($this->testStream, 'Some data');
+        rewind($this->testStream);
+        $input = $this->console->read();
+
+        $this->assertEquals('Some data', $input);
+    }
+
+    /**
+     * Test has color support.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testHasColorSupport()
+    {
+        $_SERVER['FORCE_COLOR'] = true;
+
+        $this->assertTrue($this->console->hasColorSupport());
+
+        $_SERVER['NO_COLOR'] = true;
+
+        $this->assertFalse($this->console->hasColorSupport());
+    }
 }

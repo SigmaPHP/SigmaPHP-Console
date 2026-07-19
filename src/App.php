@@ -6,6 +6,7 @@ use SigmaPHP\Console\Interfaces\AppInterface;
 use SigmaPHP\Console\Command;
 use SigmaPHP\Console\DefaultCommands\Help;
 use SigmaPHP\Console\DefaultCommands\Version;
+use SigmaPHP\Console\FileUtility;
 
 /**
  * App Class.
@@ -18,25 +19,32 @@ class App implements AppInterface
     protected $commands;
 
     /**
+     * @var array $options
+     */
+    protected $options;
+
+    /**
+     * @var string $title
+     */
+    protected $title;
+
+    /**
+     * @var FileUtility $fileUtility
+     */
+    protected $fileUtility;
+
+    /**
      * App Constructor.
      */
     public function __construct()
     {
-        $this->commands = [
-            'help' => new Help(),
-            'version' => new Version()
-        ];
-    }
+        $this->commands = [];
+        $this->options = [];
 
-    /**
-     * Initialize the app.
-     *
-     * @param callable $callback
-     * @return void
-     */
-    public function init($callback)
-    {
-        $callback();
+        $this->addCommand(Help::class);
+        $this->addCommand(Version::class);
+
+        $this->fileUtility = new FileUtility();
     }
 
     /**
@@ -47,7 +55,9 @@ class App implements AppInterface
      */
     public function loadCommands($path)
     {
-        // !ToDo
+        foreach ($this->fileUtility->list($path, false, false) as $command) {
+            $this->addCommand($command::class);
+        }
     }
 
     /**
@@ -67,6 +77,17 @@ class App implements AppInterface
         }
 
         $this->commands[$commandInst->getName()] = $commandInst;
+    }
+
+    /**
+     * Remove command from app.
+     *
+     * @param string $commandName
+     * @return void
+     */
+    public function removeCommand($commandName)
+    {
+        unset($this->commands[$commandName]);
     }
 
     /**
@@ -113,47 +134,87 @@ class App implements AppInterface
     }
 
     /**
+     * Add global option.
+     *
+     * @param string $name
+     * @param string $shortcut
+     * @param string $description
+     * @param regex $validation
+     * @return void
+     */
+    public function addGlobalOption(
+        $name,
+        $shortcut,
+        $description,
+        $validation
+    ) {
+
+    }
+
+    /**
      * Disable the default functions (version & help).
      *
      * @return void
      */
     public function disableDefaultFunctions()
     {
-        unset($this->commands['help']);
-        unset($this->commands['version']);
+        $this->removeCommand('help');
+        $this->removeCommand('version');
     }
 
     /**
-     * Add app header/title, that could include name, copy rights
-     * some ascii-art, whatever :)
+     * Set app's title.
      *
-     * @param callable $callback
+     * @param string $title
      * @return void
      */
-    public function addHeader($callback)
+    public function setTitle($title)
     {
-        $callback();
+
+    }
+
+    /**
+     * Get app's title.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+
+    }
+
+    /**
+     * Customize app's welcome banner (header/title), that could include name,
+     * copy rights, some ascii-art or what so ever :)
+     *
+     * By default this method will print the app's title if set.
+     *
+     * This method will be used inside the `Help` default command.
+     *
+     * @return void
+     */
+    public function welcome()
+    {
+
     }
 
     /**
      * Do actions before executing any command.
      *
-     * @param callable $callback
      * @return void
      */
-    public function beforeStart($callback)
+    public function beforeStart()
     {
-        $callback();
+
     }
 
     /**
      * Do actions after completing execution any command.
      *
-     * @param callable $callback
      * @return void
      */
-    public function afterComplete($callback)
+    public function afterComplete()
     {
-        $callback();
+
     }
 }

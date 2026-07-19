@@ -7,16 +7,8 @@ use SigmaPHP\Console\Command;
 /**
  * App Interface.
  */
-interface App
+interface AppInterface
 {
-    /**
-     * Initialize the app.
-     *
-     * @param callable $callback
-     * @return void
-     */
-    public function init($callback);
-
     /**
      * Load commands from directory.
      *
@@ -32,6 +24,14 @@ interface App
      * @return void
      */
     public function addCommand($command);
+
+    /**
+     * Remove command from app.
+     *
+     * @param string $commandName
+     * @return void
+     */
+    public function removeCommand($commandName);
 
     /**
      * Check the provided arguments and options, make sure they are related
@@ -65,6 +65,22 @@ interface App
     public function getCommands($name);
 
     /**
+     * Add global option.
+     *
+     * @param string $name
+     * @param string $shortcut
+     * @param string $description
+     * @param regex $validation
+     * @return void
+     */
+    public function addGlobalOption(
+        $name,
+        $shortcut,
+        $description,
+        $validation
+    );
+
+    /**
      * Disable the default functions (version & help).
      *
      * @return void
@@ -72,27 +88,43 @@ interface App
     public function disableDefaultFunctions();
 
     /**
-     * Add app header/title, that could include name, copy rights
-     * some ascii-art, whatever :)
+     * Set app's title.
      *
-     * @param callable $callback
+     * @param string $title
      * @return void
      */
-    public function addHeader($callback);
+    public function setTitle($title);
+
+    /**
+     * Get app's title.
+     *
+     * @return string
+     */
+    public function getTitle();
+
+    /**
+     * Customize app's welcome banner (header/title), that could include name,
+     * copy rights, some ascii-art or what so ever :)
+     *
+     * By default this method will print the app's title if set.
+     *
+     * This method will be used inside the `Help` default command.
+     *
+     * @return void
+     */
+    public function welcome();
 
     /**
      * Do actions before executing any command.
      *
-     * @param callable $callback
      * @return void
      */
-    public function beforeStart($callback);
+    public function beforeStart();
 
     /**
      * Do actions after completing execution any command.
      *
-     * @param callable $callback
      * @return void
      */
-    public function afterComplete($callback);
+    public function afterComplete();
 }

@@ -19,19 +19,9 @@ class App implements AppInterface
     protected $commands;
 
     /**
-     * @var array $options
+     * @var array $globalOptions
      */
-    protected $options;
-
-    /**
-     * @var string $title
-     */
-    protected $title;
-
-    /**
-     * @var FileUtility $fileUtility
-     */
-    protected $fileUtility;
+    protected $globalOptions;
 
     /**
      * App Constructor.
@@ -39,12 +29,10 @@ class App implements AppInterface
     public function __construct()
     {
         $this->commands = [];
-        $this->options = [];
+        $this->globalOptions = [];
 
         $this->addCommand(Help::class);
         $this->addCommand(Version::class);
-
-        $this->fileUtility = new FileUtility();
     }
 
     /**
@@ -55,7 +43,7 @@ class App implements AppInterface
      */
     public function loadCommands($path)
     {
-        foreach ($this->fileUtility->list($path, false, false) as $command) {
+        foreach ((new FileUtility())->list($path, false, false) as $command) {
             $this->addCommand($command::class);
         }
     }
@@ -123,14 +111,24 @@ class App implements AppInterface
     }
 
     /**
-     * Get command/s from app.
+     * Get command from app.
      *
      * @param string $name
-     * @return array<Command>|Command
+     * @return Command
      */
-    public function getCommands($name = '')
+    public function getCommand($name)
     {
-        return (empty($name)) ? $this->commands : $this->commands[$name];
+        return $this->commands[$name];
+    }
+
+    /**
+     * Get all commands from app.
+     *
+     * @return array<Command>
+     */
+    public function getCommands()
+    {
+        return $this->commands;
     }
 
     /**
@@ -139,16 +137,16 @@ class App implements AppInterface
      * @param string $name
      * @param string $shortcut
      * @param string $description
-     * @param regex $validation
+     * @param string $validation 'regex pattern'
      * @return void
      */
     public function addGlobalOption(
         $name,
-        $shortcut,
-        $description,
-        $validation
+        $shortcut = '',
+        $description = '',
+        $validation = ''
     ) {
-
+        // !ToDo
     }
 
     /**
@@ -163,49 +161,13 @@ class App implements AppInterface
     }
 
     /**
-     * Set app's title.
-     *
-     * @param string $title
-     * @return void
-     */
-    public function setTitle($title)
-    {
-
-    }
-
-    /**
-     * Get app's title.
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-
-    }
-
-    /**
-     * Customize app's welcome banner (header/title), that could include name,
-     * copy rights, some ascii-art or what so ever :)
-     *
-     * By default this method will print the app's title if set.
-     *
-     * This method will be used inside the `Help` default command.
-     *
-     * @return void
-     */
-    public function welcome()
-    {
-
-    }
-
-    /**
      * Do actions before executing any command.
      *
      * @return void
      */
     public function beforeStart()
     {
-
+        // Up to the developer to use!
     }
 
     /**
@@ -215,6 +177,6 @@ class App implements AppInterface
      */
     public function afterComplete()
     {
-
+        // Up to the developer to use!
     }
 }

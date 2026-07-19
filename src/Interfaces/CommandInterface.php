@@ -72,7 +72,7 @@ interface CommandInterface
      *
      * @return void
      */
-    public function defineCustomHelp();
+    public function addHelpSection();
 
     /**
      * Add argument.
@@ -90,7 +90,7 @@ interface CommandInterface
      * @param string $name
      * @param string $shortcut
      * @param string $description
-     * @param regex $validation
+     * @param string $validation 'regex pattern'
      * @return void
      */
     public function addOption($name, $shortcut, $description, $validation);

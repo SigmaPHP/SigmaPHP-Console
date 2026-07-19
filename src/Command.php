@@ -10,6 +10,26 @@ use SigmaPHP\Console\Interfaces\CommandInterface;
 abstract class Command implements CommandInterface
 {
     /**
+     * @var array $arguments
+     */
+    protected $arguments;
+
+    /**
+     * @var array $options
+     */
+    protected $options;
+
+    /**
+     * @var string $name
+     */
+    protected $name;
+
+    /**
+     * @var string $description
+     */
+    protected $description;
+
+    /**
      * Initialize the command.
      *
      * @return void
@@ -92,7 +112,7 @@ abstract class Command implements CommandInterface
      *
      * @return void
      */
-    public function defineCustomHelp()
+    public function addHelpSection()
     {
 
     }
@@ -116,7 +136,7 @@ abstract class Command implements CommandInterface
      * @param string $name
      * @param string $shortcut
      * @param string $description
-     * @param regex $validation
+     * @param string $validation 'regex pattern'
      * @return void
      */
     public function addOption($name, $shortcut, $description, $validation)

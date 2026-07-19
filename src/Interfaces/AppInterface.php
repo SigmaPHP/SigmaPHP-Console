@@ -2,6 +2,7 @@
 
 namespace SigmaPHP\Console\Interfaces;
 
+use SigmaPHP\Console\Interfaces\ConsoleInterface;
 use SigmaPHP\Console\Command;
 
 /**
@@ -57,12 +58,19 @@ interface AppInterface
     public function hasCommand($commandName);
 
     /**
-     * Get command/s from app.
+     * Get command from app.
      *
      * @param string $name
-     * @return array<Command>|Command
+     * @return Command
      */
-    public function getCommands($name);
+    public function getCommand($name);
+
+    /**
+     * Get all commands from app.
+     *
+     * @return array<Command>
+     */
+    public function getCommands();
 
     /**
      * Add global option.
@@ -70,7 +78,7 @@ interface AppInterface
      * @param string $name
      * @param string $shortcut
      * @param string $description
-     * @param regex $validation
+     * @param string $validation 'regex pattern'
      * @return void
      */
     public function addGlobalOption(
@@ -86,33 +94,6 @@ interface AppInterface
      * @return void
      */
     public function disableDefaultFunctions();
-
-    /**
-     * Set app's title.
-     *
-     * @param string $title
-     * @return void
-     */
-    public function setTitle($title);
-
-    /**
-     * Get app's title.
-     *
-     * @return string
-     */
-    public function getTitle();
-
-    /**
-     * Customize app's welcome banner (header/title), that could include name,
-     * copy rights, some ascii-art or what so ever :)
-     *
-     * By default this method will print the app's title if set.
-     *
-     * This method will be used inside the `Help` default command.
-     *
-     * @return void
-     */
-    public function welcome();
 
     /**
      * Do actions before executing any command.

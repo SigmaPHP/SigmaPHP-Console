@@ -30,6 +30,14 @@ abstract class Command implements CommandInterface
     protected $description;
 
     /**
+     * App Constructor.
+     */
+    public function __construct()
+    {
+        $this->init();
+    }
+
+    /**
      * Initialize the command.
      *
      * @return void
@@ -49,7 +57,7 @@ abstract class Command implements CommandInterface
      * @param string $name
      * @return mixed
      */
-    public function arguments($name)
+    public function arguments($name = '')
     {
 
     }
@@ -60,7 +68,7 @@ abstract class Command implements CommandInterface
      * @param string $name
      * @return mixed
      */
-    public function options($name)
+    public function options($name = '')
     {
 
     }
@@ -73,7 +81,7 @@ abstract class Command implements CommandInterface
      */
     public function setName($name)
     {
-
+        $this->name = $name;
     }
 
     /**
@@ -84,7 +92,7 @@ abstract class Command implements CommandInterface
      */
     public function setDescription($description)
     {
-
+        $this->description = $description;
     }
 
     /**
@@ -94,7 +102,7 @@ abstract class Command implements CommandInterface
      */
     public function getName()
     {
-
+        return $this->name;
     }
 
     /**
@@ -104,7 +112,7 @@ abstract class Command implements CommandInterface
      */
     public function getDescription()
     {
-
+        return $this->description;
     }
 
     /**

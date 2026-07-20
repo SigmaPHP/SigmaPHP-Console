@@ -31,8 +31,8 @@ class App implements AppInterface
         $this->commands = [];
         $this->globalOptions = [];
 
-        $this->addCommand(Help::class);
-        $this->addCommand(Version::class);
+        // $this->addCommand(Help::class);
+        // $this->addCommand(Version::class);
     }
 
     /**
@@ -44,7 +44,12 @@ class App implements AppInterface
     public function loadCommands($path)
     {
         foreach ((new FileUtility())->list($path, false, false) as $command) {
-            $this->addCommand($command::class);
+            include($path . '/' . $command . '.php');
+
+            $commandInst = new $command();
+            // d(new Version());
+
+            // $this->addCommand("{$command}::class");
         }
     }
 
@@ -57,6 +62,12 @@ class App implements AppInterface
     public function addCommand($command)
     {
         $commandInst = new $command();
+
+        if (empty($commandInst->getName())) {
+            throw new \InvalidArgumentException(
+                "Command {$command} should have a name!"
+            );
+        }
 
         if ($this->hasCommand($commandInst->getName())) {
             throw new \InvalidArgumentException(

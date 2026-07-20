@@ -1,5 +1,7 @@
 <?php
 
+namespace SigmaPHP\Console\Tests;
+
 use PHPUnit\Framework\TestCase;
 use SigmaPHP\Console\Console;
 

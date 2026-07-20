@@ -16,7 +16,7 @@ class Version extends Command
      */
     public function init()
     {
-
+        $this->setName('version');
     }
 
     /**

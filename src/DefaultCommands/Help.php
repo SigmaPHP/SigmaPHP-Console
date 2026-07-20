@@ -16,7 +16,7 @@ class Help extends Command
      */
     public function init()
     {
-
+        $this->setName('help');
     }
 
     /**

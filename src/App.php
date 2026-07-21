@@ -31,26 +31,8 @@ class App implements AppInterface
         $this->commands = [];
         $this->globalOptions = [];
 
-        // $this->addCommand(Help::class);
-        // $this->addCommand(Version::class);
-    }
-
-    /**
-     * Load commands from directory.
-     *
-     * @param string $path
-     * @return void
-     */
-    public function loadCommands($path)
-    {
-        foreach ((new FileUtility())->list($path, false, false) as $command) {
-            include($path . '/' . $command . '.php');
-
-            $commandInst = new $command();
-            // d(new Version());
-
-            // $this->addCommand("{$command}::class");
-        }
+        $this->addCommand(Help::class);
+        $this->addCommand(Version::class);
     }
 
     /**
@@ -76,6 +58,28 @@ class App implements AppInterface
         }
 
         $this->commands[$commandInst->getName()] = $commandInst;
+    }
+
+    /**
+     * Load commands from directory.
+     *
+     * @param string $path
+     * @param string $nameSpace
+     * @return void
+     */
+    public function loadCommands($path, $nameSpace = '')
+    {
+        foreach ((new FileUtility())->list($path, false, false) as $command) {
+            require_once($path . '/' . $command . '.php');
+
+            $fullClassPath = $command;
+
+            if (!empty($nameSpace)) {
+                $fullClassPath = $nameSpace . "\\" . $command;
+            }
+
+            $this->addCommand($fullClassPath);
+        }
     }
 
     /**

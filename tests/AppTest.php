@@ -4,6 +4,7 @@ namespace SigmaPHP\Console\Tests;
 
 use PHPUnit\Framework\TestCase;
 use SigmaPHP\Console\App;
+use SigmaPHP\Console\Tests\Examples\HelloCommand;
 
 /**
  * App Test.
@@ -38,6 +39,22 @@ class AppTest extends TestCase
     }
 
     /**
+     * Test add command.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testAddCommand()
+    {
+        $this->app->addCommand(HelloCommand::class);
+
+        $this->assertEquals(
+            ['help', 'version', 'hello'],
+            array_keys($this->app->getCommands())
+        );
+    }
+
+    /**
      * Test load commands.
      *
      * @runInSeparateProcess
@@ -47,11 +64,11 @@ class AppTest extends TestCase
     {
         $this->app->disableDefaultFunctions();
 
-        $this->app->loadCommands(dirname(__DIR__, 1) . "/src/DefaultCommands");
-
-        $this->assertEquals(
-            ['help', 'version'],
-            array_keys($this->app->getCommands())
+        $this->app->loadCommands(
+            __DIR__ . "/Examples",
+            'SigmaPHP\Console\Tests\Examples'
         );
+
+        $this->assertEquals(['hello'], array_keys($this->app->getCommands()));
     }
 }

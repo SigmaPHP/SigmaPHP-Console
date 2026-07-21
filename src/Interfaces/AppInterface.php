@@ -11,20 +11,21 @@ use SigmaPHP\Console\Command;
 interface AppInterface
 {
     /**
-     * Load commands from directory.
-     *
-     * @param string $path
-     * @return void
-     */
-    public function loadCommands($path);
-
-    /**
      * Add command to app.
      *
      * @param Command $command
      * @return void
      */
     public function addCommand($command);
+
+    /**
+     * Load commands from directory.
+     *
+     * @param string $path
+     * @param string $nameSpace
+     * @return void
+     */
+    public function loadCommands($path, $nameSpace);
 
     /**
      * Remove command from app.

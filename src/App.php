@@ -6,6 +6,7 @@ use SigmaPHP\Console\Interfaces\AppInterface;
 use SigmaPHP\Console\Command;
 use SigmaPHP\Console\DefaultCommands\Help;
 use SigmaPHP\Console\DefaultCommands\Version;
+use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\FileUtility;
 
 /**
@@ -129,9 +130,10 @@ class App implements AppInterface
      * Check the provided arguments and options, make sure they are related
      * to the Command.
      *
+     * @param string $name
      * @return bool
      */
-    public function validateInput()
+    public function validateInput($name)
     {
         // !ToDo
     }
@@ -143,7 +145,32 @@ class App implements AppInterface
      */
     public function run()
     {
-        // !ToDo
+        global $argc;
+        global $argv;
+
+        // if no command was selected show 'help' if enabled!
+        // otherwise do nothing
+        if (($argc == 1) && !isset($argv[1])) {
+            if ($this->hasCommand('help')) {
+                $this->getCommand('help')->execute();
+            } else {
+                return;
+            }
+        }
+
+        // in case the command doesn't exists
+        if (!$this->hasCommand($argv[1])) {
+            throw new CommandNotFoundException("Unknown command: {$argv[1]}");
+        }
+
+        // start execution cycle
+        $this->validateInput($argv[1]);
+
+        $this->beforeStart();
+
+        $this->getCommand($argv[1])->execute();
+
+        $this->afterComplete();
     }
 
     /**

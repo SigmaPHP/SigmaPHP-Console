@@ -123,4 +123,33 @@ class AppTest extends TestCase
             array_keys($this->app->getCommands())
         );
     }
+
+    /**
+     * Test remove command.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testRemoveCommand()
+    {
+        $this->app->removeCommand('version');
+
+        $this->assertEquals(
+            ['help'],
+            array_keys($this->inspectProperty('commands'))
+        );
+    }
+
+    /**
+     * Test disable default commands.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testDisableDefaultCommands()
+    {
+        $this->app->disableDefaultFunctions();
+
+        $this->assertEquals([], array_keys($this->inspectProperty('commands')));
+    }
 }

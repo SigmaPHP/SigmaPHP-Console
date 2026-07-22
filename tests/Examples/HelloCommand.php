@@ -26,7 +26,7 @@ class HelloCommand extends Command
      */
     public function execute()
     {
-
+        echo 'Hello' . PHP_EOL;
     }
 }
 

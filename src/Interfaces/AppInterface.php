@@ -62,9 +62,10 @@ interface AppInterface
      * Check the provided arguments and options, make sure they are related
      * to the Command.
      *
+     * @param string $name
      * @return bool
      */
-    public function validateInput();
+    public function validateInput($name);
 
     /**
      * Run the app.

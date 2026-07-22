@@ -39,6 +39,18 @@ class AppTest extends TestCase
     }
 
     /**
+     * Get value of property.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    private function inspectProperty($name)
+    {
+        $inspect = new \ReflectionProperty(App::class, $name);
+        return $inspect->getValue($this->app);
+    }
+
+    /**
      * Test add command.
      *
      * @runInSeparateProcess
@@ -50,7 +62,7 @@ class AppTest extends TestCase
 
         $this->assertEquals(
             ['help', 'version', 'hello'],
-            array_keys($this->app->getCommands())
+            array_keys($this->inspectProperty('commands'))
         );
     }
 
@@ -62,13 +74,53 @@ class AppTest extends TestCase
      */
     public function testLoadCommands()
     {
-        $this->app->disableDefaultFunctions();
-
         $this->app->loadCommands(
             __DIR__ . "/Examples",
             'SigmaPHP\Console\Tests\Examples'
         );
 
-        $this->assertEquals(['hello'], array_keys($this->app->getCommands()));
+        $this->assertEquals(
+            ['help', 'version', 'hello'],
+            array_keys($this->inspectProperty('commands'))
+        );
+    }
+
+    /**
+     * Test has commands.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testHasCommand()
+    {
+        $this->assertTrue($this->app->hasCommand('version'));
+    }
+
+    /**
+     * Test get command.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testGetCommand()
+    {
+        $this->assertInstanceOf(
+            \SigmaPHP\Console\DefaultCommands\Version::class,
+            $this->app->getCommand('version')
+        );
+    }
+
+    /**
+     * Test get all commands.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testGetAllCommands()
+    {
+        $this->assertEquals(
+            ['help', 'version'],
+            array_keys($this->app->getCommands())
+        );
     }
 }

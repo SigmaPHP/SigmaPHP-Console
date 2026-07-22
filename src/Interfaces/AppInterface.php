@@ -28,29 +28,6 @@ interface AppInterface
     public function loadCommands($path, $nameSpace);
 
     /**
-     * Remove command from app.
-     *
-     * @param string $commandName
-     * @return void
-     */
-    public function removeCommand($commandName);
-
-    /**
-     * Check the provided arguments and options, make sure they are related
-     * to the Command.
-     *
-     * @return bool
-     */
-    public function validateInput();
-
-    /**
-     * Run the app.
-     *
-     * @return int
-     */
-    public function run();
-
-    /**
      * Check if command exists in app.
      *
      * @param string $commandName
@@ -72,6 +49,29 @@ interface AppInterface
      * @return array<Command>
      */
     public function getCommands();
+
+    /**
+     * Remove command from app.
+     *
+     * @param string $commandName
+     * @return void
+     */
+    public function removeCommand($commandName);
+
+    /**
+     * Check the provided arguments and options, make sure they are related
+     * to the Command.
+     *
+     * @return bool
+     */
+    public function validateInput();
+
+    /**
+     * Run the app.
+     *
+     * @return int
+     */
+    public function run();
 
     /**
      * Add global option.

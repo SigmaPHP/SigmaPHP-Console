@@ -83,38 +83,6 @@ class App implements AppInterface
     }
 
     /**
-     * Remove command from app.
-     *
-     * @param string $commandName
-     * @return void
-     */
-    public function removeCommand($commandName)
-    {
-        unset($this->commands[$commandName]);
-    }
-
-    /**
-     * Check the provided arguments and options, make sure they are related
-     * to the Command.
-     *
-     * @return bool
-     */
-    public function validateInput()
-    {
-        // !ToDo
-    }
-
-    /**
-     * Run the app.
-     *
-     * @return int
-     */
-    public function run()
-    {
-        // !ToDo
-    }
-
-    /**
      * Check if command exists in app.
      *
      * @param string $name
@@ -144,6 +112,38 @@ class App implements AppInterface
     public function getCommands()
     {
         return $this->commands;
+    }
+
+    /**
+     * Remove command from app.
+     *
+     * @param string $commandName
+     * @return void
+     */
+    public function removeCommand($commandName)
+    {
+        unset($this->commands[$commandName]);
+    }
+
+    /**
+     * Check the provided arguments and options, make sure they are related
+     * to the Command.
+     *
+     * @return bool
+     */
+    public function validateInput()
+    {
+        // !ToDo
+    }
+
+    /**
+     * Run the app.
+     *
+     * @return int
+     */
+    public function run()
+    {
+        // !ToDo
     }
 
     /**

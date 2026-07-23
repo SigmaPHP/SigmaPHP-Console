@@ -91,11 +91,11 @@ interface AppInterface
     );
 
     /**
-     * Disable the default functions (version & help).
+     * Disable the defaults options and commands (version & help).
      *
      * @return void
      */
-    public function disableDefaultFunctions();
+    public function disableDefaults();
 
     /**
      * Do actions before executing any command.

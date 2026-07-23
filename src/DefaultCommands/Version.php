@@ -17,6 +17,7 @@ class Version extends Command
     public function init()
     {
         $this->setName('version');
+        $this->setDescription('Print the application\'s version');
     }
 
     /**
@@ -26,6 +27,6 @@ class Version extends Command
      */
     public function execute()
     {
-
+        $this->console->write('v1.0.0');
     }
 }

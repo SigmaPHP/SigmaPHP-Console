@@ -148,7 +148,7 @@ class AppTest extends TestCase
      */
     public function testDisableDefaultCommands()
     {
-        $this->app->disableDefaultFunctions();
+        $this->app->disableDefaults();
 
         $this->assertEquals([], array_keys($this->inspectProperty('commands')));
     }

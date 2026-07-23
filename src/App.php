@@ -152,7 +152,7 @@ class App implements AppInterface
         // otherwise do nothing
         if (($argc == 1) && !isset($argv[1])) {
             if ($this->hasCommand('help')) {
-                $this->getCommand('help')->execute();
+                $argv[1] = 'help';
             } else {
                 return;
             }
@@ -192,11 +192,11 @@ class App implements AppInterface
     }
 
     /**
-     * Disable the default functions (version & help).
+     * Disable the defaults options and commands (version & help).
      *
      * @return void
      */
-    public function disableDefaultFunctions()
+    public function disableDefaults()
     {
         $this->removeCommand('help');
         $this->removeCommand('version');

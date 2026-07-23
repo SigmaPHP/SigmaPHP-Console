@@ -4,6 +4,8 @@ namespace SigmaPHP\Console;
 
 use SigmaPHP\Console\Interfaces\CommandInterface;
 
+use SigmaPHP\Console\Console;
+
 /**
  * Command Class.
  */
@@ -30,11 +32,18 @@ abstract class Command implements CommandInterface
     protected $description;
 
     /**
-     * App Constructor.
+     * @var Console $console
+     */
+    protected $console;
+
+    /**
+     * Command Constructor.
      */
     public function __construct()
     {
         $this->init();
+
+        $this->console = new Console();
     }
 
     /**

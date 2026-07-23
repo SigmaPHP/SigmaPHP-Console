@@ -22,7 +22,7 @@ To create a new console app, you can start from the provided template by copy it
 as you like:
 
 ```
-cp bin/app.php.template my-app
+cp bin/app.template my-app
 
 chmod +x my-app
 

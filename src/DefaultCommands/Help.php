@@ -17,6 +17,7 @@ class Help extends Command
     public function init()
     {
         $this->setName('help');
+        $this->setDescription('Print this help menu');
     }
 
     /**
@@ -26,6 +27,9 @@ class Help extends Command
      */
     public function execute()
     {
+        $helpContent = "Usage:\n";
+        $helpContent .= "\tapp [COMMAND] [OPTIONS] [--] [ARGUMENTS]\n";
 
+        $this->console->write($helpContent);
     }
 }

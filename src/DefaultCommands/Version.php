@@ -10,6 +10,22 @@ use SigmaPHP\Console\Command;
 class Version extends Command
 {
     /**
+     * @var string $appVersion
+     */
+    protected $appVersion;
+
+    /**
+     * Set app's version.
+     *
+     * @param string $appVersion
+     * @return void
+     */
+    public function setAppVersion($appVersion)
+    {
+        $this->appVersion = $appVersion;
+    }
+
+    /**
      * Initialize the command.
      *
      * @return void
@@ -18,6 +34,8 @@ class Version extends Command
     {
         $this->setName('version');
         $this->setDescription('Print the application\'s version');
+
+        $this->setAppVersion('v1.0.0');
     }
 
     /**
@@ -27,6 +45,6 @@ class Version extends Command
      */
     public function execute()
     {
-        $this->console->write('v1.0.0');
+        $this->console->write("{$this->appVersion}");
     }
 }

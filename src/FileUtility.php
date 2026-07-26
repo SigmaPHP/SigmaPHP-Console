@@ -46,11 +46,18 @@ class FileUtility implements FileUtilityInterface
             }
 
             if (!$withExtension) {
-                $_file = str_replace('.php', '', $_file);
+                $_ext = str_replace($path . '/', '', $_file);
+
+                // check not a dot-file
+                if ($_ext[0] != '.') {
+                    $_file = explode('.', $_ext)[0];
+                }
             }
 
             $files[] = $_file;
         }
+
+        natcasesort($files);
 
         return $files;
     }

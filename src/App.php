@@ -118,6 +118,13 @@ class App implements AppInterface
         }
 
         $this->commands[$commandInst->getName()] = $commandInst;
+
+        // add the command to the help menu
+        if ($this->hasCommand('help')) {
+            $commands = $this->getCommand('help')->getCommandsList();
+            $commands[$commandInst->getName()] = $commandInst->getDescription();
+            $this->getCommand('help')->setCommandsList($commands);
+        }
     }
 
     /**

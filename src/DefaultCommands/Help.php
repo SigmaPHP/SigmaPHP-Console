@@ -41,6 +41,16 @@ class Help extends Command
     }
 
     /**
+     * Get app's name.
+     *
+     * @return string
+     */
+    public function getAppName()
+    {
+        return $this->appName;
+    }
+
+    /**
      * Set app's description.
      *
      * @param string $appDescription
@@ -49,6 +59,16 @@ class Help extends Command
     public function setAppDescription($appDescription)
     {
         $this->appDescription = $appDescription;
+    }
+
+    /**
+     * Get app's description.
+     *
+     * @return string
+     */
+    public function getAppDescription()
+    {
+        return $this->appDescription;
     }
 
     /**
@@ -63,6 +83,16 @@ class Help extends Command
     }
 
     /**
+     * Get commands list.
+     *
+     * @return array
+     */
+    public function getCommandsList()
+    {
+        return $this->commandsList;
+    }
+
+    /**
      * Set global options list.
      *
      * @param array $globalOptionsList
@@ -71,6 +101,16 @@ class Help extends Command
     public function setGlobalOptionsList($globalOptionsList)
     {
         $this->globalOptionsList = $globalOptionsList;
+    }
+
+    /**
+     * get global options list.
+     *
+     * @return array
+     */
+    public function getGlobalOptionsList()
+    {
+        return $this->globalOptionsList;
     }
 
     /**
@@ -104,6 +144,10 @@ class Help extends Command
 
         if (!empty($this->commandsList)) {
             $helpContent .= "Available Commands:\n";
+
+            foreach ($this->commandsList as $name => $description) {
+                $helpContent .= "\t{$name}\t\t{$description}\n";
+            }
         }
 
         $helpContent .= "\n";

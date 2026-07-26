@@ -81,32 +81,26 @@ class FileUtilityTest extends TestCase
     public function testListFiles()
     {
         $this->assertEquals([
-            'ConsoleTest.php',
-            'ColorTest.php',
-            'CommandTest.php',
-            'AppTest.php',
-            'FileUtilityTest.php',
-        ], $this->fileUtility->list(__DIR__));
+            '2.txt',
+            '3.txt',
+            '1.txt',
+        ], $this->fileUtility->list(__DIR__ . '/test_dir'));
 
         $this->assertEquals([
-            __DIR__ . '/ConsoleTest.php',
-            __DIR__ . '/ColorTest.php',
-            __DIR__ . '/CommandTest.php',
-            __DIR__ . '/AppTest.php',
-            __DIR__ . '/FileUtilityTest.php',
-        ], $this->fileUtility->list(__DIR__, true));
+            __DIR__ . '/test_dir/2.txt',
+            __DIR__ . '/test_dir/3.txt',
+            __DIR__ . '/test_dir/1.txt',
+        ], $this->fileUtility->list(__DIR__ . '/test_dir', true));
 
         $this->assertEquals([
-            'ConsoleTest',
-            'ColorTest',
-            'CommandTest',
-            'AppTest',
-            'FileUtilityTest',
-        ], $this->fileUtility->list(__DIR__, false, false));
+            '2',
+            '3',
+            '1',
+        ], $this->fileUtility->list(__DIR__ . '/test_dir', false, false));
 
         $this->assertEquals(
-            [__DIR__ . '/FileUtilityTest.php'],
-            $this->fileUtility->list(__DIR__ . '/FileUtilityTest.php')
+            [__DIR__ . '/test_dir/1.txt'],
+            $this->fileUtility->list(__DIR__ . '/test_dir/1.txt')
         );
     }
 

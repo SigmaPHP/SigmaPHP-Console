@@ -11,6 +11,36 @@ use SigmaPHP\Console\Command;
 interface AppInterface
 {
     /**
+     * Set app's name.
+     *
+     * Note: could only be used when Default Commands are enabled.
+     *
+     * @param string $appName
+     * @return void
+     */
+    public function setAppName($appName);
+
+    /**
+     * Set app's description.
+     *
+     * Note: could only be used when Default Commands are enabled.
+     *
+     * @param string $appDescription
+     * @return void
+     */
+    public function setAppDescription($appDescription);
+
+    /**
+     * Set app's version.
+     *
+     * Note: could only be used when Default Commands are enabled.
+     *
+     * @param string $appVersion
+     * @return void
+     */
+    public function setAppVersion($appVersion);
+
+    /**
      * Add command to app.
      *
      * @param Command $command

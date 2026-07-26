@@ -35,6 +35,7 @@ class Version extends Command
         $this->setName('version');
         $this->setDescription('Print the application\'s version');
 
+        // app's default version
         $this->setAppVersion('v1.0.0');
     }
 

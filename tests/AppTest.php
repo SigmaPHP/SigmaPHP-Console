@@ -4,6 +4,8 @@ namespace SigmaPHP\Console\Tests;
 
 use PHPUnit\Framework\TestCase;
 use SigmaPHP\Console\App;
+use SigmaPHP\Console\Command;
+use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\Tests\Examples\HelloCommand;
 
 /**
@@ -41,13 +43,15 @@ class AppTest extends TestCase
     /**
      * Get value of property.
      *
-     * @param string $name
+     * @param string $class
+     * @param object $object
+     * @param string $property
      * @return mixed
      */
-    private function inspectProperty($name)
+    private function inspectProperty($class, $object, $property)
     {
-        $inspect = new \ReflectionProperty(App::class, $name);
-        return $inspect->getValue($this->app);
+        $inspect = new \ReflectionProperty($class, $property);
+        return $inspect->getValue($object);
     }
 
     /**
@@ -61,9 +65,60 @@ class AppTest extends TestCase
         $this->app->addCommand(HelloCommand::class);
 
         $this->assertEquals(
-            ['help', 'version', 'hello'],
-            array_keys($this->inspectProperty('commands'))
+            ['version', 'help', 'hello'],
+            array_keys(
+                $this->inspectProperty(App::class, $this->app, 'commands')
+            )
         );
+    }
+
+    /**
+     * Test app will generate a name for the command that doesn't have one.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testAppWillGenerateANameForTheCommandThatDoesNotHaveOne()
+    {
+        $this->app->addCommand(NoName::class);
+
+        $this->app->disableDefaults();
+
+        $this->assertEquals(
+            ['noname'],
+            array_keys(
+                $this->inspectProperty(App::class, $this->app, 'commands')
+            )
+        );
+    }
+
+    /**
+     * Test will throw exception if command doesn't exists.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfCommandsDoesNotExists()
+    {
+        $this->expectException(CommandNotFoundException::class);
+
+        $this->app->addCommand('App\\Unknown');
+    }
+
+    /**
+     * Test will throw exception if trying to add a command that already exists.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfTryingToAddACommandAlreadyExists()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->app->addCommand(HelloCommand::class);
+
+        // try adding again
+        $this->app->addCommand(HelloCommand::class);
     }
 
     /**
@@ -80,8 +135,10 @@ class AppTest extends TestCase
         );
 
         $this->assertEquals(
-            ['help', 'version', 'hello'],
-            array_keys($this->inspectProperty('commands'))
+            ['version', 'help', 'hello'],
+            array_keys(
+                $this->inspectProperty(App::class, $this->app, 'commands')
+            )
         );
     }
 
@@ -119,7 +176,7 @@ class AppTest extends TestCase
     public function testGetAllCommands()
     {
         $this->assertEquals(
-            ['help', 'version'],
+            ['version', 'help'],
             array_keys($this->app->getCommands())
         );
     }
@@ -136,7 +193,9 @@ class AppTest extends TestCase
 
         $this->assertEquals(
             ['help'],
-            array_keys($this->inspectProperty('commands'))
+            array_keys(
+                $this->inspectProperty(App::class, $this->app, 'commands')
+            )
         );
     }
 
@@ -150,6 +209,14 @@ class AppTest extends TestCase
     {
         $this->app->disableDefaults();
 
-        $this->assertEquals([], array_keys($this->inspectProperty('commands')));
+        $this->assertEmpty(array_keys(
+            $this->inspectProperty(App::class, $this->app, 'commands')
+        ));
     }
+}
+
+class NoName extends Command
+{
+    function init() {}
+    function execute() {}
 }

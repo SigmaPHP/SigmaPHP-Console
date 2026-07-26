@@ -4,10 +4,8 @@ namespace SigmaPHP\Console;
 
 use SigmaPHP\Console\Interfaces\AppInterface;
 use SigmaPHP\Console\Command;
-use SigmaPHP\Console\DefaultCommands\Help;
-use SigmaPHP\Console\DefaultCommands\Version;
-use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\FileUtility;
+use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 
 /**
  * App Class.
@@ -32,8 +30,64 @@ class App implements AppInterface
         $this->commands = [];
         $this->globalOptions = [];
 
-        $this->addCommand(Help::class);
-        $this->addCommand(Version::class);
+        $this->loadCommands(
+            __DIR__ . '/DefaultCommands',
+            'SigmaPHP\Console\DefaultCommands'
+        );
+    }
+
+    /**
+     * Set app's name.
+     *
+     * Note: could only be used when Default Commands are enabled.
+     *
+     * @param string $appName
+     * @return void
+     */
+    public function setAppName($appName)
+    {
+        if (!$this->hasCommand('help')) {
+            throw new \Exception('App information could only be set when ' .
+                'default commands are enabled!');
+        }
+
+        $this->getCommand('help')->setAppName($appName);
+    }
+
+    /**
+     * Set app's description.
+     *
+     * Note: could only be used when Default Commands are enabled.
+     *
+     * @param string $appDescription
+     * @return void
+     */
+    public function setAppDescription($appDescription)
+    {
+        if (!$this->hasCommand('help')) {
+            throw new \Exception('App information could only be set when' .
+                'default commands are enabled!');
+        }
+
+        $this->getCommand('help')->setAppDescription($appDescription);
+    }
+
+    /**
+     * Set app's version.
+     *
+     * Note: could only be used when Default Commands are enabled.
+     *
+     * @param string $appVersion
+     * @return void
+     */
+    public function setAppVersion($appVersion)
+    {
+        if (!$this->hasCommand('version')) {
+            throw new \Exception('App information could only be set when' .
+                'default commands are enabled!');
+        }
+
+        $this->getCommand('version')->setAppVersion($appVersion);
     }
 
     /**
@@ -44,12 +98,17 @@ class App implements AppInterface
      */
     public function addCommand($command)
     {
+        if (!class_exists((string) $command)) {
+            throw new CommandNotFoundException("Unknown command: {$command}");
+        }
+
         $commandInst = new $command();
 
+        // if the command's name is not defined, we will generate a one
+        // based on the class name
         if (empty($commandInst->getName())) {
-            throw new \InvalidArgumentException(
-                "Command {$command} should have a name!"
-            );
+            $_parts = explode('\\', (string) $command);
+            $commandInst->setName(strtolower($_parts[count($_parts) - 1]));
         }
 
         if ($this->hasCommand($commandInst->getName())) {
@@ -98,7 +157,7 @@ class App implements AppInterface
      * Get command from app.
      *
      * @param string $name
-     * @return Command
+     * @return object<Command>
      */
     public function getCommand($name)
     {

@@ -83,6 +83,7 @@ class Help extends Command
         $this->setName('help');
         $this->setDescription('Print this help menu');
 
+        // app's default details
         $this->setAppName('App');
         $this->setAppDescription('A CLI utility to preform some tasks');
         $this->setCommandsList([]);

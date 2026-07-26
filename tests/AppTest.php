@@ -5,6 +5,8 @@ namespace SigmaPHP\Console\Tests;
 use PHPUnit\Framework\TestCase;
 use SigmaPHP\Console\App;
 use SigmaPHP\Console\Command;
+use SigmaPHP\Console\DefaultCommands\Help;
+use SigmaPHP\Console\DefaultCommands\Version;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\Tests\Examples\HelloCommand;
 
@@ -52,6 +54,57 @@ class AppTest extends TestCase
     {
         $inspect = new \ReflectionProperty($class, $property);
         return $inspect->getValue($object);
+    }
+
+    /**
+     * Test set app's name.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testSetAppName()
+    {
+        $this->app->setAppName('test');
+
+        $this->assertEquals('test', $this->inspectProperty(
+            Help::class,
+            $this->app->getCommand('help'),
+            'appName'
+        ));
+    }
+
+    /**
+     * Test set app's description.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testSetAppDescription()
+    {
+        $this->app->setAppDescription('an app for testing');
+
+        $this->assertEquals('an app for testing', $this->inspectProperty(
+            Help::class,
+            $this->app->getCommand('help'),
+            'appDescription'
+        ));
+    }
+
+    /**
+     * Test set app's version.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testSetAppVersion()
+    {
+        $this->app->setAppVersion('beta');
+
+        $this->assertEquals('beta', $this->inspectProperty(
+            Version::class,
+            $this->app->getCommand('version'),
+            'appVersion'
+        ));
     }
 
     /**

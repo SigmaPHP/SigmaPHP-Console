@@ -121,7 +121,7 @@ class Help extends Command
     public function init()
     {
         $this->setName('help');
-        $this->setDescription('Print this help menu');
+        $this->setDescription('Print the help menu');
 
         // app's default details
         $this->setAppName('App');

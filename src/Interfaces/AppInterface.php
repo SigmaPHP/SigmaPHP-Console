@@ -121,6 +121,21 @@ interface AppInterface
     );
 
     /**
+     * Remove global option.
+     *
+     * @param string $name
+     * @return void
+     */
+    public function removeGlobalOption($name);
+
+    /**
+     * Get global options.
+     *
+     * @return array contains 'longname' array and 'shortname' string
+     */
+    public function getGlobalOptions();
+
+    /**
      * Disable the defaults options and commands (version & help).
      *
      * @return void

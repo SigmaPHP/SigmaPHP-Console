@@ -4,6 +4,8 @@ namespace SigmaPHP\Console;
 
 use SigmaPHP\Console\Interfaces\AppInterface;
 use SigmaPHP\Console\Command;
+use SigmaPHP\Console\DefaultCommands\Help;
+use SigmaPHP\Console\DefaultCommands\Version;
 use SigmaPHP\Console\FileUtility;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 
@@ -30,10 +32,12 @@ class App implements AppInterface
         $this->commands = [];
         $this->globalOptions = [];
 
-        $this->loadCommands(
-            __DIR__ . '/DefaultCommands',
-            'SigmaPHP\Console\DefaultCommands'
-        );
+        $this->addCommand(Help::class);
+        $this->addCommand(Version::class);
+
+        $this->addGlobalOption('help', 'h', 'Print the help menu');
+        $this->addGlobalOption('version', 'v',
+            'Print the application\'s version');
     }
 
     /**
@@ -214,6 +218,11 @@ class App implements AppInterface
         global $argc;
         global $argv;
 
+        $options = getopt(
+            $this->getGlobalOptions()['short'],
+            $this->getGlobalOptions()['long']
+        );
+
         // if no command was selected show 'help' if enabled!
         // otherwise do nothing
         if (($argc == 1) && !isset($argv[1])) {
@@ -225,8 +234,33 @@ class App implements AppInterface
         }
 
         // in case the command doesn't exists
-        if (!$this->hasCommand($argv[1])) {
+        if (!$this->hasCommand($argv[1]) && (strpos($argv[1], '-') === false)) {
             throw new CommandNotFoundException("Unknown command: {$argv[1]}");
+        } else {
+            if ((isset($options['help']) && !$options['help']) ||
+                isset($options['h']) && !$options['h']
+            ) {
+                $this->getCommand('help')->execute();
+                return;
+            }
+            else if ((isset($options['version']) && !$options['version']) ||
+                isset($options['v']) && !$options['v']
+            ) {
+                $this->getCommand('version')->execute();
+                return;
+            }
+            else if (
+                ((isset($options['help']) && !$options['help']) ||
+                (isset($options['h']) && !$options['h'] ) ||
+                ((isset($options['version']) && !$options['version']) ||
+                isset($options['v']) && !$options['v']))
+            ) {
+                // in case the user provided both 'help' and 'version'
+                // we go with the 'help' :)
+                $this->getCommand('help')->execute();
+                return;
+            }
+
         }
 
         // start execution cycle
@@ -242,6 +276,11 @@ class App implements AppInterface
     /**
      * Add global option.
      *
+     * Note: PHP built-in getopt() function has weird rule for required/optional
+     * parameters, use ':' for 'required' parameters and '::' for 'optional'.
+     *
+     * Also, $name here refers to 'longname' while $shortcut for 'shortname'.
+     *
      * @param string $name
      * @param string $shortcut
      * @param string $description
@@ -252,9 +291,46 @@ class App implements AppInterface
         $name,
         $shortcut = '',
         $description = '',
+        $requireValue = false,
         $validation = ''
     ) {
-        // !ToDo
+        $this->globalOptions[$name] = [
+            'name' => $name . ($requireValue ? ':' : ''),
+            'shortcut' => $shortcut . ($requireValue ? ':' : ''),
+            'description' => $description,
+            'validation' => $validation,
+        ];
+    }
+
+    /**
+     * Remove global option.
+     *
+     * @param string $name
+     * @return void
+     */
+    public function removeGlobalOption($name)
+    {
+        unset($this->globalOptions[$name]);
+    }
+
+    /**
+     * Get global options.
+     *
+     * @return array contains 'longname' array and 'shortname' string
+     */
+    public function getGlobalOptions()
+    {
+        $options = [
+            'short' => '',
+            'long' => [],
+        ];
+
+        foreach ($this->globalOptions as $option) {
+            $options['short'] .= $option['shortcut'];
+            $options['long'][] = $option['name'];
+        }
+
+        return $options;
     }
 
     /**
@@ -266,6 +342,9 @@ class App implements AppInterface
     {
         $this->removeCommand('help');
         $this->removeCommand('version');
+
+        $this->removeGlobalOption('help');
+        $this->removeGlobalOption('version');
     }
 
     /**

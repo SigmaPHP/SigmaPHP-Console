@@ -108,6 +108,22 @@ class AppTest extends TestCase
     }
 
     /**
+     * Test will throw exception if setting app's info while defaults are
+     * disabled.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionSettingAppInfoWhileDefaultsDisabled()
+    {
+        $this->expectException(\Exception::class);
+
+        $this->app->disableDefaults();
+
+        $this->app->setAppVersion('beta');
+    }
+
+    /**
      * Test add command.
      *
      * @runInSeparateProcess

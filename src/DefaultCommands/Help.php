@@ -154,6 +154,11 @@ class Help extends Command
 
         if (!empty($this->globalOptionsList)) {
             $helpContent .= "Global Options:\n";
+
+            foreach ($this->globalOptionsList as $name => $option) {
+                $helpContent .= "\t-{$option['shortcut']}, --{$name}" .
+                    "\t\t{$option['description']}\n";
+            }
         }
 
         $helpContent .= "\n";

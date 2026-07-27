@@ -249,18 +249,6 @@ class App implements AppInterface
                 $this->getCommand('version')->execute();
                 return;
             }
-            else if (
-                ((isset($options['help']) && !$options['help']) ||
-                (isset($options['h']) && !$options['h'] ) ||
-                ((isset($options['version']) && !$options['version']) ||
-                isset($options['v']) && !$options['v']))
-            ) {
-                // in case the user provided both 'help' and 'version'
-                // we go with the 'help' :)
-                $this->getCommand('help')->execute();
-                return;
-            }
-
         }
 
         // start execution cycle
@@ -300,6 +288,16 @@ class App implements AppInterface
             'description' => $description,
             'validation' => $validation,
         ];
+
+        // add the command to the help menu
+        if ($this->hasCommand('help')) {
+            $options = $this->getCommand('help')->getGlobalOptionsList();
+            $options[$name] = [
+                'shortcut' => $shortcut,
+                'description' => $description,
+            ];
+            $this->getCommand('help')->setGlobalOptionsList($options);
+        }
     }
 
     /**

@@ -89,6 +89,22 @@ interface AppInterface
     public function removeCommand($commandName);
 
     /**
+     * Check if an argument was provided to the app.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function inputHasArgument($name);
+
+    /**
+     * Check if an option was provided to the app.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function inputHasOption($name);
+
+    /**
      * Check the provided arguments and options, make sure they are related
      * to the Command.
      *
@@ -127,6 +143,14 @@ interface AppInterface
      * @return void
      */
     public function removeGlobalOption($name);
+
+    /**
+     * Get global option.
+     *
+     * @param string $name
+     * @return array
+     */
+    public function getGlobalOption($name);
 
     /**
      * Get global options.

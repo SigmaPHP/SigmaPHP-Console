@@ -197,6 +197,39 @@ class App implements AppInterface
     }
 
     /**
+     * Check if an argument was provided to the app.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function inputHasArgument($name)
+    {
+        // !ToDo
+    }
+
+    /**
+     * Check if an option was provided to the app.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function inputHasOption($name)
+    {
+        $options = getopt(
+            $this->getGlobalOptions()['short'],
+            $this->getGlobalOptions()['long']
+        );
+
+        $option = $this->getGlobalOption($name);
+
+        // please note: getopt() set the option that exists as 'false' :D
+        return (isset($options[$option['name']]) &&
+            !$options[$option['name']]) ||
+            (isset($options[$option['shortcut']]) &&
+            !$options[$option['shortcut']]);
+    }
+
+    /**
      * Check the provided arguments and options, make sure they are related
      * to the Command.
      *
@@ -218,12 +251,7 @@ class App implements AppInterface
         global $argc;
         global $argv;
 
-        $options = getopt(
-            $this->getGlobalOptions()['short'],
-            $this->getGlobalOptions()['long']
-        );
-
-        // if no command was selected show 'help' if enabled!
+        // if no input was provided, show 'help' if enabled!
         // otherwise do nothing
         if (($argc == 1) && !isset($argv[1])) {
             if ($this->hasCommand('help')) {
@@ -233,26 +261,21 @@ class App implements AppInterface
             }
         }
 
-        // in case the command doesn't exists
-        if (!$this->hasCommand($argv[1]) && (strpos($argv[1], '-') === false)) {
+        if ($this->inputHasOption('help')){
+            $this->getCommand('help')->execute();
+            return;
+        }
+        else if ($this->inputHasOption('version')){
+            $this->getCommand('version')->execute();
+            return;
+        }
+
+        if (!$this->hasCommand($argv[1])) {
             throw new CommandNotFoundException("Unknown command: {$argv[1]}");
-        } else {
-            if ((isset($options['help']) && !$options['help']) ||
-                isset($options['h']) && !$options['h']
-            ) {
-                $this->getCommand('help')->execute();
-                return;
-            }
-            else if ((isset($options['version']) && !$options['version']) ||
-                isset($options['v']) && !$options['v']
-            ) {
-                $this->getCommand('version')->execute();
-                return;
-            }
         }
 
         // start execution cycle
-        $this->validateInput($argv[1]);
+        $this->validateInput($argv);
 
         $this->beforeStart();
 
@@ -309,6 +332,17 @@ class App implements AppInterface
     public function removeGlobalOption($name)
     {
         unset($this->globalOptions[$name]);
+    }
+
+    /**
+     * Get global option.
+     *
+     * @param string $name
+     * @return array
+     */
+    public function getGlobalOption($name)
+    {
+        return $this->globalOptions[$name];
     }
 
     /**

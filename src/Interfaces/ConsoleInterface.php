@@ -32,6 +32,14 @@ interface ConsoleInterface
     public function write($text);
 
     /**
+     * Write to console (STDOUT) with new line.
+     *
+     * @param string $text
+     * @return bool
+     */
+    public function writeln($text);
+
+    /**
      * Write to console (STDERR).
      *
      * @param string $text

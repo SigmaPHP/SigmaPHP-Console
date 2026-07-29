@@ -69,6 +69,23 @@ class ConsoleTest extends TestCase
     }
 
     /**
+     * Test write with new line.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWriteln()
+    {
+        $this->console->setOutputStream($this->testStream);
+        $this->console->writeln('Hello SigmaPHP-Console');
+
+        $this->assertEquals(
+            "Hello SigmaPHP-Console\n",
+            stream_get_contents($this->testStream, -1, 0)
+        );
+    }
+
+    /**
      * Test write error.
      *
      * @runInSeparateProcess

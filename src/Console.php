@@ -78,6 +78,17 @@ class Console implements ConsoleInterface
     }
 
     /**
+     * Write to console (STDOUT) with new line.
+     *
+     * @param string $text
+     * @return bool
+     */
+    public function writeln($text)
+    {
+        return fwrite($this->outputStream, $text . "\n") !== false;
+    }
+
+    /**
      * Write to console (STDERR).
      *
      * @param string $text

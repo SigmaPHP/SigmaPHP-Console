@@ -8,6 +8,9 @@ use SigmaPHP\Console\DefaultCommands\Help;
 use SigmaPHP\Console\DefaultCommands\Version;
 use SigmaPHP\Console\FileUtility;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
+use SigmaPHP\Console\Option;
+use SigmaPHP\Console\OptionParameterType;
+use SigmaPHP\Console\OptionDataType;
 
 /**
  * App Class.
@@ -20,7 +23,7 @@ class App implements AppInterface
     protected $commands;
 
     /**
-     * @var array $globalOptions
+     * @var array<Option> $globalOptions
      */
     protected $globalOptions;
 
@@ -230,18 +233,6 @@ class App implements AppInterface
     }
 
     /**
-     * Check the provided arguments and options, make sure they are related
-     * to the Command.
-     *
-     * @param string $name
-     * @return bool
-     */
-    public function validateInput($name)
-    {
-        // !ToDo
-    }
-
-    /**
      * Run the app.
      *
      * @return int
@@ -262,21 +253,16 @@ class App implements AppInterface
         }
 
         if ($this->inputHasOption('help')){
-            $this->getCommand('help')->execute();
-            return;
+            $argv[1] = 'help';
         }
         else if ($this->inputHasOption('version')){
-            $this->getCommand('version')->execute();
-            return;
+            $argv[1] = 'version';
         }
-
-        if (!$this->hasCommand($argv[1])) {
+        else if (!$this->hasCommand($argv[1])) {
             throw new CommandNotFoundException("Unknown command: {$argv[1]}");
         }
 
         // start execution cycle
-        $this->validateInput($argv);
-
         $this->beforeStart();
 
         $this->getCommand($argv[1])->execute();
@@ -287,30 +273,30 @@ class App implements AppInterface
     /**
      * Add global option.
      *
-     * Note: PHP built-in getopt() function has weird rule for required/optional
-     * parameters, use ':' for 'required' parameters and '::' for 'optional'.
-     *
-     * Also, $name here refers to 'longname' while $shortcut for 'shortname'.
-     *
      * @param string $name
      * @param string $shortcut
      * @param string $description
-     * @param string $validation 'regex pattern'
+     * @param OptionParameterType $parameterType
+     * @param OptionDataType $dataType
+     * @param mixed $defaultValue
      * @return void
      */
     public function addGlobalOption(
         $name,
         $shortcut = '',
-        $description = '',
-        $requireValue = false,
-        $validation = ''
+            $description = '',
+            $parameterType = OptionParameterType::NONE,
+            $dataType = OptionDataType::STRING,
+            $defaultValue = null,
     ) {
-        $this->globalOptions[$name] = [
-            'name' => $name . ($requireValue ? ':' : ''),
-            'shortcut' => $shortcut . ($requireValue ? ':' : ''),
-            'description' => $description,
-            'validation' => $validation,
-        ];
+        $this->globalOptions[$name] = new Option(
+            $name,
+            $shortcut,
+            $description,
+            $parameterType,
+            $dataType,
+            $defaultValue
+        );
 
         // add the command to the help menu
         if ($this->hasCommand('help')) {
@@ -358,8 +344,8 @@ class App implements AppInterface
         ];
 
         foreach ($this->globalOptions as $option) {
-            $options['short'] .= $option['shortcut'];
-            $options['long'][] = $option['name'];
+            $options['short'] .= $option->getShortcut();
+            $options['long'][] = $option->getName();
         }
 
         return $options;

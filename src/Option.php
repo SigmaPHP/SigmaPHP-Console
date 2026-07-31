@@ -8,6 +8,21 @@ namespace SigmaPHP\Console;
 class Option
 {
     /**
+     * Option's parameter optionality.
+     */
+    public const REQUIRED = 'required';
+    public const OPTIONAL = 'optional';
+    public const NONE     = 'none';
+
+    /**
+     * Option's parameter data types.
+     */
+    public const STRING = 'string';
+    public const NUMBER = 'number';
+    public const LIST   = 'list';
+    public const BOOL   = 'bool';
+
+    /**
      * @var string $name
      */
     protected $name;
@@ -23,20 +38,19 @@ class Option
     protected $description;
 
     /**
-     * @var string $parameterType
+     * @var string $parameterOptionality
      */
-    protected $parameterType;
+    protected $parameterOptionality;
 
     /**
-     * @var string $dataType
+     * @var string $parameterDataType
      */
-    protected $dataType;
+    protected $parameterDataType;
 
     /**
      * @var mixed $defaultValue
      */
     protected $defaultValue;
-
 
     /**
      * Option Constructor.
@@ -49,23 +63,23 @@ class Option
      * @param string $name
      * @param string $shortcut
      * @param string $description
-     * @param OptionParameterType $parameterType
-     * @param OptionDataType $dataType
+     * @param string $parameterOptionality
+     * @param string $parameterDataType
      * @param mixed $defaultValue
      */
     public function __construct(
         $name,
         $shortcut = '',
         $description = '',
-        $parameterType = OptionParameterType::NONE,
-        $dataType = OptionDataType::STRING,
+        $parameterOptionality = self::NONE,
+        $parameterDataType = self::STRING,
         $defaultValue = null,
     ) {
         $this->name = $name;
         $this->shortcut = $shortcut;
         $this->description = $description;
-        $this->parameterType = $parameterType;
-        $this->dataType = $dataType;
+        $this->parameterOptionality = $parameterOptionality;
+        $this->parameterDataType = $parameterDataType;
         $this->defaultValue = $defaultValue;
     }
 
@@ -103,25 +117,25 @@ class Option
     }
 
     /**
-     * Set options's parameter type.
+     * Set options's parameter optionality.
      *
-     * @param OptionParameterType $parameterType
+     * @param string $parameterOptionality
      * @return void
      */
-    public function setParameterType($parameterType)
+    public function setParameterOptionality($parameterOptionality)
     {
-        $this->parameterType = $parameterType;
+        $this->parameterOptionality = $parameterOptionality;
     }
 
     /**
-     * Set options's data type.
+     * Set options's parameter data type.
      *
-     * @param OptionDataType $dataType
+     * @param string $parameterDataType
      * @return void
      */
-    public function setDataType($dataType)
+    public function setParameterDataType($parameterDataType)
     {
-        $this->dataType = $dataType;
+        $this->parameterDataType = $parameterDataType;
     }
 
     /**
@@ -166,23 +180,23 @@ class Option
     }
 
     /**
-     * Get options's parameter type.
+     * Get options's parameter optionality.
      *
-     * @return OptionParameterType
+     * @return string
      */
-    public function getParameterType()
+    public function getParameterOptionality()
     {
-        return $this->parameterType;
+        return $this->parameterOptionality;
     }
 
     /**
-     * Get options's data type.
+     * Get options's parameter data type.
      *
-     * @return OptionDataType
+     * @return string
      */
-    public function getDataType()
+    public function getParameterDataType()
     {
-        return $this->dataType;
+        return $this->parameterDataType;
     }
 
     /**
@@ -194,19 +208,4 @@ class Option
     {
         return $this->defaultValue;
     }
-}
-
-class OptionParameterType
-{
-    public const REQUIRED = 'required';
-    public const OPTIONAL = 'optional';
-    public const NONE     = 'none';
-}
-
-class OptionDataType
-{
-    public const STRING = 'string';
-    public const NUMBER = 'number';
-    public const LIST   = 'list';
-    public const BOOL   = 'bool';
 }

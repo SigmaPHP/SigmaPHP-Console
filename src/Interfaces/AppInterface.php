@@ -2,8 +2,8 @@
 
 namespace SigmaPHP\Console\Interfaces;
 
-use SigmaPHP\Console\Interfaces\ConsoleInterface;
 use SigmaPHP\Console\Command;
+use SigmaPHP\Console\Option;
 
 /**
  * App Interface.
@@ -89,14 +89,6 @@ interface AppInterface
     public function removeCommand($commandName);
 
     /**
-     * Check if an argument was provided to the app.
-     *
-     * @param string $name
-     * @return bool
-     */
-    public function inputHasArgument($name);
-
-    /**
      * Check if an option was provided to the app.
      *
      * @param string $name
@@ -117,14 +109,18 @@ interface AppInterface
      * @param string $name
      * @param string $shortcut
      * @param string $description
-     * @param string $validation 'regex pattern'
+     * @param string $parameterType
+     * @param string $dataType
+     * @param mixed $defaultValue
      * @return void
      */
     public function addGlobalOption(
         $name,
-        $shortcut,
-        $description,
-        $validation
+        $shortcut = '',
+        $description = '',
+        $parameterType = Option::NONE,
+        $dataType = Option::STRING,
+        $defaultValue = null,
     );
 
     /**
@@ -136,10 +132,10 @@ interface AppInterface
     public function removeGlobalOption($name);
 
     /**
-     * Get global option.
+     * Get global option' value.
      *
      * @param string $name
-     * @return array
+     * @return Option
      */
     public function getGlobalOption($name);
 

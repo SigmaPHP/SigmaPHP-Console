@@ -281,6 +281,10 @@ class AppTest extends TestCase
         $this->assertEmpty(array_keys(
             $this->inspectProperty(App::class, $this->app, 'commands')
         ));
+
+        $this->assertEmpty(array_keys(
+            $this->inspectProperty(App::class, $this->app, 'globalOptions')
+        ));
     }
 }
 

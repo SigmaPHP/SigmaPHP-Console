@@ -9,8 +9,6 @@ use SigmaPHP\Console\DefaultCommands\Version;
 use SigmaPHP\Console\FileUtility;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\Option;
-use SigmaPHP\Console\OptionParameterType;
-use SigmaPHP\Console\OptionDataType;
 
 /**
  * App Class.
@@ -200,17 +198,6 @@ class App implements AppInterface
     }
 
     /**
-     * Check if an argument was provided to the app.
-     *
-     * @param string $name
-     * @return bool
-     */
-    public function inputHasArgument($name)
-    {
-        // !ToDo
-    }
-
-    /**
      * Check if an option was provided to the app.
      *
      * @param string $name
@@ -226,10 +213,10 @@ class App implements AppInterface
         $option = $this->getGlobalOption($name);
 
         // please note: getopt() set the option that exists as 'false' :D
-        return (isset($options[$option['name']]) &&
-            !$options[$option['name']]) ||
-            (isset($options[$option['shortcut']]) &&
-            !$options[$option['shortcut']]);
+        return (isset($options[$option->getName()]) &&
+            !$options[$option->getName()]) ||
+            (isset($options[$option->getShortcut()]) &&
+            !$options[$option->getShortcut()]);
     }
 
     /**
@@ -276,18 +263,18 @@ class App implements AppInterface
      * @param string $name
      * @param string $shortcut
      * @param string $description
-     * @param OptionParameterType $parameterType
-     * @param OptionDataType $dataType
+     * @param string $parameterType
+     * @param string $dataType
      * @param mixed $defaultValue
      * @return void
      */
     public function addGlobalOption(
         $name,
         $shortcut = '',
-            $description = '',
-            $parameterType = OptionParameterType::NONE,
-            $dataType = OptionDataType::STRING,
-            $defaultValue = null,
+        $description = '',
+        $parameterType = Option::NONE,
+        $dataType = Option::STRING,
+        $defaultValue = null,
     ) {
         $this->globalOptions[$name] = new Option(
             $name,
@@ -324,7 +311,7 @@ class App implements AppInterface
      * Get global option.
      *
      * @param string $name
-     * @return array
+     * @return Option
      */
     public function getGlobalOption($name)
     {

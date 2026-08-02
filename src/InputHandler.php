@@ -3,6 +3,8 @@
 namespace SigmaPHP\Console;
 
 use SigmaPHP\Console\Interfaces\InputHandlerInterface;
+use SigmaPHP\Console\Argument;
+use SigmaPHP\Console\Option;
 
 /**
  * InputHandler Class.
@@ -10,20 +12,20 @@ use SigmaPHP\Console\Interfaces\InputHandlerInterface;
 class InputHandler implements InputHandlerInterface
 {
     /**
-     * @var array $arguments
+     * @var array<Argument> $arguments
      */
     protected $arguments;
 
     /**
-     * @var array $options
+     * @var array<Option> $options
      */
     protected $options;
 
     /**
      * InputHandler Constructor.
      *
-     * @param array $arguments
-     * @param array $options
+     * @param array<Argument> $arguments
+     * @param array<Option> $options
      */
     public function __construct($arguments, $options)
     {
@@ -32,7 +34,7 @@ class InputHandler implements InputHandlerInterface
     }
 
     /**
-     * Get the requested command.
+     * Get the provided (called by user) command's name.
      *
      * @return string|null
      */
@@ -51,7 +53,11 @@ class InputHandler implements InputHandlerInterface
      */
     public function hasArgument($name)
     {
+        global $argv;
 
+        $argument = $this->arguments[$name];
+
+        return isset($argv[$argument->getOrder()]);
     }
 
     /**
@@ -64,7 +70,11 @@ class InputHandler implements InputHandlerInterface
      */
     public function getArgument($name)
     {
+        global $argv;
 
+        $argument = $this->arguments[$name];
+
+        return $argv[$argument->getOrder()];
     }
 
     /**

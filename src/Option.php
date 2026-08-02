@@ -2,6 +2,8 @@
 
 namespace SigmaPHP\Console;
 
+use SigmaPHP\Console\DataType;
+
 /**
  * Option Class.
  */
@@ -13,14 +15,6 @@ class Option
     public const REQUIRED = 'required';
     public const OPTIONAL = 'optional';
     public const NONE     = 'none';
-
-    /**
-     * Option's parameter data types.
-     */
-    public const STRING = 'string';
-    public const NUMBER = 'number';
-    public const LIST   = 'list';
-    public const BOOL   = 'bool';
 
     /**
      * @var string $name
@@ -43,7 +37,7 @@ class Option
     protected $parameterOptionality;
 
     /**
-     * @var string $parameterDataType
+     * @var DataType $parameterDataType
      */
     protected $parameterDataType;
 
@@ -72,7 +66,7 @@ class Option
         $shortcut = '',
         $description = '',
         $parameterOptionality = self::NONE,
-        $parameterDataType = self::STRING,
+        $parameterDataType = DataType::STRING,
         $defaultValue = null,
     ) {
         $this->name = $name;
@@ -130,7 +124,7 @@ class Option
     /**
      * Set options's parameter data type.
      *
-     * @param string $parameterDataType
+     * @param DataType $parameterDataType
      * @return void
      */
     public function setParameterDataType($parameterDataType)
@@ -192,7 +186,7 @@ class Option
     /**
      * Get options's parameter data type.
      *
-     * @return string
+     * @return DataType
      */
     public function getParameterDataType()
     {

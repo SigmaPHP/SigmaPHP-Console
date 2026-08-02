@@ -1,0 +1,135 @@
+<?php
+
+namespace SigmaPHP\Console;
+
+use SigmaPHP\Console\DataType;
+
+/**
+ * Argument Class.
+ */
+class Argument
+{
+    /**
+     * @var string $name
+     */
+    protected $name;
+
+    /**
+     * @var string $description
+     */
+    protected $description;
+
+    /**
+     * @var int $order
+     */
+    protected $order;
+
+    /**
+     * @var DataType $dataType
+     */
+    protected $dataType;
+
+    /**
+     * Option Constructor.
+     *
+     * @param string $name
+     * @param string $description
+     * @param int $order
+     * @param DataType $dataType
+     */
+    public function __construct(
+        $name,
+        $description = '',
+        $order = -1,
+        $dataType = DataType::STRING,
+    ) {
+        $this->name = $name;
+        $this->description = $description;
+        $this->order = $order;
+        $this->dataType = $dataType;
+    }
+
+    /**
+     * Set argument's name.
+     *
+     * @param string $name
+     * @return void
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Set argument's description.
+     *
+     * @param string $description
+     * @return void
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * Set argument's order in the $argv.
+     *
+     * @param int $order
+     * @return void
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+    }
+
+    /**
+     * Set argument's data type.
+     *
+     * @param string $dataType
+     * @return void
+     */
+    public function setDataType($dataType)
+    {
+        $this->dataType = $dataType;
+    }
+
+    /**
+     * Get argument's name.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Get argument's description.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Get argument's order in the $argv.
+     *
+     * @return int
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * Get argument's data type.
+     *
+     * @return string
+     */
+    public function getDataType()
+    {
+        return $this->dataType;
+    }
+}

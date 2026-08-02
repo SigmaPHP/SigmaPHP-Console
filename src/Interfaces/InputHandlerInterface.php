@@ -8,7 +8,7 @@ namespace SigmaPHP\Console\Interfaces;
 interface InputHandlerInterface
 {
     /**
-     * Get the requested command.
+     * Get the provided (called by user) command's name.
      *
      * @return string|null
      */

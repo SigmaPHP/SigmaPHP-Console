@@ -9,6 +9,7 @@ use SigmaPHP\Console\DefaultCommands\Version;
 use SigmaPHP\Console\FileUtility;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\Option;
+use SigmaPHP\Console\DataType;
 
 /**
  * App Class.
@@ -250,7 +251,7 @@ class App implements AppInterface
      * @param string $shortcut
      * @param string $description
      * @param string $parameterOptionality
-     * @param string $dataType
+     * @param DataType $dataType
      * @param mixed $defaultValue
      * @return void
      */
@@ -259,7 +260,7 @@ class App implements AppInterface
         $shortcut = '',
         $description = '',
         $parameterOptionality = Option::NONE,
-        $dataType = Option::STRING,
+        $dataType = DataType::STRING,
         $defaultValue = null,
     ) {
         $this->globalOptions[$name] = new Option(

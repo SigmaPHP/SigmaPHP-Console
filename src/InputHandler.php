@@ -53,6 +53,10 @@ class InputHandler implements InputHandlerInterface
      */
     public function hasArgument($name)
     {
+        if (!isset($this->arguments[$name])) {
+            return false;
+        }
+
         global $argv;
 
         $argument = $this->arguments[$name];
@@ -70,6 +74,10 @@ class InputHandler implements InputHandlerInterface
      */
     public function getArgument($name)
     {
+        if (!isset($this->arguments[$name])) {
+            return null;
+        }
+
         global $argv;
 
         $argument = $this->arguments[$name];

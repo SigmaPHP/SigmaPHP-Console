@@ -28,7 +28,7 @@ class InputHandlerTest extends TestCase
 
         $this->inputHandler = new InputHandler(
             ['name' => new Argument('name', '', 2)],
-            ['title' => new Option('title')],
+            ['title' => new Option('title', 't', Option::OPTIONAL)],
         );
     }
 
@@ -65,6 +65,16 @@ class InputHandlerTest extends TestCase
         $this->assertTrue(
             $this->inputHandler->hasArgument('name')
         );
+
+        $this->assertFalse(
+            $this->inputHandler->hasArgument('no_found')
+        );
+
+        unset($argv[2]);
+
+        $this->assertFalse(
+            $this->inputHandler->hasArgument('name')
+        );
     }
 
     /**
@@ -83,5 +93,37 @@ class InputHandlerTest extends TestCase
             'Ahmed',
             $this->inputHandler->getArgument('name')
         );
+
+        $this->assertFalse(
+            $this->inputHandler->hasArgument('no_found')
+        );
+
+        unset($argv[2]);
+
+        $this->assertEmpty(
+            $this->inputHandler->hasArgument('name')
+        );
+    }
+
+    /**
+     * Test has option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testHasOption()
+    {
+        // ToDo: once Command is done
+    }
+
+    /**
+     * Test get option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testGetOption()
+    {
+        // ToDo: once Command is done
     }
 }

@@ -26,6 +26,11 @@ class App implements AppInterface
     protected $globalOptions;
 
     /**
+     * @var InputHandler $inputHandler
+     */
+    protected $inputHandler;
+
+    /**
      * App Constructor.
      */
     public function __construct()
@@ -39,6 +44,8 @@ class App implements AppInterface
         $this->addGlobalOption('help', 'h', 'Print the help menu');
         $this->addGlobalOption('version', 'v',
             'Print the application\'s version');
+
+        $this->inputHandler = new InputHandler([], $this->globalOptions);
     }
 
     /**
@@ -198,61 +205,40 @@ class App implements AppInterface
     }
 
     /**
-     * Check if an option was provided to the app.
-     *
-     * @param string $name
-     * @return bool
-     */
-    public function inputHasOption($name)
-    {
-        $options = getopt(
-            $this->getGlobalOptions()['short'],
-            $this->getGlobalOptions()['long']
-        );
-
-        $option = $this->getGlobalOption($name);
-
-        // please note: getopt() set the option that exists as 'false' :D
-        return (isset($options[$option->getName()]) &&
-            !$options[$option->getName()]) ||
-            (isset($options[$option->getShortcut()]) &&
-            !$options[$option->getShortcut()]);
-    }
-
-    /**
      * Run the app.
      *
      * @return int
      */
     public function run()
     {
-        global $argc;
-        global $argv;
+        $command = $this->inputHandler->getCommand();
 
-        // if no input was provided, show 'help' if enabled!
-        // otherwise do nothing
-        if (($argc == 1) && !isset($argv[1])) {
-            if ($this->hasCommand('help')) {
-                $argv[1] = 'help';
-            } else {
+        // if no input was provided, check the global options if any were set
+        // else show 'help' if enabled, otherwise do nothing!
+        if (empty($command)) {
+            if ($this->inputHandler->hasOption('help')){
+                $command = 'help';
+            }
+            else if ($this->inputHandler->hasOption('version')){
+                $command = 'version';
+            }
+            else if ($this->hasCommand('help')) {
+                $command = 'help';
+            }
+            else {
+                // there's nothing can be done :)
                 return;
             }
         }
 
-        if ($this->inputHasOption('help')){
-            $argv[1] = 'help';
-        }
-        else if ($this->inputHasOption('version')){
-            $argv[1] = 'version';
-        }
-        else if (!$this->hasCommand($argv[1])) {
-            throw new CommandNotFoundException("Unknown command: {$argv[1]}");
+        if (!$this->hasCommand($command)) {
+            throw new CommandNotFoundException("Unknown command: {$command}");
         }
 
         // start execution cycle
         $this->beforeStart();
 
-        $this->getCommand($argv[1])->execute();
+        $this->getCommand($command)->execute();
 
         $this->afterComplete();
     }
@@ -263,7 +249,7 @@ class App implements AppInterface
      * @param string $name
      * @param string $shortcut
      * @param string $description
-     * @param string $parameterType
+     * @param string $parameterOptionality
      * @param string $dataType
      * @param mixed $defaultValue
      * @return void
@@ -272,7 +258,7 @@ class App implements AppInterface
         $name,
         $shortcut = '',
         $description = '',
-        $parameterType = Option::NONE,
+        $parameterOptionality = Option::NONE,
         $dataType = Option::STRING,
         $defaultValue = null,
     ) {
@@ -280,7 +266,7 @@ class App implements AppInterface
             $name,
             $shortcut,
             $description,
-            $parameterType,
+            $parameterOptionality,
             $dataType,
             $defaultValue
         );
@@ -321,21 +307,11 @@ class App implements AppInterface
     /**
      * Get global options.
      *
-     * @return array contains 'longname' array and 'shortname' string
+     * @return array<Option>
      */
     public function getGlobalOptions()
     {
-        $options = [
-            'short' => '',
-            'long' => [],
-        ];
-
-        foreach ($this->globalOptions as $option) {
-            $options['short'] .= $option->getShortcut();
-            $options['long'][] = $option->getName();
-        }
-
-        return $options;
+        return $this->globalOptions;
     }
 
     /**

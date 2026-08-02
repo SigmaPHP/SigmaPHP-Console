@@ -89,14 +89,6 @@ interface AppInterface
     public function removeCommand($commandName);
 
     /**
-     * Check if an option was provided to the app.
-     *
-     * @param string $name
-     * @return bool
-     */
-    public function inputHasOption($name);
-
-    /**
      * Run the app.
      *
      * @return int
@@ -109,18 +101,18 @@ interface AppInterface
      * @param string $name
      * @param string $shortcut
      * @param string $description
-     * @param string $parameterType
+     * @param string $parameterOptionality
      * @param string $dataType
      * @param mixed $defaultValue
      * @return void
      */
     public function addGlobalOption(
         $name,
-        $shortcut = '',
-        $description = '',
-        $parameterType = Option::NONE,
-        $dataType = Option::STRING,
-        $defaultValue = null,
+        $shortcut,
+        $description,
+        $parameterOptionality,
+        $dataType,
+        $defaultValue
     );
 
     /**

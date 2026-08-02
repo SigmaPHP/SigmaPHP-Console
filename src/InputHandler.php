@@ -1,0 +1,137 @@
+<?php
+
+namespace SigmaPHP\Console;
+
+use SigmaPHP\Console\Interfaces\InputHandlerInterface;
+
+/**
+ * InputHandler Class.
+ */
+class InputHandler implements InputHandlerInterface
+{
+    /**
+     * @var array $arguments
+     */
+    protected $arguments;
+
+    /**
+     * @var array $options
+     */
+    protected $options;
+
+    /**
+     * InputHandler Constructor.
+     *
+     * @param array $arguments
+     * @param array $options
+     */
+    public function __construct($arguments, $options)
+    {
+        $this->arguments = $arguments;
+        $this->options = $options;
+    }
+
+    /**
+     * Get the requested command.
+     *
+     * @return string|null
+     */
+    public function getCommand()
+    {
+        global $argv;
+
+        return isset($argv[1]) ?: null;
+    }
+
+    /**
+     * Check if an argument was set.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasArgument($name)
+    {
+
+    }
+
+    /**
+     * Get argument's value.
+     *
+     * Please note: this method will return null if the argument wasn't set.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function getArgument($name)
+    {
+
+    }
+
+    /**
+     * Check if an option was set.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasOption($name)
+    {
+        $options = $this->getOptionValues();
+        $option = $this->options[$name];
+
+        // please note: getopt() set the option that exists as 'false' :D
+        return (isset($options[$option->getName()]) &&
+            !$options[$option->getName()]) ||
+            (isset($options[$option->getShortcut()]) &&
+            !$options[$option->getShortcut()]);
+    }
+
+    /**
+     * Get option's value.
+     *
+     * Please note: this method will return null if the option wasn't set.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function getOption($name)
+    {
+        $options = $this->getOptionValues();
+        $option = $this->options[$name];
+        $value = null;
+
+        if (!$this->hasOption($name)) {
+            return $value;
+        }
+        else if (isset($options[$option->getName()])) {
+            $value = $options[$option->getName()];
+        }
+        else if (isset($options[$option->getShortcut()])) {
+            $value = $options[$option->getShortcut()];
+        }
+
+        // please note: getopt() set the option that exists as 'false' :D
+        return is_bool($value) ? !$value : $value;
+    }
+
+    /**
+     * Get option values.
+     *
+     * Please note: this method is just a wrapper for PHP built-in getopt().
+     *
+     * @return array
+     */
+    protected function getOptionValues()
+    {
+        $_options = [
+            'short' => '',
+            'long' => [],
+        ];
+
+        foreach ($this->options as $option) {
+            $_options['short'] .= $option->getShortcut();
+            $_options['long'][] = $option->getName();
+        }
+
+        return getopt($_options['short'], $_options['long']) ?: [];
+    }
+}

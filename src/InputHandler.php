@@ -7,7 +7,7 @@ use SigmaPHP\Console\Argument;
 use SigmaPHP\Console\Option;
 
 /**
- * InputHandler Class.
+ * Input Handler Class.
  */
 class InputHandler implements InputHandlerInterface
 {

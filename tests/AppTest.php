@@ -8,6 +8,7 @@ use SigmaPHP\Console\Command;
 use SigmaPHP\Console\DefaultCommands\Help;
 use SigmaPHP\Console\DefaultCommands\Version;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
+use SigmaPHP\Console\Option;
 use SigmaPHP\Console\Tests\Examples\HelloCommand;
 
 /**
@@ -265,6 +266,74 @@ class AppTest extends TestCase
             array_keys(
                 $this->inspectProperty(App::class, $this->app, 'commands')
             )
+        );
+    }
+
+    /**
+     * Test add global option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testAddGlobalOption()
+    {
+        $this->app->addGlobalOption('test');
+
+        $this->assertInstanceOf(
+            Option::class,
+            $this->inspectProperty(
+                App::class,
+                $this->app,
+                'globalOptions'
+            )['test']
+        );
+    }
+
+    /**
+     * Test remove global option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testRemoveGlobalOption()
+    {
+        $this->app->addGlobalOption('test');
+
+        $this->app->removeGlobalOption('test');
+
+        $this->assertEquals(
+            ['help', 'version'],
+            array_keys(
+                $this->inspectProperty(App::class, $this->app, 'commands')
+            )
+        );
+    }
+
+    /**
+     * Test get global option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testGetGlobalOption()
+    {
+        $this->assertEquals(
+            'h',
+            $this->app->getGlobalOption('help')->getShortcut()
+        );
+    }
+
+    /**
+     * Test get global options.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testGetGlobalOptions()
+    {
+        $this->assertEquals(
+            ['help', 'version'],
+            array_keys($this->app->getGlobalOptions())
         );
     }
 

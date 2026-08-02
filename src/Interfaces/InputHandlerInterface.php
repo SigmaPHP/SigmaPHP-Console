@@ -3,7 +3,7 @@
 namespace SigmaPHP\Console\Interfaces;
 
 /**
- * InputHandler Interface.
+ * Input Handler Interface.
  */
 interface InputHandlerInterface
 {

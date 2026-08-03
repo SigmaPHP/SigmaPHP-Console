@@ -2,6 +2,10 @@
 
 namespace SigmaPHP\Console\Interfaces;
 
+use SigmaPHP\Console\Argument;
+use SigmaPHP\Console\DataType;
+use SigmaPHP\Console\Option;
+
 /**
  * Command Interface.
  */
@@ -22,67 +26,38 @@ interface CommandInterface
     public function execute();
 
     /**
-     * Get Argument/s.
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public function arguments($name);
-
-    /**
-     * Get Option/s.
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public function options($name);
-
-    /**
-     * Set command's name.
-     *
-     * @param string $name
-     * @return void
-     */
-    public function setName($name);
-
-    /**
-     * Set command's description.
-     *
-     * @param string $description
-     * @return void
-     */
-    public function setDescription($description);
-
-    /**
-     * Get command's name.
-     *
-     * @return string
-     */
-    public function getName();
-
-    /**
-     * Get command's description.
-     *
-     * @return string
-     */
-    public function getDescription();
-
-    /**
-     * Define custom help section of the command.
-     *
-     * @return void
-     */
-    public function addHelpSection();
-
-    /**
      * Add argument.
      *
      * @param string $name
      * @param string $description
-     * @param regex $validation
+     * @param int $order
+     * @param DataType $dataType
      * @return void
      */
-    public function addArg($name, $description, $validation);
+    public function addArgument($name, $description, $order, $dataType);
+
+    /**
+     * Remove arguments.
+     *
+     * @param string $name
+     * @return void
+     */
+    public function removeArgument($name);
+
+    /**
+     * Get argument.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function getArgument($name);
+
+    /**
+     * Get arguments.
+     *
+     * @return array<Argument>
+     */
+    public function getArguments();
 
     /**
      * Add option.
@@ -90,8 +65,47 @@ interface CommandInterface
      * @param string $name
      * @param string $shortcut
      * @param string $description
-     * @param string $validation 'regex pattern'
+     * @param string $parameterOptionality
+     * @param DataType $dataType
+     * @param mixed $defaultValue
      * @return void
      */
-    public function addOption($name, $shortcut, $description, $validation);
+    public function addOption(
+        $name,
+        $shortcut = '',
+        $description = '',
+        $parameterOptionality = Option::NONE,
+        $dataType = DataType::STRING,
+        $defaultValue = null,
+    );
+
+    /**
+     * Remove options.
+     *
+     * @param string $name
+     * @return void
+     */
+    public function removeOption($name);
+
+    /**
+     * Get option.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function getOption($name);
+
+    /**
+     * Get options.
+     *
+     * @return array<Option>
+     */
+    public function getOptions();
+
+    /**
+     * Define custom help section of the command.
+     *
+     * @return void
+     */
+    public function addHelpSection();
 }

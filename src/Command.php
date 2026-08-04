@@ -14,16 +14,6 @@ use SigmaPHP\Console\Option;
 abstract class Command implements CommandInterface
 {
     /**
-     * @var array<Argument> $arguments
-     */
-    protected $arguments;
-
-    /**
-     * @var array<Option> $options
-     */
-    protected $options;
-
-    /**
      * @var string $name
      */
     protected $name;
@@ -32,6 +22,16 @@ abstract class Command implements CommandInterface
      * @var string $description
      */
     protected $description;
+
+    /**
+     * @var array<Argument> $arguments
+     */
+    protected $arguments;
+
+    /**
+     * @var array<Option> $options
+     */
+    protected $options;
 
     /**
      * @var Console $console
@@ -43,9 +43,12 @@ abstract class Command implements CommandInterface
      */
     public function __construct()
     {
-        $this->init();
+        $this->arguments = [];
+        $this->options = [];
 
         $this->console = new Console();
+
+        $this->init();
     }
 
     /**
@@ -119,17 +122,26 @@ abstract class Command implements CommandInterface
         $order = -1,
         $dataType = DataType::STRING
     ) {
+        if (!is_int($order) || ($order == 0) || ($order == 1)) {
+            throw new \InvalidArgumentException(
+                'Argument\'s order must be an integer greater than 1!'
+            );
+        }
+
         // the order of the argument during the call, for example:
-        //COMMAND A B C
-        // you can set manually the position of each of A, B and C
+        //
+        // COMMAND A B C
+        //
+        // you can decide the positions of each of A, B and C
         // or leave them with the default ordering
-        // please note, this order will be used to get the value from $argv
-        $_order = ($order < 0) ? count($this->arguments) - 1 : $order;
+        //
+        // please note: this order will be used to get the value from $argv
+        $_order = ($order < 0) ? 2 + count($this->arguments) : $order;
 
         $this->arguments[$name] = new Argument(
             $name,
             $description,
-            $_order + 1,
+            $_order,
             $dataType
         );
     }

@@ -10,12 +10,15 @@ use SigmaPHP\Console\DefaultCommands\Version;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\Option;
 use SigmaPHP\Console\Tests\Examples\HelloCommand;
+use SigmaPHP\Console\Tests\Helpers;
 
 /**
  * App Test.
  */
 class AppTest extends TestCase
 {
+    use Helpers;
+
     /**
      * @var App $app
      */
@@ -41,20 +44,6 @@ class AppTest extends TestCase
     public function tearDown(): void
     {
         parent::tearDown();
-    }
-
-    /**
-     * Get value of property.
-     *
-     * @param string $class
-     * @param object $object
-     * @param string $property
-     * @return mixed
-     */
-    private function inspectProperty($class, $object, $property)
-    {
-        $inspect = new \ReflectionProperty($class, $property);
-        return $inspect->getValue($object);
     }
 
     /**

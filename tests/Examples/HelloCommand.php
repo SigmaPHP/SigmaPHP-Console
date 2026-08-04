@@ -17,6 +17,7 @@ class HelloCommand extends Command
     public function init()
     {
         $this->setName('hello');
+        $this->setDescription('say hello to user');
     }
 
     /**

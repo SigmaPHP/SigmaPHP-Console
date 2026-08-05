@@ -42,7 +42,7 @@ class InputHandler implements InputHandlerInterface
     {
         global $argv;
 
-        return isset($argv[1]) ?: null;
+        return isset($argv[1]) ? $argv[1] : null;
     }
 
     /**
@@ -53,11 +53,14 @@ class InputHandler implements InputHandlerInterface
      */
     public function hasArgument($name)
     {
+        global $argv;
+
+        d(array_slice($argv, $this->getArgumentValues()[0]));
+
         if (!isset($this->arguments[$name])) {
             return false;
         }
 
-        global $argv;
 
         $argument = $this->arguments[$name];
 
@@ -129,6 +132,30 @@ class InputHandler implements InputHandlerInterface
 
         // please note: getopt() set the option that exists as 'false' :D
         return is_bool($value) ? !$value : $value;
+    }
+
+    /**
+     * Get argument values.
+     *
+     * @return array
+     */
+    protected function getArgumentValues()
+    {
+        $_options = [
+            'short' => '',
+            'long' => [],
+        ];
+
+        foreach ($this->options as $option) {
+            $_options['short'] .= $option->getShortcut();
+            $_options['long'][] = $option->getName();
+        }
+
+        $result = null;
+
+        getopt($_options['short'], $_options['long'], $result);
+
+        return  $result;
     }
 
     /**

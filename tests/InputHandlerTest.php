@@ -5,6 +5,7 @@ namespace SigmaPHP\Console\Tests;
 use PHPUnit\Framework\TestCase;
 use SigmaPHP\Console\InputHandler;
 use SigmaPHP\Console\Argument;
+use SigmaPHP\Console\Command;
 use SigmaPHP\Console\Option;
 
 /**
@@ -113,7 +114,8 @@ class InputHandlerTest extends TestCase
      */
     public function testHasOption()
     {
-        // ToDo: once Command is done
+        exec(__DIR__ . 'bin/test_app Ahmed -t Mr.');
+        $this->expectOutputString('Hello Mr. Ahmed');
     }
 
     /**

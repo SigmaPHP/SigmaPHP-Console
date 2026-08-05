@@ -18,6 +18,11 @@ class HelloCommand extends Command
     {
         $this->setName('hello');
         $this->setDescription('say hello to user');
+
+        $this->addArgument('name');
+
+        $this->addOption('greeting', 'g');
+        $this->addOption('title', 't');
     }
 
     /**
@@ -27,7 +32,21 @@ class HelloCommand extends Command
      */
     public function execute()
     {
-        echo 'Hello' . PHP_EOL;
+        $buffer = 'Hello ';
+
+        if ($this->input->hasOption('greeting')) {
+            $buffer = $this->input->getOption('greeting') . ' ';
+        }
+
+        if ($this->input->hasOption('title')) {
+            $buffer .= $this->input->getOption('title') . ' ';
+        }
+
+        if ($this->input->hasArgument('name')) {
+            $buffer .= $this->input->getArgument('name');
+        }
+
+        echo $buffer . PHP_EOL;
     }
 }
 

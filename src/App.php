@@ -10,6 +10,7 @@ use SigmaPHP\Console\FileUtility;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\Option;
 use SigmaPHP\Console\DataType;
+use SigmaPHP\Console\InputHandler;
 
 /**
  * App Class.

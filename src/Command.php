@@ -7,6 +7,7 @@ use SigmaPHP\Console\Console;
 use SigmaPHP\Console\Argument;
 use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\Option;
+use SigmaPHP\Console\InputHandler;
 
 /**
  * Command Class.
@@ -39,6 +40,11 @@ abstract class Command implements CommandInterface
     protected $console;
 
     /**
+     * @var InputHandler $input
+     */
+    protected $input;
+
+    /**
      * Command Constructor.
      */
     public function __construct()
@@ -46,9 +52,10 @@ abstract class Command implements CommandInterface
         $this->arguments = [];
         $this->options = [];
 
-        $this->console = new Console();
-
         $this->init();
+
+        $this->console = new Console();
+        $this->input = new InputHandler($this->arguments, $this->options);
     }
 
     /**

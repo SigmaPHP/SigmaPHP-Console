@@ -114,10 +114,10 @@ class CommandTest extends TestCase
      */
     public function testAddArgumentToCommand()
     {
-        $this->command->addArgument('name');
+        $this->command->addArgument('last_name');
 
         $this->assertEquals(
-            ['name'],
+            ['name', 'last_name'],
             array_keys($this->inspectProperty(
                 HelloCommand::class,
                 $this->command,
@@ -134,12 +134,12 @@ class CommandTest extends TestCase
      */
     public function testRemoveArgumentFromCommand()
     {
-        $this->command->addArgument('name');
+        $this->command->addArgument('last_name');
 
-        $this->command->removeArgument('name');
+        $this->command->removeArgument('last_name');
 
         $this->assertEquals(
-            [],
+            ['name'],
             array_keys($this->inspectProperty(
                 HelloCommand::class,
                 $this->command,
@@ -156,8 +156,6 @@ class CommandTest extends TestCase
      */
     public function testGetArgument()
     {
-        $this->command->addArgument('name');
-
         $this->assertInstanceOf(
             Argument::class,
             $this->command->getArgument('name')
@@ -172,11 +170,10 @@ class CommandTest extends TestCase
      */
     public function testGetArguments()
     {
-        $this->command->addArgument('name');
-        $this->command->addArgument('title');
+        $this->command->addArgument('last_name');
 
         $this->assertEquals(
-            ['name', 'title'],
+            ['name', 'last_name'],
             array_keys($this->command->getArguments())
         );
     }
@@ -190,7 +187,7 @@ class CommandTest extends TestCase
     public function testArgumentOrder()
     {
         $this->command->addArgument('name');
-        $this->command->addArgument('title', '', 5);
+        $this->command->addArgument('last_name');
 
         $args = $this->inspectProperty(
             HelloCommand::class,
@@ -198,21 +195,8 @@ class CommandTest extends TestCase
             'arguments'
         );
 
-        $this->assertEquals(2, $args['name']->getOrder());
-        $this->assertEquals(5, $args['title']->getOrder());
-    }
-
-    /**
-     * Test will throw exception if order is invalid.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testWillThrowExceptionIfOrderIsInvalid()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $this->command->addArgument('name', '', 'wrong');
+        $this->assertEquals(0, $args['name']->getOrder());
+        $this->assertEquals(1, $args['last_name']->getOrder());
     }
 
     /**
@@ -223,10 +207,8 @@ class CommandTest extends TestCase
      */
     public function testAddOptionToCommand()
     {
-        $this->command->addOption('greeting');
-
         $this->assertEquals(
-            ['greeting'],
+            ['greeting', 'title'],
             array_keys($this->inspectProperty(
                 HelloCommand::class,
                 $this->command,
@@ -243,16 +225,14 @@ class CommandTest extends TestCase
      */
     public function testRemoveOptionFromCommand()
     {
-        $this->command->addOption('greeting');
-
         $this->command->removeOption('greeting');
 
         $this->assertEquals(
-            [],
+            ['title'],
             array_keys($this->inspectProperty(
                 HelloCommand::class,
                 $this->command,
-                'arguments'
+                'options'
             ))
         );
     }
@@ -265,8 +245,6 @@ class CommandTest extends TestCase
      */
     public function testGetOption()
     {
-        $this->command->addOption('greeting');
-
         $this->assertInstanceOf(
             Option::class,
             $this->command->getOption('greeting')
@@ -281,11 +259,10 @@ class CommandTest extends TestCase
      */
     public function testGetOptions()
     {
-        $this->command->addOption('greeting');
         $this->command->addOption('no-title');
 
         $this->assertEquals(
-            ['greeting', 'no-title'],
+            ['greeting', 'title', 'no-title'],
             array_keys($this->command->getOptions())
         );
     }

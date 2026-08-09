@@ -243,6 +243,7 @@ class App implements AppInterface
         // start execution cycle
         $this->beforeStart();
 
+        $this->getCommand($command)->processInput();
         $this->getCommand($command)->execute();
 
         $this->afterComplete();

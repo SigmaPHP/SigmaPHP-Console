@@ -69,7 +69,7 @@ interface AppInterface
      * Get command from app.
      *
      * @param string $name
-     * @return Command
+     * @return object<Command>
      */
     public function getCommand($name);
 

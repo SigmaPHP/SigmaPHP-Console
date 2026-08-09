@@ -102,6 +102,16 @@ interface CommandInterface
     public function getOptions();
 
     /**
+     * Process the input.
+     *
+     * This method is important specially before execution to get the arguments
+     * and options values before execution.
+     *
+     * @return void
+     */
+    public function processInput();
+
+    /**
      * Define custom help section of the command.
      *
      * @return void

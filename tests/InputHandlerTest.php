@@ -28,7 +28,7 @@ class InputHandlerTest extends TestCase
         parent::setUp();
 
         $this->inputHandler = new InputHandler(
-            ['name' => new Argument('name', '', 2)],
+            ['name' => new Argument('name')],
             ['title' => new Option('title', 't', Option::OPTIONAL)],
         );
     }
@@ -44,6 +44,8 @@ class InputHandlerTest extends TestCase
         global $argv;
 
         $argv[1] = 'test';
+
+        $this->inputHandler->process();
 
         $this->assertEquals(
             'test',
@@ -63,15 +65,26 @@ class InputHandlerTest extends TestCase
 
         $argv[2] = 'Ahmed';
 
+        $this->inputHandler->process();
+
         $this->assertTrue(
             $this->inputHandler->hasArgument('name')
         );
+    }
 
-        $this->assertFalse(
-            $this->inputHandler->hasArgument('no_found')
-        );
+    /**
+     * Test has no argument.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testHasNoArgument()
+    {
+        global $argv;
 
         unset($argv[2]);
+
+        $this->inputHandler->process();
 
         $this->assertFalse(
             $this->inputHandler->hasArgument('name')
@@ -90,42 +103,27 @@ class InputHandlerTest extends TestCase
 
         $argv[2] = 'Ahmed';
 
+        $this->inputHandler->process();
+
         $this->assertEquals(
             'Ahmed',
             $this->inputHandler->getArgument('name')
         );
-
-        $this->assertFalse(
-            $this->inputHandler->hasArgument('no_found')
-        );
-
-        unset($argv[2]);
-
-        $this->assertEmpty(
-            $this->inputHandler->hasArgument('name')
-        );
     }
 
     /**
-     * Test has option.
+     * Test has/get options.
      *
      * @runInSeparateProcess
      * @return void
      */
-    public function testHasOption()
+    public function testOptions()
     {
-        exec(__DIR__ . 'bin/test_app Ahmed -t Mr.');
-        $this->expectOutputString('Hello Mr. Ahmed');
-    }
+        $output = [];
 
-    /**
-     * Test get option.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testGetOption()
-    {
-        // ToDo: once Command is done
+        exec(__DIR__ . '/bin/test_app hello Ahmed -t Mr. --greeting Hi',
+            $output);
+
+        $this->assertEquals('Hi Mr. Ahmed', $output[0]);
     }
 }

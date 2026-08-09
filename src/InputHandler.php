@@ -59,37 +59,37 @@ class InputHandler implements InputHandlerInterface
         // options
         $markForDelete = [];
         foreach ($_argv as $order => $_arg) {
-            if (strpos($_arg, '--') !== false) {
-                foreach ($this->options as $option) {
-                    if ($option->getName() == str_replace('--', '', $_arg)) {
-                        if (strpos($_argv[$order + 1], '-') === false) {
-                            $option->setValue($_argv[$order + 1]);
-                            $markForDelete[] = $order + 1;
-                        } else {
-                            $option->setValue(true);
-                        }
+            $opt = '';
 
-                        $markForDelete[] = $order;
-                    }
-                }
+            // if it start with '--' or '-' then it's an option, otherwise skip
+            if (strpos($_arg, '--') !== false) {
+                $opt = str_replace('--', '', $_arg);
             }
             else if (strpos($_arg, '-') !== false) {
-                foreach ($this->options as $option) {
-                    if ($option->getShortcut() == str_replace('-', '', $_arg)) {
-                        if (strpos($_argv[$order + 1], '-') === false) {
-                            $option->setValue($_argv[$order + 1]);
-                            $markForDelete[] = $order + 1;
-                        } else {
-                            $option->setValue(true);
-                        }
+                $opt = str_replace('-', '', $_arg);
+            }
+            else {
+                continue;
+            }
 
-                        $markForDelete[] = $order;
+            // match the option, it could be name or shortcut, based on that
+            // check the next if it's the option's parameter save it otherwise
+            // just put the value to true!
+            foreach ($this->options as $option) {
+                if (($option->getName() == $opt) ||
+                    ($option->getShortcut() == $opt)
+                ) {
+                    if (strpos($_argv[$order + 1], '-') === false) {
+                        $option->setValue($_argv[$order + 1]);
+                        $markForDelete[] = $order + 1;
+                    } else {
+                        $option->setValue(true);
                     }
+
+                    $markForDelete[] = $order;
                 }
             }
         }
-
-        // d($_argv, $markForDelete);
 
         foreach ($markForDelete as $i) {
             unset($_argv[$i]);

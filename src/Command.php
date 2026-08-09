@@ -56,7 +56,6 @@ abstract class Command implements CommandInterface
 
         $this->console = new Console();
         $this->input = new InputHandler($this->arguments, $this->options);
-        $this->input->process();
     }
 
     /**
@@ -228,6 +227,19 @@ abstract class Command implements CommandInterface
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * Process the input.
+     *
+     * This method is important specially before execution to get the arguments
+     * and options values before execution.
+     *
+     * @return void
+     */
+    public function processInput()
+    {
+        $this->input->process();
     }
 
     /**

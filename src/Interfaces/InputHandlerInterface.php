@@ -8,9 +8,16 @@ namespace SigmaPHP\Console\Interfaces;
 interface InputHandlerInterface
 {
     /**
+     * Extract command, arguments and options.
+     *
+     * @return void
+     */
+    public function process();
+
+    /**
      * Get the provided (called by user) command's name.
      *
-     * @return string|null
+     * @return string
      */
     public function getCommand();
 

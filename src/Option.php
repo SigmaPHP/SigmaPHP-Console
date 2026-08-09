@@ -47,6 +47,11 @@ class Option
     protected $defaultValue;
 
     /**
+     * @var mixed $value
+     */
+    protected $value;
+
+    /**
      * Option Constructor.
      *
      * Note: PHP built-in getopt() function has weird rule for required/optional
@@ -75,6 +80,7 @@ class Option
         $this->parameterOptionality = $parameterOptionality;
         $this->parameterDataType = $parameterDataType;
         $this->defaultValue = $defaultValue;
+        $this->value = null;
     }
 
     /**
@@ -144,6 +150,17 @@ class Option
     }
 
     /**
+     * Set options's value.
+     *
+     * @param mixed $value
+     * @return void
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
+    /**
      * Get options's name.
      *
      * @return string
@@ -201,5 +218,15 @@ class Option
     public function getDefaultValue()
     {
         return $this->defaultValue;
+    }
+
+    /**
+     * Get options's value.
+     *
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 }

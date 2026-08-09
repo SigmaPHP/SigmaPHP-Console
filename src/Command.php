@@ -56,6 +56,7 @@ abstract class Command implements CommandInterface
 
         $this->console = new Console();
         $this->input = new InputHandler($this->arguments, $this->options);
+        $this->input->process();
     }
 
     /**
@@ -119,38 +120,21 @@ abstract class Command implements CommandInterface
      *
      * @param string $name
      * @param string $description
-     * @param int $order
      * @param DataType $dataType
      * @return void
      */
     public function addArgument(
         $name,
         $description = '',
-        $order = -1,
         $dataType = DataType::STRING
     ) {
-        if (!is_int($order) || ($order == 0) || ($order == 1)) {
-            throw new \InvalidArgumentException(
-                'Argument\'s order must be an integer greater than 1!'
-            );
-        }
-
-        // the order of the argument during the call, for example:
-        //
-        // COMMAND A B C
-        //
-        // you can decide the positions of each of A, B and C
-        // or leave them with the default ordering
-        //
-        // please note: this order will be used to get the value from $argv
-        $_order = ($order < 0) ? 2 + count($this->arguments) : $order;
-
         $this->arguments[$name] = new Argument(
             $name,
             $description,
-            $_order,
             $dataType
         );
+
+        $this->arguments[$name]->setOrder(count($this->arguments) - 1);
     }
 
     /**

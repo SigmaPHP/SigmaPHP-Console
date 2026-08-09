@@ -30,23 +30,26 @@ class Argument
     protected $dataType;
 
     /**
+     * @var mixed $value
+     */
+    protected $value;
+
+    /**
      * Option Constructor.
      *
      * @param string $name
      * @param string $description
-     * @param int $order
      * @param DataType $dataType
      */
     public function __construct(
         $name,
         $description = '',
-        $order = -1,
         $dataType = DataType::STRING,
     ) {
         $this->name = $name;
         $this->description = $description;
-        $this->order = $order;
         $this->dataType = $dataType;
+        $this->value = null;
     }
 
     /**
@@ -94,6 +97,17 @@ class Argument
     }
 
     /**
+     * Set argument's value.
+     *
+     * @param mixed $value
+     * @return void
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
+    /**
      * Get argument's name.
      *
      * @return string
@@ -131,5 +145,15 @@ class Argument
     public function getDataType()
     {
         return $this->dataType;
+    }
+
+    /**
+     * Get argument's value.
+     *
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 }

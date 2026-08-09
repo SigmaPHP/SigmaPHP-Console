@@ -30,11 +30,10 @@ interface CommandInterface
      *
      * @param string $name
      * @param string $description
-     * @param int $order
      * @param DataType $dataType
      * @return void
      */
-    public function addArgument($name, $description, $order, $dataType);
+    public function addArgument($name, $description, $dataType);
 
     /**
      * Remove arguments.

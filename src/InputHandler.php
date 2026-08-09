@@ -12,6 +12,11 @@ use SigmaPHP\Console\Option;
 class InputHandler implements InputHandlerInterface
 {
     /**
+     * @var string $command
+     */
+    protected $command;
+
+    /**
      * @var array<Argument> $arguments
      */
     protected $arguments;
@@ -29,20 +34,87 @@ class InputHandler implements InputHandlerInterface
      */
     public function __construct($arguments, $options)
     {
+        $this->command = '';
         $this->arguments = $arguments;
         $this->options = $options;
     }
 
     /**
+     * Extract command, arguments and options.
+     *
+     * @return void
+     */
+    public function process()
+    {
+        global $argv;
+        $_argv = $argv;
+
+        // command
+        $this->command = isset($argv[1]) ? $argv[1] : '';
+
+        unset($_argv[0]);
+        unset($_argv[1]);
+        $_argv = array_values($_argv);
+
+        // options
+        $markForDelete = [];
+        foreach ($_argv as $order => $_arg) {
+            if (strpos($_arg, '--') !== false) {
+                foreach ($this->options as $option) {
+                    if ($option->getName() == str_replace('--', '', $_arg)) {
+                        if (strpos($_argv[$order + 1], '-') === false) {
+                            $option->setValue($_argv[$order + 1]);
+                            $markForDelete[] = $order + 1;
+                        } else {
+                            $option->setValue(true);
+                        }
+
+                        $markForDelete[] = $order;
+                    }
+                }
+            }
+            else if (strpos($_arg, '-') !== false) {
+                foreach ($this->options as $option) {
+                    if ($option->getShortcut() == str_replace('-', '', $_arg)) {
+                        if (strpos($_argv[$order + 1], '-') === false) {
+                            $option->setValue($_argv[$order + 1]);
+                            $markForDelete[] = $order + 1;
+                        } else {
+                            $option->setValue(true);
+                        }
+
+                        $markForDelete[] = $order;
+                    }
+                }
+            }
+        }
+
+        // d($_argv, $markForDelete);
+
+        foreach ($markForDelete as $i) {
+            unset($_argv[$i]);
+        }
+
+        $_argv = array_values($_argv);
+
+        // arguments
+        foreach ($_argv as $order => $_arg) {
+            foreach ($this->arguments as $argument) {
+                if ($argument->getOrder() == $order) {
+                    $argument->setValue($_arg);
+                }
+            }
+        }
+    }
+
+    /**
      * Get the provided (called by user) command's name.
      *
-     * @return string|null
+     * @return string
      */
     public function getCommand()
     {
-        global $argv;
-
-        return isset($argv[1]) ? $argv[1] : null;
+        return $this->command;
     }
 
     /**
@@ -53,18 +125,7 @@ class InputHandler implements InputHandlerInterface
      */
     public function hasArgument($name)
     {
-        global $argv;
-
-        d(array_slice($argv, $this->getArgumentValues()[0]));
-
-        if (!isset($this->arguments[$name])) {
-            return false;
-        }
-
-
-        $argument = $this->arguments[$name];
-
-        return isset($argv[$argument->getOrder()]);
+        return !empty($this->arguments[$name]->getValue());
     }
 
     /**
@@ -77,15 +138,7 @@ class InputHandler implements InputHandlerInterface
      */
     public function getArgument($name)
     {
-        if (!isset($this->arguments[$name])) {
-            return null;
-        }
-
-        global $argv;
-
-        $argument = $this->arguments[$name];
-
-        return $argv[$argument->getOrder()];
+        return $this->arguments[$name]->getValue();
     }
 
     /**
@@ -96,14 +149,7 @@ class InputHandler implements InputHandlerInterface
      */
     public function hasOption($name)
     {
-        $options = $this->getOptionValues();
-        $option = $this->options[$name];
-
-        // please note: getopt() set the option that exists as 'false' :D
-        return (isset($options[$option->getName()]) &&
-            !$options[$option->getName()]) ||
-            (isset($options[$option->getShortcut()]) &&
-            !$options[$option->getShortcut()]);
+        return !empty($this->options[$name]->getValue());
     }
 
     /**
@@ -116,67 +162,6 @@ class InputHandler implements InputHandlerInterface
      */
     public function getOption($name)
     {
-        $options = $this->getOptionValues();
-        $option = $this->options[$name];
-        $value = null;
-
-        if (!$this->hasOption($name)) {
-            return $value;
-        }
-        else if (isset($options[$option->getName()])) {
-            $value = $options[$option->getName()];
-        }
-        else if (isset($options[$option->getShortcut()])) {
-            $value = $options[$option->getShortcut()];
-        }
-
-        // please note: getopt() set the option that exists as 'false' :D
-        return is_bool($value) ? !$value : $value;
-    }
-
-    /**
-     * Get argument values.
-     *
-     * @return array
-     */
-    protected function getArgumentValues()
-    {
-        $_options = [
-            'short' => '',
-            'long' => [],
-        ];
-
-        foreach ($this->options as $option) {
-            $_options['short'] .= $option->getShortcut();
-            $_options['long'][] = $option->getName();
-        }
-
-        $result = null;
-
-        getopt($_options['short'], $_options['long'], $result);
-
-        return  $result;
-    }
-
-    /**
-     * Get option values.
-     *
-     * Please note: this method is just a wrapper for PHP built-in getopt().
-     *
-     * @return array
-     */
-    protected function getOptionValues()
-    {
-        $_options = [
-            'short' => '',
-            'long' => [],
-        ];
-
-        foreach ($this->options as $option) {
-            $_options['short'] .= $option->getShortcut();
-            $_options['long'][] = $option->getName();
-        }
-
-        return getopt($_options['short'], $_options['long']) ?: [];
+        return $this->options[$name]->getValue();
     }
 }

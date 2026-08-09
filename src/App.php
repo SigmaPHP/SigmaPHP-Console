@@ -213,6 +213,9 @@ class App implements AppInterface
      */
     public function run()
     {
+        // extract command, arguments and options
+        $this->inputHandler->process();
+
         $command = $this->inputHandler->getCommand();
 
         // if no input was provided, check the global options if any were set

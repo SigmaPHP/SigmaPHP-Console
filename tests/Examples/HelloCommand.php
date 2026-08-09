@@ -27,7 +27,7 @@ class HelloCommand extends Command
 
     /**
      * Execute.
-     *
+     *`
      * @return void
      */
     public function execute()

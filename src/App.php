@@ -18,6 +18,11 @@ use SigmaPHP\Console\InputHandler;
 class App implements AppInterface
 {
     /**
+     * @var string $appName
+     */
+    protected $appName;
+
+    /**
      * @var array<Command> $commands
      */
     protected $commands;
@@ -66,6 +71,8 @@ class App implements AppInterface
         }
 
         $this->getCommand('help')->setAppName($appName);
+
+        $this->appName = $appName;
     }
 
     /**
@@ -116,7 +123,7 @@ class App implements AppInterface
             throw new CommandNotFoundException("Unknown command: {$command}");
         }
 
-        $commandInst = new $command();
+        $commandInst = new $command($this->appName);
 
         // if the command's name is not defined, we will generate a one
         // based on the class name
@@ -244,7 +251,7 @@ class App implements AppInterface
         $this->beforeStart();
 
         $this->getCommand($command)->processInput();
-        $this->getCommand($command)->execute();
+        $this->getCommand($command)->executionHandler();
 
         $this->afterComplete();
     }

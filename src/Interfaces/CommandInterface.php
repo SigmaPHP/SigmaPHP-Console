@@ -26,6 +26,13 @@ interface CommandInterface
     public function execute();
 
     /**
+     * A proxy for the execution method to force global settings and options.
+     *
+     * @return void
+     */
+    public function executionHandler();
+
+    /**
      * Add argument.
      *
      * @param string $name
@@ -112,9 +119,9 @@ interface CommandInterface
     public function processInput();
 
     /**
-     * Define custom help section of the command.
+     * Help option's handler.
      *
      * @return void
      */
-    public function addHelpSection();
+    public function help();
 }

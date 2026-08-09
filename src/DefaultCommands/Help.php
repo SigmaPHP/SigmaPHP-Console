@@ -128,6 +128,7 @@ class Help extends Command
         $this->setAppDescription('A CLI utility to preform some tasks');
         $this->setCommandsList([]);
         $this->setGlobalOptionsList([]);
+        $this->removeOption('help');
     }
 
     /**
@@ -140,10 +141,13 @@ class Help extends Command
         $helpContent = "{$this->appDescription}\n\n";
 
         $helpContent .= "Usage:\n";
-        $helpContent .= "\tapp [COMMAND] [OPTIONS] [--] [ARGUMENTS]\n\n";
+        $helpContent .=
+            "\t{$this->appName} [COMMAND] [OPTIONS] [--] [ARGUMENTS]\n\n";
 
         if (!empty($this->commandsList)) {
             $helpContent .= "Available Commands:\n";
+
+            ksort($this->commandsList);
 
             foreach ($this->commandsList as $name => $description) {
                 $helpContent .= "\t{$name}\t\t{$description}\n";
@@ -155,6 +159,8 @@ class Help extends Command
         if (!empty($this->globalOptionsList)) {
             $helpContent .= "Global Options:\n";
 
+            ksort($this->globalOptionsList);
+
             foreach ($this->globalOptionsList as $name => $option) {
                 $helpContent .= "\t-{$option['shortcut']}, --{$name}" .
                     "\t\t{$option['description']}\n";
@@ -163,7 +169,7 @@ class Help extends Command
 
         $helpContent .= "\n";
 
-        $helpContent .= "Run {$this->appName} [COMMAND] --help to get ";
+        $helpContent .= "Run '{$this->appName} [COMMAND] --help' to get ";
         $helpContent .= "more information on a command\n";
 
         $this->io->write($helpContent);

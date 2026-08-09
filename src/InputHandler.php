@@ -132,6 +132,10 @@ class InputHandler implements InputHandlerInterface
      */
     public function hasArgument($name)
     {
+        if (!isset($this->arguments[$name])) {
+            return false;
+        }
+
         return !empty($this->arguments[$name]->getValue());
     }
 
@@ -145,6 +149,10 @@ class InputHandler implements InputHandlerInterface
      */
     public function getArgument($name)
     {
+        if (!isset($this->arguments[$name])) {
+            return null;
+        }
+
         return $this->arguments[$name]->getValue();
     }
 
@@ -156,6 +164,10 @@ class InputHandler implements InputHandlerInterface
      */
     public function hasOption($name)
     {
+        if (!isset($this->arguments[$name])) {
+            return false;
+        }
+
         return !empty($this->options[$name]->getValue());
     }
 
@@ -169,6 +181,10 @@ class InputHandler implements InputHandlerInterface
      */
     public function getOption($name)
     {
+        if (!isset($this->arguments[$name])) {
+            return null;
+        }
+
         return $this->options[$name]->getValue();
     }
 }

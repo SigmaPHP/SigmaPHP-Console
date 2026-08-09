@@ -15,6 +15,11 @@ use SigmaPHP\Console\InputHandler;
 abstract class Command implements CommandInterface
 {
     /**
+     * @var string $appName
+     */
+    protected $appName;
+
+    /**
      * @var string $name
      */
     protected $name;
@@ -46,11 +51,17 @@ abstract class Command implements CommandInterface
 
     /**
      * Command Constructor.
+     *
+     * @param string $appName
      */
-    public function __construct()
+    public function __construct($appName = 'App')
     {
+        $this->appName = $appName;
         $this->arguments = [];
         $this->options = [];
+
+        // register global options
+        $this->addOption('help', 'h', 'Print the help menu');
 
         $this->init();
 
@@ -71,6 +82,20 @@ abstract class Command implements CommandInterface
      * @return void
      */
     abstract public function execute();
+
+    /**
+     * A proxy for the execution method to force global settings and options.
+     *
+     * @return void
+     */
+    public function executionHandler()
+    {
+        if ($this->input->hasOption('help')) {
+            $this->help();
+        } else {
+            $this->execute();
+        }
+    }
 
     /**
      * Set command's name.
@@ -243,12 +268,45 @@ abstract class Command implements CommandInterface
     }
 
     /**
-     * Define custom help section of the command.
+     * Help option's handler.
      *
      * @return void
      */
-    public function addHelpSection()
+    public function help()
     {
-        // ToDo
+        $helpContent = "{$this->description}\n\n";
+
+        $helpContent .= "Usage:\n";
+        $helpContent .= "\t{$this->appName} {$this->name} " .
+            "[OPTIONS] [--] [ARGUMENTS]\n\n";
+
+        if (!empty($this->arguments)) {
+            $helpContent .= "Arguments:\n";
+
+            ksort($this->arguments);
+
+            foreach ($this->arguments as $argument) {
+                $helpContent .= "\t{$argument->getName()}\t" .
+                    "\t{$argument->getDescription()}\n";
+            }
+        }
+
+        $helpContent .= "\n";
+
+        if (!empty($this->options)) {
+            $helpContent .= "Options:\n";
+
+            ksort($this->options);
+
+            foreach ($this->options as $option) {
+                $helpContent .= "\t-{$option->getShortcut()}" .
+                    ", --{$option->getShortcut()}" .
+                    "\t\t{$option->getDescription()}\n";
+            }
+        }
+
+        $helpContent .= "\n";
+
+        $this->io->write($helpContent);
     }
 }

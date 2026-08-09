@@ -11,9 +11,9 @@ use SigmaPHP\Console\IO;
 class IOTest extends TestCase
 {
     /**
-     * @var IO $console
+     * @var IO $io
      */
-    private $console;
+    private $io;
 
     /**
      * @var resource $testStream

@@ -46,6 +46,6 @@ class Version extends Command
      */
     public function execute()
     {
-        $this->console->write("{$this->appVersion}");
+        $this->io->write("{$this->appVersion}");
     }
 }

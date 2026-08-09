@@ -49,11 +49,16 @@ class InputHandler implements InputHandlerInterface
         global $argv;
         $_argv = $argv;
 
-        // command
-        $this->command = isset($argv[1]) ? $argv[1] : '';
-
+        // remove script's name
         unset($_argv[0]);
-        unset($_argv[1]);
+
+        // command
+        if (isset($argv[1]) && (strpos($argv[1], '-') === false)) {
+            $this->command = $argv[1];
+
+            unset($_argv[1]);
+        }
+
         $_argv = array_values($_argv);
 
         // options
@@ -79,7 +84,9 @@ class InputHandler implements InputHandlerInterface
                 if (($option->getName() == $opt) ||
                     ($option->getShortcut() == $opt)
                 ) {
-                    if (strpos($_argv[$order + 1], '-') === false) {
+                    if (isset($_argv[$order + 1]) &&
+                        strpos($_argv[$order + 1], '-') === false
+                    ) {
                         $option->setValue($_argv[$order + 1]);
                         $markForDelete[] = $order + 1;
                     } else {

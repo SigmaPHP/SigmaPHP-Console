@@ -29,7 +29,7 @@ class IOTest extends TestCase
     {
         parent::setUp();
 
-        $this->console = new IO();
+        $this->io = new IO();
 
         touch('tests/fake_stream');
 
@@ -59,8 +59,8 @@ class IOTest extends TestCase
      */
     public function testWrite()
     {
-        $this->console->setOutputStream($this->testStream);
-        $this->console->write('Hello SigmaPHP-Console');
+        $this->io->setOutputStream($this->testStream);
+        $this->io->write('Hello SigmaPHP-Console');
 
         $this->assertEquals(
             'Hello SigmaPHP-Console',
@@ -76,8 +76,8 @@ class IOTest extends TestCase
      */
     public function testWriteln()
     {
-        $this->console->setOutputStream($this->testStream);
-        $this->console->writeln('Hello SigmaPHP-Console');
+        $this->io->setOutputStream($this->testStream);
+        $this->io->writeln('Hello SigmaPHP-Console');
 
         $this->assertEquals(
             "Hello SigmaPHP-Console\n",
@@ -93,8 +93,8 @@ class IOTest extends TestCase
      */
     public function testWriteError()
     {
-        $this->console->setErrorStream($this->testStream);
-        $this->console->writeErr('Oops! Something wrong');
+        $this->io->setErrorStream($this->testStream);
+        $this->io->writeErr('Oops! Something wrong');
 
         $this->assertEquals(
             'Oops! Something wrong',
@@ -110,10 +110,10 @@ class IOTest extends TestCase
      */
     public function testRead()
     {
-        $this->console->setInputStream($this->testStream);
+        $this->io->setInputStream($this->testStream);
         fwrite($this->testStream, 'Some data');
         rewind($this->testStream);
-        $input = $this->console->read();
+        $input = $this->io->read();
 
         $this->assertEquals('Some data', $input);
     }
@@ -128,10 +128,10 @@ class IOTest extends TestCase
     {
         $_SERVER['FORCE_COLOR'] = true;
 
-        $this->assertTrue($this->console->hasColorSupport());
+        $this->assertTrue($this->io->hasColorSupport());
 
         $_SERVER['NO_COLOR'] = true;
 
-        $this->assertFalse($this->console->hasColorSupport());
+        $this->assertFalse($this->io->hasColorSupport());
     }
 }

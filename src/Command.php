@@ -3,7 +3,7 @@
 namespace SigmaPHP\Console;
 
 use SigmaPHP\Console\Interfaces\CommandInterface;
-use SigmaPHP\Console\Console;
+use SigmaPHP\Console\IO;
 use SigmaPHP\Console\Argument;
 use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\Option;
@@ -35,9 +35,9 @@ abstract class Command implements CommandInterface
     protected $options;
 
     /**
-     * @var Console $console
+     * @var IO $io
      */
-    protected $console;
+    protected $io;
 
     /**
      * @var InputHandler $input
@@ -54,7 +54,7 @@ abstract class Command implements CommandInterface
 
         $this->init();
 
-        $this->console = new Console();
+        $this->io = new IO();
         $this->input = new InputHandler($this->arguments, $this->options);
     }
 

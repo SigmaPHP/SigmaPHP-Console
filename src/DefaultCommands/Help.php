@@ -166,6 +166,6 @@ class Help extends Command
         $helpContent .= "Run {$this->appName} [COMMAND] --help to get ";
         $helpContent .= "more information on a command\n";
 
-        $this->console->write($helpContent);
+        $this->io->write($helpContent);
     }
 }

@@ -3,15 +3,15 @@
 namespace SigmaPHP\Console\Tests;
 
 use PHPUnit\Framework\TestCase;
-use SigmaPHP\Console\Console;
+use SigmaPHP\Console\IO;
 
 /**
- * Console Test
+ * IO Test
  */
-class ConsoleTest extends TestCase
+class IOTest extends TestCase
 {
     /**
-     * @var Console $console
+     * @var IO $console
      */
     private $console;
 
@@ -21,7 +21,7 @@ class ConsoleTest extends TestCase
     private $testStream;
 
     /**
-     * ConsoleTest SetUp
+     * IOTest SetUp
      *
      * @return void
      */
@@ -29,7 +29,7 @@ class ConsoleTest extends TestCase
     {
         parent::setUp();
 
-        $this->console = new Console();
+        $this->console = new IO();
 
         touch('tests/fake_stream');
 
@@ -37,7 +37,7 @@ class ConsoleTest extends TestCase
     }
 
     /**
-     * ConsoleTest TearDown
+     * IOTest TearDown
      *
      * @return void
      */

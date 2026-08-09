@@ -2,12 +2,12 @@
 
 namespace SigmaPHP\Console;
 
-use SigmaPHP\Console\Interfaces\ConsoleInterface;
+use SigmaPHP\Console\Interfaces\IOInterface;
 
 /**
- * Console Class.
+ * IO Class.
  */
-class Console implements ConsoleInterface
+class IO implements IOInterface
 {
     /**
      * @var resource $outputStream
@@ -25,7 +25,7 @@ class Console implements ConsoleInterface
     protected $inputStream;
 
     /**
-     * Console Constructor.
+     * IO Constructor.
      */
     public function __construct() {
         $this->outputStream = fopen('php://stdout', 'w');

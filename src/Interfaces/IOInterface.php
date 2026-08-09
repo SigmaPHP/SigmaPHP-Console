@@ -3,9 +3,9 @@
 namespace SigmaPHP\Console\Interfaces;
 
 /**
- * Console Interface.
+ * IO Interface.
  */
-interface ConsoleInterface
+interface IOInterface
 {
     /**
      * Set the output stream.

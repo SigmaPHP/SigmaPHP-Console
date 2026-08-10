@@ -124,7 +124,7 @@ class AppTest extends TestCase
         $this->app->addCommand(HelloCommand::class);
 
         $this->assertEquals(
-            ['version', 'help', 'hello'],
+            ['help', 'version', 'hello'],
             array_keys(
                 $this->inspectProperty(App::class, $this->app, 'commands')
             )
@@ -194,7 +194,7 @@ class AppTest extends TestCase
         );
 
         $this->assertEquals(
-            ['version', 'help', 'hello'],
+            ['help', 'version', 'hello'],
             array_keys(
                 $this->inspectProperty(App::class, $this->app, 'commands')
             )
@@ -235,7 +235,7 @@ class AppTest extends TestCase
     public function testGetAllCommands()
     {
         $this->assertEquals(
-            ['version', 'help'],
+            ['help', 'version'],
             array_keys($this->app->getCommands())
         );
     }

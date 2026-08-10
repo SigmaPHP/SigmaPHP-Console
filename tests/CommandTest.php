@@ -208,7 +208,7 @@ class CommandTest extends TestCase
     public function testAddOptionToCommand()
     {
         $this->assertEquals(
-            ['greeting', 'title'],
+            ['help', 'greeting', 'title'],
             array_keys($this->inspectProperty(
                 HelloCommand::class,
                 $this->command,
@@ -228,7 +228,7 @@ class CommandTest extends TestCase
         $this->command->removeOption('greeting');
 
         $this->assertEquals(
-            ['title'],
+            ['help', 'title'],
             array_keys($this->inspectProperty(
                 HelloCommand::class,
                 $this->command,
@@ -262,8 +262,34 @@ class CommandTest extends TestCase
         $this->command->addOption('no-title');
 
         $this->assertEquals(
-            ['greeting', 'title', 'no-title'],
+            ['help', 'greeting', 'title', 'no-title'],
             array_keys($this->command->getOptions())
         );
+    }
+
+    /**
+     * Test help global option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testHelpGlobalOption()
+    {
+        $command = new Test();
+
+        $command->help();
+
+        $this->expectOutputString("Help!\n");
+    }
+}
+
+class Test extends Command
+{
+    function init() {}
+
+    function execute() {}
+
+    function help() {
+        echo "Help!\n";
     }
 }

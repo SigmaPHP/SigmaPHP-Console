@@ -126,4 +126,24 @@ class InputHandlerTest extends TestCase
 
         $this->assertEquals('Hi Mr. Ahmed', $output[0]);
     }
+
+    /**
+     * Test is empty.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testIsEmpty()
+    {
+        global $argv;
+
+        unset($argv[1]);
+        unset($argv[2]);
+
+        $this->inputHandler->process();
+
+        $this->assertTrue(
+            $this->inputHandler->isEmpty()
+        );
+    }
 }

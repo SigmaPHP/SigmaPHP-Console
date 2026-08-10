@@ -187,4 +187,26 @@ class InputHandler implements InputHandlerInterface
 
         return $this->options[$name]->getValue();
     }
+
+    /**
+     * Check if no arguments nor options were provided.
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        foreach ($this->arguments as $argument) {
+            if (!empty($argument->getValue())) {
+                return false;
+            }
+        }
+
+        foreach ($this->options as $option) {
+            if (!empty($option->getValue())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

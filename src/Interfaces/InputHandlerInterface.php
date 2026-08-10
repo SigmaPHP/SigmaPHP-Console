@@ -56,4 +56,11 @@ interface InputHandlerInterface
      * @return mixed
      */
     public function getOption($name);
+
+    /**
+     * Check if no arguments nor options were provided.
+     *
+     * @return bool
+     */
+    public function isEmpty();
 }

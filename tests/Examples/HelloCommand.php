@@ -19,10 +19,10 @@ class HelloCommand extends Command
         $this->setName('hello');
         $this->setDescription('say hello to user');
 
-        $this->addArgument('name');
+        $this->addArgument('name', 'User\'s name that we want to greet');
 
-        $this->addOption('greeting', 'g');
-        $this->addOption('title', 't');
+        $this->addOption('greeting', 'g', 'Greeting verb like hi, hello..etc');
+        $this->addOption('title', 't', 'User\'s title like Mr., Ms. ..etc');
     }
 
     /**

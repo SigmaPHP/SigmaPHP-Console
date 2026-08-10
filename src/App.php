@@ -42,6 +42,7 @@ class App implements AppInterface
      */
     public function __construct()
     {
+        $this->appName = 'App';
         $this->commands = [];
         $this->globalOptions = [];
 
@@ -250,7 +251,6 @@ class App implements AppInterface
         // start execution cycle
         $this->beforeStart();
 
-        $this->getCommand($command)->processInput();
         $this->getCommand($command)->executionHandler();
 
         $this->afterComplete();

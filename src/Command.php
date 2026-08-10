@@ -90,6 +90,8 @@ abstract class Command implements CommandInterface
      */
     public function executionHandler()
     {
+        $this->input->process();
+
         if ($this->input->hasOption('help')) {
             $this->help();
         } else {
@@ -255,19 +257,6 @@ abstract class Command implements CommandInterface
     }
 
     /**
-     * Process the input.
-     *
-     * This method is important specially before execution to get the arguments
-     * and options values before execution.
-     *
-     * @return void
-     */
-    public function processInput()
-    {
-        $this->input->process();
-    }
-
-    /**
      * Help option's handler.
      *
      * @return void
@@ -300,7 +289,7 @@ abstract class Command implements CommandInterface
 
             foreach ($this->options as $option) {
                 $helpContent .= "\t-{$option->getShortcut()}" .
-                    ", --{$option->getShortcut()}" .
+                    ", --{$option->getName()}" .
                     "\t\t{$option->getDescription()}\n";
             }
         }

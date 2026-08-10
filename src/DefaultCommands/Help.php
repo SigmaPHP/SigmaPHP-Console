@@ -128,6 +128,7 @@ class Help extends Command
         $this->setAppDescription('A CLI utility to preform some tasks');
         $this->setCommandsList([]);
         $this->setGlobalOptionsList([]);
+
         $this->removeOption('help');
     }
 

@@ -164,7 +164,7 @@ class InputHandler implements InputHandlerInterface
      */
     public function hasOption($name)
     {
-        if (!isset($this->arguments[$name])) {
+        if (!isset($this->options[$name])) {
             return false;
         }
 
@@ -181,7 +181,7 @@ class InputHandler implements InputHandlerInterface
      */
     public function getOption($name)
     {
-        if (!isset($this->arguments[$name])) {
+        if (!isset($this->options[$name])) {
             return null;
         }
 

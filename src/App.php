@@ -221,39 +221,51 @@ class App implements AppInterface
      */
     public function run()
     {
-        // extract command, arguments and options
-        $this->inputHandler->process();
+        try {
+            // extract command, arguments and options
+            $this->inputHandler->process();
 
-        $command = $this->inputHandler->getCommand();
+            $command = $this->inputHandler->getCommand();
 
-        // if no input was provided, check the global options if any were set
-        // else show 'help' if enabled, otherwise do nothing!
-        if (empty($command)) {
-            if ($this->inputHandler->hasOption('help')){
-                $command = 'help';
+            // if no input was provided, check the global options if any were
+            // set else show 'help' if enabled, otherwise do nothing!
+            if (empty($command)) {
+                if ($this->inputHandler->hasOption('help')){
+                    $command = 'help';
+                }
+                else if ($this->inputHandler->hasOption('version')){
+                    $command = 'version';
+                }
+                else if ($this->hasCommand('help')) {
+                    $command = 'help';
+                }
+                else {
+                    // there's nothing can be done :)
+                    return;
+                }
             }
-            else if ($this->inputHandler->hasOption('version')){
-                $command = 'version';
+
+            if (!$this->hasCommand($command)) {
+                throw new CommandNotFoundException(
+                    "Unknown command: {$command}"
+                );
             }
-            else if ($this->hasCommand('help')) {
-                $command = 'help';
-            }
-            else {
-                // there's nothing can be done :)
-                return;
-            }
+
+            // start execution cycle
+            $this->beforeStart();
+
+            $this->getCommand($command)->executionHandler();
+
+            $this->afterComplete();
+
+            return 0;
+        } catch (\Exception $e) {
+            // ToDo: use IO
+            echo "Error: {$e->getMessage()}\n\n";
+            echo "Run '{$this->appName} --help' for more information\n";
+
+            return 1;
         }
-
-        if (!$this->hasCommand($command)) {
-            throw new CommandNotFoundException("Unknown command: {$command}");
-        }
-
-        // start execution cycle
-        $this->beforeStart();
-
-        $this->getCommand($command)->executionHandler();
-
-        $this->afterComplete();
     }
 
     /**

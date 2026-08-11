@@ -217,7 +217,7 @@ class App implements AppInterface
     /**
      * Run the app.
      *
-     * @return int
+     * @return void
      */
     public function run()
     {
@@ -258,13 +258,13 @@ class App implements AppInterface
 
             $this->afterComplete();
 
-            return 0;
+            exit(0);
         } catch (\Exception $e) {
             // ToDo: use IO
             echo "Error: {$e->getMessage()}\n\n";
             echo "Run '{$this->appName} --help' for more information\n";
 
-            return 1;
+            exit(1);
         }
     }
 

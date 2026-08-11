@@ -91,7 +91,7 @@ interface AppInterface
     /**
      * Run the app.
      *
-     * @return int
+     * @return void
      */
     public function run();
 

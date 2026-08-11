@@ -262,7 +262,9 @@ class App implements AppInterface
         } catch (\Exception $e) {
             // ToDo: use IO
             echo "Error: {$e->getMessage()}\n\n";
-            echo "Run '{$this->appName} --help' for more information\n";
+            echo "Run '{$this->appName} --help' ";
+            echo "or '{$this->appName} [COMMAND] --help' ";
+            echo "for more information\n";
 
             exit(1);
         }

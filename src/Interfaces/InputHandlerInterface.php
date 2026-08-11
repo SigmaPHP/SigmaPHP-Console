@@ -58,7 +58,21 @@ interface InputHandlerInterface
     public function getOption($name);
 
     /**
-     * Check if no arguments nor options were provided.
+     * Check if no arguments were provided.
+     *
+     * @return bool
+     */
+    public function argumentsAreEmpty();
+
+    /**
+     * Check if no options were provided.
+     *
+     * @return bool
+     */
+    public function optionsAreEmpty();
+
+    /**
+     * Check if arguments and options were provided.
      *
      * @return bool
      */

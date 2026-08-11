@@ -189,11 +189,11 @@ class InputHandler implements InputHandlerInterface
     }
 
     /**
-     * Check if no arguments nor options were provided.
+     * Check if no arguments were provided.
      *
      * @return bool
      */
-    public function isEmpty()
+    public function argumentsAreEmpty()
     {
         foreach ($this->arguments as $argument) {
             if (!empty($argument->getValue())) {
@@ -201,6 +201,16 @@ class InputHandler implements InputHandlerInterface
             }
         }
 
+        return true;
+    }
+
+    /**
+     * Check if no options were provided.
+     *
+     * @return bool
+     */
+    public function optionsAreEmpty()
+    {
         foreach ($this->options as $option) {
             if (!empty($option->getValue())) {
                 return false;
@@ -208,5 +218,15 @@ class InputHandler implements InputHandlerInterface
         }
 
         return true;
+    }
+
+    /**
+     * Check if no arguments nor options were provided.
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return $this->argumentsAreEmpty() && $this->optionsAreEmpty();
     }
 }

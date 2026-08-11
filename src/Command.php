@@ -92,6 +92,17 @@ abstract class Command implements CommandInterface
     {
         $this->input->process();
 
+        // no arguments case
+        if (!empty($this->arguments) &&
+            $this->input->argumentsAreEmpty() &&
+            !$this->input->optionsAreEmpty() &&
+            !$this->input->hasOption('help')
+        ) {
+            throw new \InvalidArgumentException(
+                "Missing argument for command '{$this->getName()}'"
+            );
+        }
+
         if (($this->input->hasOption('help') || $this->input->isEmpty()) &&
             !empty($this->input->getCommand())
         ) {

@@ -241,7 +241,7 @@ class App implements AppInterface
                 }
                 else {
                     // there's nothing can be done :)
-                    return;
+                    exit(0);
                 }
             }
 

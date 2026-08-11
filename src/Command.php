@@ -92,7 +92,9 @@ abstract class Command implements CommandInterface
     {
         $this->input->process();
 
-        if ($this->input->hasOption('help') || $this->input->isEmpty()) {
+        if (($this->input->hasOption('help') || $this->input->isEmpty()) &&
+            !empty($this->input->getCommand())
+        ) {
             $this->help();
         } else {
             $this->execute();
@@ -171,6 +173,10 @@ abstract class Command implements CommandInterface
      */
     public function removeArgument($name)
     {
+        if (!isset($this->arguments[$name])) {
+            return;
+        }
+
         unset($this->arguments[$name]);
     }
 
@@ -182,6 +188,10 @@ abstract class Command implements CommandInterface
      */
     public function getArgument($name)
     {
+        if (!isset($this->arguments[$name])) {
+            return null;
+        }
+
         return $this->arguments[$name];
     }
 
@@ -232,6 +242,10 @@ abstract class Command implements CommandInterface
      */
     public function removeOption($name)
     {
+        if (!isset($this->options[$name])) {
+            return;
+        }
+
         unset($this->options[$name]);
     }
 
@@ -243,6 +257,10 @@ abstract class Command implements CommandInterface
      */
     public function getOption($name)
     {
+        if (!isset($this->arguments[$name])) {
+            return null;
+        }
+
         return $this->options[$name];
     }
 

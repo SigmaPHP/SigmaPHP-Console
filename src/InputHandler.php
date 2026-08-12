@@ -65,6 +65,7 @@ class InputHandler implements InputHandlerInterface
         $markForDelete = [];
         foreach ($_argv as $order => $_arg) {
             $opt = '';
+            $unknownOption = 0;
 
             // if it start with '--' or '-' then it's an option, otherwise skip
             if (strpos($_arg, '--') !== false) {
@@ -94,12 +95,16 @@ class InputHandler implements InputHandlerInterface
                     }
 
                     $markForDelete[] = $order;
+                } else {
+                    $unknownOption += 1;
                 }
             }
         }
 
-        foreach ($markForDelete as $i) {
-            unset($_argv[$i]);
+        if (!empty($markForDelete)) {
+            foreach ($markForDelete as $i) {
+                unset($_argv[$i]);
+            }
         }
 
         $_argv = array_values($_argv);

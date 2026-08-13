@@ -230,19 +230,20 @@ class App implements AppInterface
             // if no input was provided, check the global options if any were
             // set else show 'help' if enabled, otherwise do nothing!
             if (empty($command)) {
-                if ($this->inputHandler->hasOption('help')){
-                    $command = 'help';
+                if ($this->inputHandler->hasOption('help') ||
+                    $this->hasCommand('help')
+                ){
+                    if ($this->hasCommand('help')) {
+                        $this->getCommand('help')->executionHandler();
+                    }
                 }
                 else if ($this->inputHandler->hasOption('version')){
-                    $command = 'version';
+                    if ($this->hasCommand('version')) {
+                        $this->getCommand('version')->executionHandler();
+                    }
                 }
-                else if ($this->hasCommand('help')) {
-                    $command = 'help';
-                }
-                else {
-                    // there's nothing can be done :)
-                    exit(0);
-                }
+
+                exit(0);
             }
 
             if (!$this->hasCommand($command)) {

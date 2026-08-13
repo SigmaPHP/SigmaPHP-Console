@@ -27,16 +27,23 @@ class InputHandler implements InputHandlerInterface
     protected $options;
 
     /**
+     * @var bool $processCommand
+     */
+    protected $processCommand;
+
+    /**
      * InputHandler Constructor.
      *
      * @param array<Argument> $arguments
      * @param array<Option> $options
+     * @param bool $processCommand
      */
-    public function __construct($arguments, $options)
+    public function __construct($arguments, $options, $processCommand = false)
     {
         $this->command = '';
         $this->arguments = $arguments;
         $this->options = $options;
+        $this->processCommand = $processCommand;
     }
 
     /**
@@ -65,7 +72,7 @@ class InputHandler implements InputHandlerInterface
         $markForDelete = [];
         foreach ($_argv as $order => $_arg) {
             $opt = '';
-            $unknownOption = 0;
+            $unknown = 0;
 
             // if it start with '--' or '-' then it's an option, otherwise skip
             if (strpos($_arg, '--') !== false) {
@@ -96,8 +103,12 @@ class InputHandler implements InputHandlerInterface
 
                     $markForDelete[] = $order;
                 } else {
-                    $unknownOption += 1;
+                    $unknown += 1;
                 }
+            }
+
+            if ($this->processCommand && ($unknown == count($this->options))) {
+                throw new \InvalidArgumentException("Unknown option '{$_arg}'");
             }
         }
 
@@ -110,6 +121,28 @@ class InputHandler implements InputHandlerInterface
         $_argv = array_values($_argv);
 
         // arguments
+        if ($this->processCommand &&
+            $this->optionsAreEmpty() &&
+            !$this->hasOption('help')
+        ) {
+            if (count($_argv) < count($this->arguments)) {
+                throw new \InvalidArgumentException(
+                    "Missing arguments for command '{$this->command}'"
+                );
+            }
+            else if (empty($this->arguments) && count($_argv)) {
+                throw new \InvalidArgumentException(
+                    "Command '{$this->command}' accepts no arguments"
+                );
+            }
+            else if (count($_argv) > count($this->arguments)) {
+                throw new \InvalidArgumentException(
+                    "Invalid number of arguments were provided " .
+                    "for command '{$this->command}'"
+                );
+            }
+        }
+
         foreach ($_argv as $order => $_arg) {
             foreach ($this->arguments as $argument) {
                 if ($argument->getOrder() == $order) {

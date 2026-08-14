@@ -92,9 +92,7 @@ abstract class Command implements CommandInterface
     {
         $this->input->process();
 
-        if ($this->input->getCommand() && $this->input->isEmpty() &&
-            ($this->getOption('help') != null)
-        ) {
+        if ($this->input->isEmpty() || $this->input->hasOption('help')) {
             $this->help();
         } else {
             $this->execute();
@@ -184,7 +182,7 @@ abstract class Command implements CommandInterface
      * Get argument.
      *
      * @param string $name
-     * @return mixed
+     * @return Argument|null
      */
     public function getArgument($name)
     {
@@ -253,7 +251,7 @@ abstract class Command implements CommandInterface
      * Get option.
      *
      * @param string $name
-     * @return mixed
+     * @return Option|null
      */
     public function getOption($name)
     {

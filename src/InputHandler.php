@@ -123,7 +123,7 @@ class InputHandler implements InputHandlerInterface
         // arguments
         if ($this->processCommand &&
             $this->optionsAreEmpty() &&
-            !$this->hasOption('help')
+            !isset($this->options['help'])
         ) {
             if (count($_argv) < count($this->arguments)) {
                 throw new \InvalidArgumentException(

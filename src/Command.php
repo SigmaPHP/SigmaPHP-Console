@@ -92,7 +92,9 @@ abstract class Command implements CommandInterface
     {
         $this->input->process();
 
-        if ($this->input->getCommand() && $this->input->isEmpty()) {
+        if ($this->input->getCommand() && $this->input->isEmpty() &&
+            ($this->getOption('help') != null)
+        ) {
             $this->help();
         } else {
             $this->execute();

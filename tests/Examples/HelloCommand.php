@@ -35,15 +35,15 @@ class HelloCommand extends Command
         $buffer = 'Hello ';
 
         if ($this->hasOption('greeting')) {
-            $buffer = $this->getOption('greeting')->getValue() . ' ';
+            $buffer = $this->getOption('greeting') . ' ';
         }
 
         if ($this->hasOption('title')) {
-            $buffer .= $this->getOption('title')->getValue() . ' ';
+            $buffer .= $this->getOption('title') . ' ';
         }
 
         if ($this->hasArgument('name')) {
-            $buffer .= $this->getArgument('name')->getValue();
+            $buffer .= $this->getArgument('name');
         }
 
         echo $buffer . PHP_EOL;

@@ -149,6 +149,77 @@ class CommandTest extends TestCase
     }
 
     /**
+     * Test has argument.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testHasArgument()
+    {
+        global $argv;
+
+        $argv[2] = 'Ahmed';
+
+        $this->command->processInput();
+
+        $this->assertTrue(
+            $this->command->hasArgument('name')
+        );
+    }
+
+    /**
+     * Test will throw exception if argument is not provided.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfArgumentIsNotProvided()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        unset($argv[2]);
+
+        $this->command->processInput();
+    }
+
+    /**
+     * Test will throw exception if command has no arguments and we provided.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfCommandHasNoArgumentsAndWeProvided()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        $argv[2] = 'Test';
+
+        (new Test())->processInput();
+    }
+
+    /**
+     * Test will throw exception if we provided more arguments.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfWeProvidedMoreArguments()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        $argv[2] = 'Test 1';
+        $argv[3] = 'Test 2';
+
+        $this->command->processInput();
+    }
+
+    /**
      * Test get argument.
      *
      * @runInSeparateProcess
@@ -156,25 +227,15 @@ class CommandTest extends TestCase
      */
     public function testGetArgument()
     {
-        $this->assertInstanceOf(
-            Argument::class,
-            $this->command->getArgument('name')
-        );
-    }
+        global $argv;
 
-    /**
-     * Test get arguments.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testGetArguments()
-    {
-        $this->command->addArgument('last_name');
+        $argv[2] = 'Ahmed';
+
+        $this->command->processInput();
 
         $this->assertEquals(
-            ['name', 'last_name'],
-            array_keys($this->command->getArguments())
+            'Ahmed',
+            $this->command->getArgument('name')
         );
     }
 
@@ -238,16 +299,23 @@ class CommandTest extends TestCase
     }
 
     /**
-     * Test get option.
+     * Test has option.
      *
      * @runInSeparateProcess
      * @return void
      */
-    public function testGetOption()
+    public function testHasOption()
     {
-        $this->assertInstanceOf(
-            Option::class,
-            $this->command->getOption('greeting')
+        global $argv;
+
+        $argv[2] = '-t';
+        $argv[3] = 'Mr.';
+        $argv[4] = 'Ahmed';
+
+        $this->command->processInput();
+
+        $this->assertTrue(
+            $this->command->hasOption('title')
         );
     }
 
@@ -257,13 +325,19 @@ class CommandTest extends TestCase
      * @runInSeparateProcess
      * @return void
      */
-    public function testGetOptions()
+    public function testGetOption()
     {
-        $this->command->addOption('no-title');
+        global $argv;
+
+        $argv[2] = '-t';
+        $argv[3] = 'Mr.';
+        $argv[4] = 'Ahmed';
+
+        $this->command->processInput();
 
         $this->assertEquals(
-            ['help', 'greeting', 'title', 'no-title'],
-            array_keys($this->command->getOptions())
+            'Mr.',
+            $this->command->getOption('title')
         );
     }
 
@@ -282,81 +356,6 @@ class CommandTest extends TestCase
         $this->expectOutputString("Help!\n");
     }
 
-
-    /**
-     * Test has argument.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testHasArgument()
-    {
-        global $argv;
-
-        $argv[2] = 'Ahmed';
-
-        $this->inputHandler->process();
-
-        $this->assertTrue(
-            $this->inputHandler->hasArgument('name')
-        );
-    }
-
-    /**
-     * Test has no argument.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testHasNoArgument()
-    {
-        global $argv;
-
-        unset($argv[2]);
-
-        $this->inputHandler->process();
-
-        $this->assertFalse(
-            $this->inputHandler->hasArgument('name')
-        );
-    }
-
-    /**
-     * Test get argument.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testGetArgument2()
-    {
-        global $argv;
-
-        $argv[2] = 'Ahmed';
-
-        $this->inputHandler->process();
-
-        $this->assertEquals(
-            'Ahmed',
-            $this->inputHandler->getArgument('name')
-        );
-    }
-
-    /**
-     * Test has/get options.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testOptions()
-    {
-        $output = [];
-
-        exec(__DIR__ . '/bin/test_app hello Ahmed -t Mr. --greeting Hi',
-            $output);
-
-        $this->assertEquals('Hi Mr. Ahmed', $output[0]);
-    }
-
     /**
      * Test is empty.
      *
@@ -367,14 +366,13 @@ class CommandTest extends TestCase
     {
         global $argv;
 
-        unset($argv[1]);
         unset($argv[2]);
 
-        $this->inputHandler->process();
+        $command = new Test();
 
-        $this->assertTrue(
-            $this->inputHandler->isEmpty()
-        );
+        $command->processInput();
+
+        $this->assertTrue($command->isEmpty());
     }
 }
 

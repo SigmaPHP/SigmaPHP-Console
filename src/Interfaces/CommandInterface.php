@@ -74,19 +74,12 @@ interface CommandInterface
     public function hasArgument($name);
 
     /**
-     * Get argument.
+     * Get argument's value.
      *
      * @param string $name
      * @return mixed
      */
     public function getArgument($name);
-
-    /**
-     * Get arguments.
-     *
-     * @return array<Argument>
-     */
-    public function getArguments();
 
     /**
      * Add option.
@@ -125,19 +118,12 @@ interface CommandInterface
     public function hasOption($name);
 
     /**
-     * Get option.
+     * Get option's value.
      *
      * @param string $name
      * @return mixed
      */
     public function getOption($name);
-
-    /**
-     * Get options.
-     *
-     * @return array<Option>
-     */
-    public function getOptions();
 
     /**
      * Help option's handler.

@@ -302,21 +302,14 @@ abstract class Command implements CommandInterface
      */
     public function getArgument($name)
     {
-        if (!isset($this->arguments[$name])) {
+        if (
+            !isset($this->arguments[$name]) ||
+            empty($this->arguments[$name]->getValue())
+        ) {
             return null;
         }
 
-        return $this->arguments[$name];
-    }
-
-    /**
-     * Get arguments.
-     *
-     * @return array<Argument>
-     */
-    public function getArguments()
-    {
-        return $this->arguments;
+        return $this->arguments[$name]->getValue();
     }
 
     /**
@@ -382,28 +375,21 @@ abstract class Command implements CommandInterface
     }
 
     /**
-     * Get option.
+     * Get option's value.
      *
      * @param string $name
      * @return Option|null
      */
     public function getOption($name)
     {
-        if (!isset($this->options[$name])) {
+        if (
+            !isset($this->options[$name]) ||
+            empty($this->options[$name]->getValue())
+        ) {
             return null;
         }
 
-        return $this->options[$name];
-    }
-
-    /**
-     * Get options.
-     *
-     * @return array<Option>
-     */
-    public function getOptions()
-    {
-        return $this->options;
+        return $this->options[$name]->getValue();
     }
 
     /**

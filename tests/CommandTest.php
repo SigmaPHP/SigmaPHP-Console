@@ -281,6 +281,101 @@ class CommandTest extends TestCase
 
         $this->expectOutputString("Help!\n");
     }
+
+
+    /**
+     * Test has argument.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testHasArgument()
+    {
+        global $argv;
+
+        $argv[2] = 'Ahmed';
+
+        $this->inputHandler->process();
+
+        $this->assertTrue(
+            $this->inputHandler->hasArgument('name')
+        );
+    }
+
+    /**
+     * Test has no argument.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testHasNoArgument()
+    {
+        global $argv;
+
+        unset($argv[2]);
+
+        $this->inputHandler->process();
+
+        $this->assertFalse(
+            $this->inputHandler->hasArgument('name')
+        );
+    }
+
+    /**
+     * Test get argument.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testGetArgument2()
+    {
+        global $argv;
+
+        $argv[2] = 'Ahmed';
+
+        $this->inputHandler->process();
+
+        $this->assertEquals(
+            'Ahmed',
+            $this->inputHandler->getArgument('name')
+        );
+    }
+
+    /**
+     * Test has/get options.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testOptions()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app hello Ahmed -t Mr. --greeting Hi',
+            $output);
+
+        $this->assertEquals('Hi Mr. Ahmed', $output[0]);
+    }
+
+    /**
+     * Test is empty.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testIsEmpty()
+    {
+        global $argv;
+
+        unset($argv[1]);
+        unset($argv[2]);
+
+        $this->inputHandler->process();
+
+        $this->assertTrue(
+            $this->inputHandler->isEmpty()
+        );
+    }
 }
 
 class Test extends Command

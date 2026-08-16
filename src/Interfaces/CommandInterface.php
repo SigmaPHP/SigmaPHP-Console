@@ -26,6 +26,13 @@ interface CommandInterface
     public function execute();
 
     /**
+     * Load the arguments and options.
+     *
+     * @return void
+     */
+    public function processInput();
+
+    /**
      * A proxy for the execution method to force global settings and options.
      *
      * @return void
@@ -114,4 +121,25 @@ interface CommandInterface
      * @return void
      */
     public function help();
+
+    /**
+     * Check if no arguments were provided.
+     *
+     * @return bool
+     */
+    public function argumentsAreEmpty();
+
+    /**
+     * Check if no options were provided.
+     *
+     * @return bool
+     */
+    public function optionsAreEmpty();
+
+    /**
+     * Check if arguments and options were provided.
+     *
+     * @return bool
+     */
+    public function isEmpty();
 }

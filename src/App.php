@@ -10,7 +10,6 @@ use SigmaPHP\Console\FileUtility;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\Option;
 use SigmaPHP\Console\DataType;
-use SigmaPHP\Console\InputHandler;
 
 /**
  * App Class.
@@ -33,16 +32,11 @@ class App implements AppInterface
     protected $globalOptions;
 
     /**
-     * @var InputHandler $inputHandler
-     */
-    protected $inputHandler;
-
-    /**
      * App Constructor.
      */
     public function __construct()
     {
-        $this->appName = 'App';
+        $this->appName = '';
         $this->commands = [];
         $this->globalOptions = [];
 
@@ -52,8 +46,6 @@ class App implements AppInterface
         $this->addGlobalOption('help', 'h', 'Print the help menu');
         $this->addGlobalOption('version', 'v',
             'Print the application\'s version');
-
-        $this->inputHandler = new InputHandler([], $this->globalOptions);
     }
 
     /**
@@ -222,42 +214,60 @@ class App implements AppInterface
     public function run()
     {
         try {
-            // extract command, arguments and options
-            $this->inputHandler->process();
+            global $argv;
 
-            $command = $this->inputHandler->getCommand();
+            if (empty($this->appName)) {
+                $this->appName = $argv[0];
+            }
 
-            // if no input was provided, check the global options if any were
-            // set else show 'help' if enabled, otherwise do nothing!
-            if (empty($command)) {
-                if ($this->inputHandler->hasOption('version')){
-                    if ($this->hasCommand('version')) {
-                        $this->getCommand('version')->execute();
-                    }
-                }
-                else if ($this->inputHandler->hasOption('help') ||
-                    $this->hasCommand('help')
-                ){
+            if (!isset($argv[1])) {
+                if ($this->hasCommand('help')){
                     $this->getCommand('help')->execute();
                 }
 
                 exit(0);
             }
 
-            if (!$this->hasCommand($command)) {
+            $input = $argv[1];
+
+            // if no input was provided, check the global options if any were
+            // set else show 'help' if enabled, otherwise do nothing!
+            if ($this->hasCommand($input)) {
+                // start execution cycle
+                $this->beforeStart();
+
+                $this->getCommand($input)->executionHandler();
+
+                $this->afterComplete();
+
+                exit(0);
+            }
+            else if (strpos($input, '-') !== false) {
+                $command = '';
+
+                if (in_array($input, ['-v', '--version'])) {
+                    $command = 'version';
+                }
+                else if (in_array($input, ['-h', '--help'])) {
+                    $command = 'help';
+                }
+                else {
+                    throw new \InvalidArgumentException(
+                        "Unknown option '{$input}'"
+                    );
+                }
+
+                if ($this->hasCommand($command)) {
+                    $this->getCommand($command)->execute();
+                }
+
+                exit(0);
+            }
+            else {
                 throw new CommandNotFoundException(
-                    "Unknown command: {$command}"
+                    "Unknown command: {$input}"
                 );
             }
-
-            // start execution cycle
-            $this->beforeStart();
-
-            $this->getCommand($command)->executionHandler();
-
-            $this->afterComplete();
-
-            exit(0);
         } catch (\Exception $e) {
             // ToDo: use IO
             echo "Error: {$e->getMessage()}\n\n";

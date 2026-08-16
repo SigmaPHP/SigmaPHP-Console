@@ -7,7 +7,6 @@ use SigmaPHP\Console\IO;
 use SigmaPHP\Console\Argument;
 use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\Option;
-use SigmaPHP\Console\InputHandler;
 
 /**
  * Command Class.
@@ -45,11 +44,6 @@ abstract class Command implements CommandInterface
     protected $io;
 
     /**
-     * @var InputHandler $input
-     */
-    protected $input;
-
-    /**
      * Command Constructor.
      *
      * @param string $appName
@@ -66,7 +60,6 @@ abstract class Command implements CommandInterface
         $this->init();
 
         $this->io = new IO();
-        $this->input = new InputHandler($this->arguments, $this->options, true);
     }
 
     /**
@@ -84,15 +77,112 @@ abstract class Command implements CommandInterface
     abstract public function execute();
 
     /**
+     * Load the arguments and options.
+     *
+     * @return void
+     */
+    public function processInput()
+    {
+        global $argv;
+        $_argv = $argv;
+
+        unset($_argv[0]);
+        unset($_argv[1]);
+
+        $_argv = array_values($_argv);
+
+        // options
+        $markForDelete = [];
+        foreach ($_argv as $order => $_arg) {
+            $opt = '';
+            $unknown = 0;
+
+            // if it start with '--' or '-' then it's an option, otherwise skip
+            if (strpos($_arg, '--') !== false) {
+                $opt = str_replace('--', '', $_arg);
+            }
+            else if (strpos($_arg, '-') !== false) {
+                $opt = str_replace('-', '', $_arg);
+            }
+            else {
+                continue;
+            }
+
+            // match the option, it could be name or shortcut, based on that
+            // check the next if it's the option's parameter save it otherwise
+            // just put the value to true!
+            foreach ($this->options as $option) {
+                if (($option->getName() == $opt) ||
+                    ($option->getShortcut() == $opt)
+                ) {
+                    if (isset($_argv[$order + 1]) &&
+                        strpos($_argv[$order + 1], '-') === false
+                    ) {
+                        $option->setValue($_argv[$order + 1]);
+                        $markForDelete[] = $order + 1;
+                    } else {
+                        $option->setValue(true);
+                    }
+
+                    $markForDelete[] = $order;
+                } else {
+                    $unknown += 1;
+                }
+            }
+
+            if ($unknown == count($this->options)) {
+                throw new \InvalidArgumentException("Unknown option '{$_arg}'");
+            }
+        }
+
+        if (!empty($markForDelete)) {
+            foreach ($markForDelete as $i) {
+                unset($_argv[$i]);
+            }
+        }
+
+        $_argv = array_values($_argv);
+
+        // arguments
+        if (count($_argv) < count($this->arguments)) {
+            throw new \InvalidArgumentException(
+                "Missing arguments for command '{$this->getName()}'"
+            );
+        }
+        else if (empty($this->arguments) && count($_argv)) {
+            throw new \InvalidArgumentException(
+                "Command '{$this->getName()}' accepts no arguments"
+            );
+        }
+        else if (count($_argv) > count($this->arguments)) {
+            throw new \InvalidArgumentException(
+                "Invalid number of arguments were provided " .
+                "for command '{$this->getName()}'"
+            );
+        }
+
+        foreach ($_argv as $order => $_arg) {
+            foreach ($this->arguments as $argument) {
+                if ($argument->getOrder() == $order) {
+                    $argument->setValue($_arg);
+                }
+            }
+        }
+    }
+
+    /**
      * A proxy for the execution method to force global settings and options.
      *
      * @return void
      */
     public function executionHandler()
     {
-        $this->input->process();
+        $this->processInput();
 
-        if ($this->input->isEmpty() || $this->input->hasOption('help')) {
+        if ($this->isEmpty() ||
+            (!empty($this->getOption('help')) &&
+            $this->getOption('help')->getValue())
+        ) {
             $this->help();
         } else {
             $this->execute();
@@ -313,5 +403,47 @@ abstract class Command implements CommandInterface
         $helpContent .= "\n";
 
         $this->io->write($helpContent);
+    }
+
+    /**
+     * Check if no arguments were provided.
+     *
+     * @return bool
+     */
+    public function argumentsAreEmpty()
+    {
+        foreach ($this->arguments as $argument) {
+            if (!empty($argument->getValue())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if no options were provided.
+     *
+     * @return bool
+     */
+    public function optionsAreEmpty()
+    {
+        foreach ($this->options as $option) {
+            if (!empty($option->getValue())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if no arguments nor options were provided.
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return $this->argumentsAreEmpty() && $this->optionsAreEmpty();
     }
 }

@@ -34,16 +34,16 @@ class HelloCommand extends Command
     {
         $buffer = 'Hello ';
 
-        if ($this->input->hasOption('greeting')) {
-            $buffer = $this->input->getOption('greeting') . ' ';
+        if ($this->getOption('greeting')) {
+            $buffer = $this->getOption('greeting')->getValue() . ' ';
         }
 
-        if ($this->input->hasOption('title')) {
-            $buffer .= $this->input->getOption('title') . ' ';
+        if ($this->getOption('title')) {
+            $buffer .= $this->getOption('title')->getValue() . ' ';
         }
 
-        if ($this->input->hasArgument('name')) {
-            $buffer .= $this->input->getArgument('name');
+        if ($this->getArgument('name')) {
+            $buffer .= $this->getArgument('name')->getValue();
         }
 
         echo $buffer . PHP_EOL;

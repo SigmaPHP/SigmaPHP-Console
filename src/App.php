@@ -213,9 +213,9 @@ class App implements AppInterface
      */
     public function run()
     {
-        try {
-            global $argv;
+        global $argv;
 
+        try {
             if (empty($this->appName)) {
                 $this->appName = $argv[0];
                 $this->setAppName($this->appName);
@@ -273,8 +273,13 @@ class App implements AppInterface
         } catch (\Exception $e) {
             // ToDo: use IO
             echo "Error: {$e->getMessage()}\n\n";
-            echo "Run '{$this->appName} --help' ";
-            echo "or '{$this->appName} [COMMAND] --help' ";
+
+            if (isset($argv[1]) && !($e instanceof CommandNotFoundException)) {
+                echo "Run '{$this->appName} {$argv[1]} --help' ";
+            } else {
+                echo "Run '{$this->appName} --help' ";
+            }
+
             echo "for more information\n";
 
             exit(1);

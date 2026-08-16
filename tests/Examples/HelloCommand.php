@@ -3,6 +3,7 @@
 namespace SigmaPHP\Console\Tests\Examples;
 
 use SigmaPHP\Console\Command;
+use SigmaPHP\Console\Option;
 
 /**
  * Hello Class.
@@ -21,8 +22,10 @@ class HelloCommand extends Command
 
         $this->addArgument('name', 'User\'s name that we want to greet');
 
-        $this->addOption('greeting', 'g', 'Greeting verb like hi, hello..etc');
-        $this->addOption('title', 't', 'User\'s title like Mr., Ms. ..etc');
+        $this->addOption('greeting', 'g',
+            'Greeting verb like hi, hello..etc', Option::REQUIRED);
+        $this->addOption('title', 't',
+            'User\'s title like Mr., Ms. ..etc', Option::REQUIRED);
     }
 
     /**

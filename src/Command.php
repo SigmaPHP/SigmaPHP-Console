@@ -90,9 +90,17 @@ abstract class Command implements CommandInterface
         $_argv = array_values($_argv);
 
         // options
+        //
+        // supported option patterns:
+        // -i
+        // --interactive
+        // --connect xyz
+        // -c=xyz
+        // -ic
         $markForDelete = [];
         foreach ($_argv as $order => $_arg) {
             $opt = '';
+            $val = '';
             $unknown = 0;
 
             // if it start with '--' or '-' then it's an option, otherwise skip
@@ -106,23 +114,73 @@ abstract class Command implements CommandInterface
                 continue;
             }
 
-            // match the option, it could be name or shortcut, based on that
-            // check the next if it's the option's parameter save it otherwise
-            // just put the value to true!
+            // if the option has and '=' symbol we extract the value
+            if (strpos($opt, '=') !== false) {
+                $_parts = explode('=', $opt);
+
+                $opt = $_parts[0];
+                $val = $_parts[1];
+
+                $markForDelete[] = $order;
+            }
+
             foreach ($this->options as $option) {
                 if (($option->getName() == $opt) ||
                     ($option->getShortcut() == $opt)
                 ) {
-                    if (isset($_argv[$order + 1]) &&
-                        strpos($_argv[$order + 1], '-') === false
+                    if ($option->getParameterOptionality() ==
+                        Option::REQUIRED
                     ) {
-                        $option->setValue($_argv[$order + 1]);
-                        $markForDelete[] = $order + 1;
-                    } else {
-                        $option->setValue(true);
-                    }
+                        // take next argument as a value
+                        if (empty($val) && isset($_argv[$order + 1]) &&
+                            strpos($_argv[$order + 1], '-') === false
+                        ) {
+                            $val = $_argv[$order + 1];
 
-                    $markForDelete[] = $order;
+                            $markForDelete[] = $order;
+                            $markForDelete[] = $order + 1;
+                        }
+
+                        if (!empty($val)) {
+                            $option->setValue($val);
+                        } else {
+                            throw new \InvalidArgumentException(
+                                "Missing require parameter for option '{$_arg}'"
+                            );
+                        }
+                    }
+                    else if ($option->getParameterOptionality() ==
+                        Option::OPTIONAL
+                    ) {
+                        // take next argument as a value
+                        if (empty($val) && isset($_argv[$order + 1]) &&
+                            strpos($_argv[$order + 1], '-') === false
+                        ) {
+                            $val = $_argv[$order + 1];
+
+                            $markForDelete[] = $order;
+                            $markForDelete[] = $order + 1;
+                        }
+
+                        if (!empty($val)) {
+                            $option->setValue($val);
+                        } else {
+                            if (!empty($option->getDefaultValue())) {
+                                $option->setValue($option->getDefaultValue());
+                            }
+                        }
+                    }
+                    else if ($option->getParameterOptionality() ==
+                        Option::NONE
+                    ) {
+                        if (!empty($val)) {
+                            throw new \InvalidArgumentException(
+                                "The Option '{$_arg}' doesn't require parameter"
+                            );
+                        } else {
+                            $option->setValue(true);
+                        }
+                    }
                 } else {
                     $unknown += 1;
                 }
@@ -177,9 +235,7 @@ abstract class Command implements CommandInterface
     {
         $this->processInput();
 
-        if (!empty($this->getOption('help')) &&
-            $this->getOption('help')->getValue()
-        ) {
+        if ($this->getOption('help')) {
             $this->help();
         } else {
             $this->execute();
@@ -327,7 +383,7 @@ abstract class Command implements CommandInterface
         $name,
         $shortcut = '',
         $description = '',
-        $parameterOptionality = Option::NONE,
+        $parameterOptionality = Option::OPTIONAL,
         $dataType = DataType::STRING,
         $defaultValue = null,
     ) {

@@ -342,6 +342,24 @@ class CommandTest extends TestCase
     }
 
     /**
+     * Test will throw exception if unknown option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfUnknownOption()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        $argv[2] = '--option unknown';
+        $argv[3] = 'Ahmed';
+
+        $this->command->processInput();
+    }
+
+    /**
      * Test help global option.
      *
      * @runInSeparateProcess

@@ -45,12 +45,10 @@ abstract class Command implements CommandInterface
 
     /**
      * Command Constructor.
-     *
-     * @param string $appName
      */
-    public function __construct($appName = 'App')
+    public function __construct()
     {
-        $this->appName = $appName;
+        $this->appName = '';
         $this->arguments = [];
         $this->options = [];
 
@@ -179,14 +177,24 @@ abstract class Command implements CommandInterface
     {
         $this->processInput();
 
-        if ($this->isEmpty() ||
-            (!empty($this->getOption('help')) &&
-            $this->getOption('help')->getValue())
+        if (!empty($this->getOption('help')) &&
+            $this->getOption('help')->getValue()
         ) {
             $this->help();
         } else {
             $this->execute();
         }
+    }
+
+    /**
+     * Set app's name.
+     *
+     * @param string $appName
+     * @return void
+     */
+    public function setAppName($appName)
+    {
+        $this->appName = $appName;
     }
 
     /**
@@ -254,7 +262,7 @@ abstract class Command implements CommandInterface
     }
 
     /**
-     * Remove arguments.
+     * Remove argument.
      *
      * @param string $name
      * @return void
@@ -266,6 +274,24 @@ abstract class Command implements CommandInterface
         }
 
         unset($this->arguments[$name]);
+    }
+
+    /**
+     * Has argument.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasArgument($name)
+    {
+        if (
+            !isset($this->arguments[$name]) ||
+            empty($this->arguments[$name]->getValue())
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -323,7 +349,7 @@ abstract class Command implements CommandInterface
     }
 
     /**
-     * Remove options.
+     * Remove option.
      *
      * @param string $name
      * @return void
@@ -338,6 +364,24 @@ abstract class Command implements CommandInterface
     }
 
     /**
+     * Has option.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasOption($name)
+    {
+        if (
+            !isset($this->options[$name]) ||
+            empty($this->options[$name]->getValue())
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Get option.
      *
      * @param string $name
@@ -345,7 +389,7 @@ abstract class Command implements CommandInterface
      */
     public function getOption($name)
     {
-        if (!isset($this->arguments[$name])) {
+        if (!isset($this->options[$name])) {
             return null;
         }
 

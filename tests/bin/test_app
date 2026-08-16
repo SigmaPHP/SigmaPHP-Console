@@ -6,5 +6,8 @@ require __DIR__ . '/../../vendor/autoload.php';
 $app = new SigmaPHP\Console\App();
 
 $app->addCommand(\SigmaPHP\Console\Tests\Examples\HelloCommand::class);
+$app->addCommand(\SigmaPHP\Console\Tests\Examples\DebugCommand::class);
+
+$app->setAppDescription('Testing Application');
 
 $app->run();

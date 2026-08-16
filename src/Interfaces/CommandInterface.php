@@ -40,6 +40,14 @@ interface CommandInterface
     public function executionHandler();
 
     /**
+     * Set app's name.
+     *
+     * @param string $appName
+     * @return void
+     */
+    public function setAppName($appName);
+
+    /**
      * Add argument.
      *
      * @param string $name
@@ -50,12 +58,20 @@ interface CommandInterface
     public function addArgument($name, $description, $dataType);
 
     /**
-     * Remove arguments.
+     * Remove argument.
      *
      * @param string $name
      * @return void
      */
     public function removeArgument($name);
+
+    /**
+     * Has argument.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasArgument($name);
 
     /**
      * Get argument.
@@ -93,12 +109,20 @@ interface CommandInterface
     );
 
     /**
-     * Remove options.
+     * Remove option.
      *
      * @param string $name
      * @return void
      */
     public function removeOption($name);
+
+    /**
+     * Has option.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasOption($name);
 
     /**
      * Get option.

@@ -34,15 +34,15 @@ class HelloCommand extends Command
     {
         $buffer = 'Hello ';
 
-        if ($this->getOption('greeting')) {
+        if ($this->hasOption('greeting')) {
             $buffer = $this->getOption('greeting')->getValue() . ' ';
         }
 
-        if ($this->getOption('title')) {
+        if ($this->hasOption('title')) {
             $buffer .= $this->getOption('title')->getValue() . ' ';
         }
 
-        if ($this->getArgument('name')) {
+        if ($this->hasArgument('name')) {
             $buffer .= $this->getArgument('name')->getValue();
         }
 

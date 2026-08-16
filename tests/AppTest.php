@@ -194,7 +194,7 @@ class AppTest extends TestCase
         );
 
         $this->assertEquals(
-            ['help', 'version', 'hello'],
+            ['help', 'version', 'debug', 'hello'],
             array_keys(
                 $this->inspectProperty(App::class, $this->app, 'commands')
             )
@@ -343,6 +343,120 @@ class AppTest extends TestCase
         $this->assertEmpty(array_keys(
             $this->inspectProperty(App::class, $this->app, 'globalOptions')
         ));
+    }
+
+    /**
+     * Test set app's name to script's name.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testSetAppNameToScriptName()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app debug', $output);
+
+        $this->assertEquals(__DIR__ . '/bin/test_app', $output[0]);
+    }
+
+    /**
+     * Test running command.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testRunningCommand()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app hello Ahmed', $output);
+
+        $this->assertEquals('Hello Ahmed', $output[0]);
+    }
+
+    /**
+     * Test no command.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testNoCommand()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app', $output);
+
+        // verify 'help menu'
+        $this->assertEquals('Testing Application', $output[0]);
+
+        $this->assertEquals(16, count($output));
+    }
+
+    /**
+     * Test help command.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testHelpCommand()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app help', $output);
+
+        // verify 'help menu'
+        $this->assertEquals('Testing Application', $output[0]);
+
+        $this->assertEquals(16, count($output));
+    }
+
+    /**
+     * Test help global option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testHelpGlobalOption()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app --help', $output);
+
+        // verify 'help menu'
+        $this->assertEquals('Testing Application', $output[0]);
+
+        $this->assertEquals(16, count($output));
+    }
+
+    /**
+     * Test version command.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testVersionCommand()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app version', $output);
+
+        $this->assertEquals('v1.0.0', $output[0]);
+    }
+
+    /**
+     * Test version global option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testVersionGlobalOption()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app --version', $output);
+
+        $this->assertEquals('v1.0.0', $output[0]);
     }
 }
 

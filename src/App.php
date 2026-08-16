@@ -116,7 +116,7 @@ class App implements AppInterface
             throw new CommandNotFoundException("Unknown command: {$command}");
         }
 
-        $commandInst = new $command($this->appName);
+        $commandInst = new $command();
 
         // if the command's name is not defined, we will generate a one
         // based on the class name
@@ -218,6 +218,7 @@ class App implements AppInterface
 
             if (empty($this->appName)) {
                 $this->appName = $argv[0];
+                $this->setAppName($this->appName);
             }
 
             if (!isset($argv[1])) {
@@ -236,6 +237,7 @@ class App implements AppInterface
                 // start execution cycle
                 $this->beforeStart();
 
+                $this->getCommand($input)->setAppName($this->appName);
                 $this->getCommand($input)->executionHandler();
 
                 $this->afterComplete();

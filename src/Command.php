@@ -124,6 +124,8 @@ abstract class Command implements CommandInterface
                 $markForDelete[] = $order;
             }
 
+            // handle combined options case
+
             foreach ($this->options as $option) {
                 if (($option->getName() == $opt) ||
                     ($option->getShortcut() == $opt)

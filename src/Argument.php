@@ -104,6 +104,48 @@ class Argument
      */
     public function setValue($value)
     {
+        // validate data type
+        // by default everything is a string :D
+        switch ($this->dataType) {
+            case DataType::LIST:
+                // match list pattern:
+                //
+                // ["a"]
+                // ["a", "b"]
+                // ['a', 'b', 'c']
+
+                $pattern =
+                    '/^\[' . // open bracket
+                    '(?:"[^"]*"|\'[^\']*\')' . // start single or double quote
+                    '(?:\s*,\s*' . // some characters
+                    '(?:"[^"]*"|\'[^\']*\'))' . // end single or double quote
+                    '*'; // match multiple of same pattern
+                    '\]$/'; // close bracket
+
+                if (preg_match($pattern, $value) !== false) {
+                    throw new \InvalidArgumentException(
+                        "The option '{$this->name}' only accepts lists"
+                    );
+                }
+                break;
+            case DataType::NUMBER:
+                if (!is_numeric($value)) {
+                    throw new \InvalidArgumentException(
+                        "The option '{$this->name}' only accepts numeric values"
+                    );
+                }
+
+                break;
+            case DataType::BOOL:
+                if (!is_bool($value)) {
+                    throw new \InvalidArgumentException(
+                        "The option '{$this->name}' only accepts boolean values"
+                    );
+                }
+
+                break;
+        }
+
         $this->value = $value;
     }
 

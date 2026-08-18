@@ -5,6 +5,7 @@ namespace SigmaPHP\Console\Tests;
 use PHPUnit\Framework\TestCase;
 use SigmaPHP\Console\Argument;
 use SigmaPHP\Console\Command;
+use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\Option;
 use SigmaPHP\Console\Tests\Examples\HelloCommand;
 use SigmaPHP\Console\Tests\Helpers;
@@ -360,6 +361,46 @@ class CommandTest extends TestCase
     }
 
     /**
+     * Test will throw exception if missing required parameter.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfMissingRequiredParameter()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        $argv[2] = '--foo';
+
+        $command = new Test();
+
+        $command->processInput();
+    }
+
+    /**
+     * Test will throw exception if provide parameter for none-parameterized
+     * option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testThrowExceptionIfProvideForNoneParameterizedOption()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        $argv[2] = '-bz';
+        $argv[3] = 'Wrong';
+
+        $command = new Test();
+
+        $command->processInput();
+    }
+
+    /**
      * Test help global option.
      *
      * @runInSeparateProcess
@@ -392,11 +433,77 @@ class CommandTest extends TestCase
 
         $this->assertTrue($command->isEmpty());
     }
+
+    /**
+     * Test will throw exception if wrong list data type.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfWrongListDataType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        $argv[2] = '--foo';
+        $argv[3] = 'this is not a list';
+
+        $command = new Test();
+
+        $command->processInput();
+    }
+
+    /**
+     * Test will throw exception if wrong numeric data type.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfWrongNumericDataType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        $argv[2] = '--bar';
+        $argv[3] = 'this is not a number';
+
+        $command = new Test();
+
+        $command->processInput();
+    }
+
+    /**
+     * Test will throw exception if wrong boolean data type.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfWrongBooleanDataType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        $argv[2] = '--qux';
+        $argv[3] = 'this is not a boolean';
+
+        $command = new Test();
+
+        $command->processInput();
+    }
 }
 
 class Test extends Command
 {
-    function init() {}
+    function init() {
+        $this->addOption('foo', 'fo', '', Option::REQUIRED, DataType::LIST);
+        $this->addOption('bar', 'br', '', Option::OPTIONAL, DataType::NUMBER,
+            1000);
+        $this->addOption('baz', 'bz', '', Option::NONE);
+        $this->addOption('qux', 'qx', '', Option::REQUIRED, DataType::BOOL);
+    }
 
     function execute() {}
 

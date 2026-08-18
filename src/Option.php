@@ -157,7 +157,11 @@ class Option
      */
     public function setValue($value)
     {
-        $this->value = $value;
+        $this->value = DataType::validate(
+            $this->parameterDataType,
+            $this->name,
+            $value
+        );
     }
 
     /**

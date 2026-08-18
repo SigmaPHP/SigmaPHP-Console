@@ -98,7 +98,7 @@ interface CommandInterface
         $description = '',
         $parameterOptionality = Option::NONE,
         $dataType = DataType::STRING,
-        $defaultValue = null,
+        $defaultValue = null
     );
 
     /**

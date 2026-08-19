@@ -26,6 +26,7 @@ class DataType
         // by default everything is a string :D
         switch ($targetType) {
             case DataType::LIST:
+
                 // match list pattern:
                 //
                 // ["a"]
@@ -40,15 +41,15 @@ class DataType
                     '*' . // match multiple of same pattern
                     '\]$/'; // close bracket
 
-                $matches = [];
-
-                if (preg_match($pattern, $value, $matches) !== false) {
+                if (preg_match($pattern, $value) === false) {
                     throw new \InvalidArgumentException(
                         "The option '{$fieldName}' only accepts lists"
                     );
                 }
 
-                $value = $matches;
+                // ToDO: do it with $matches please!
+                $value = explode(',',
+                    str_replace(['[', ']', '"', '\'', ' '], '', $value));
 
                 break;
             case DataType::NUMBER:
@@ -60,7 +61,6 @@ class DataType
 
                 break;
             case DataType::BOOL:
-                d($value, is_bool($value));
                 if (!is_bool($value)) {
                     throw new \InvalidArgumentException(
                         "The option '{$fieldName}' only accepts boolean values"

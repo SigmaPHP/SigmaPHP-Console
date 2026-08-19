@@ -427,7 +427,7 @@ class CommandTest extends TestCase
 
         unset($argv[2]);
 
-        $command = new Test();
+        $command = new NoArgOrOptTest();
 
         $command->processInput();
 
@@ -435,12 +435,104 @@ class CommandTest extends TestCase
     }
 
     /**
-     * Test will throw exception if wrong list data type.
+     * Test data type.
      *
      * @runInSeparateProcess
      * @return void
      */
-    public function testWillThrowExceptionIfWrongListDataType()
+    public function testDataType()
+    {
+        global $argv;
+
+        $argv[1] = 'test';
+
+        $index = 2;
+        $argv[$index++] = '[\'ahmed\', \'omar\']';
+        $argv[$index++] = 15;
+        $argv[$index++] = true;
+        $argv[$index++] = '--foo';
+        $argv[$index++] = '[\'a\', \'b\', \'c\']';
+        $argv[$index++] = '--bar';
+        $argv[$index++] = 100;
+        $argv[$index++] = '-bz';
+        $argv[$index++] = '--qux';
+        $argv[$index++] = true;
+
+        $command = new Test();
+
+        $command->processInput();
+
+        $this->assertEquals(['ahmed', 'omar'], $command->getArgument('name'));
+        // ToDo: add the other values, and see how the $argv handles the bool!!
+    }
+
+    /**
+     * Test will throw exception if wrong list data type for argument.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfWrongListDataTypeForArgument()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        $argv[2] = 'wrong list';
+
+        $command = new Test();
+
+        $command->processInput();
+    }
+
+    /**
+     * Test will throw exception if wrong numeric data type for argument.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfWrongNumericDataTypeForArgument()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        $argv[2] = '[\'list\']';
+        $argv[3] = 'wrong number';
+
+        $command = new Test();
+
+        $command->processInput();
+    }
+
+    /**
+     * Test will throw exception if wrong boolean data type for argument.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfWrongBooleanDataTypeForArgument()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        global $argv;
+
+        $argv[2] = '[\'list\']';
+        $argv[3] = 15;
+        $argv[4] = 'wrong boolean';
+
+        $command = new Test();
+
+        $command->processInput();
+    }
+
+    /**
+     * Test will throw exception if wrong list data type for option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfWrongListDataTypeForOption()
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -455,12 +547,12 @@ class CommandTest extends TestCase
     }
 
     /**
-     * Test will throw exception if wrong numeric data type.
+     * Test will throw exception if wrong numeric data type for option.
      *
      * @runInSeparateProcess
      * @return void
      */
-    public function testWillThrowExceptionIfWrongNumericDataType()
+    public function testWillThrowExceptionIfWrongNumericDataTypeForOption()
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -475,12 +567,12 @@ class CommandTest extends TestCase
     }
 
     /**
-     * Test will throw exception if wrong boolean data type.
+     * Test will throw exception if wrong boolean data type for option.
      *
      * @runInSeparateProcess
      * @return void
      */
-    public function testWillThrowExceptionIfWrongBooleanDataType()
+    public function testWillThrowExceptionIfWrongBooleanDataTypeForOption()
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -498,6 +590,10 @@ class CommandTest extends TestCase
 class Test extends Command
 {
     function init() {
+        $this->addArgument('name', '', DataType::LIST);
+        $this->addArgument('age', '', DataType::NUMBER);
+        $this->addArgument('test', '', DataType::BOOL);
+
         $this->addOption('foo', 'fo', '', Option::REQUIRED, DataType::LIST);
         $this->addOption('bar', 'br', '', Option::OPTIONAL, DataType::NUMBER,
             1000);
@@ -510,4 +606,10 @@ class Test extends Command
     function help() {
         echo "Help!\n";
     }
+}
+
+class NoArgOrOptTest extends Command
+{
+    function init() {}
+    function execute() {}
 }

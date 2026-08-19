@@ -143,6 +143,7 @@ abstract class Command implements CommandInterface
 
                         if (!empty($val)) {
                             $option->setValue($val);
+                            $markForDelete[] = $order;
                         } else {
                             throw new \InvalidArgumentException(
                                 "Missing require parameter for option '{$_arg}'"
@@ -164,6 +165,7 @@ abstract class Command implements CommandInterface
 
                         if (!empty($val)) {
                             $option->setValue($val);
+                            $markForDelete[] = $order;
                         } else {
                             if (!empty($option->getDefaultValue())) {
                                 $option->setValue($option->getDefaultValue());
@@ -179,6 +181,7 @@ abstract class Command implements CommandInterface
                             );
                         } else {
                             $option->setValue(true);
+                            $markForDelete[] = $order;
                         }
                     }
                 } else {

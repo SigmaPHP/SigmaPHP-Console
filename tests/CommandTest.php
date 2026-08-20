@@ -453,7 +453,7 @@ class CommandTest extends TestCase
         $argv[$index++] = '--foo';
         $argv[$index++] = '[\'a\', \'b\', \'c\']';
         $argv[$index++] = '--bar';
-        $argv[$index++] = 100;
+        $argv[$index++] = 100.99;
         $argv[$index++] = '-bz';
         $argv[$index++] = '--qux';
         $argv[$index++] = true;
@@ -463,7 +463,12 @@ class CommandTest extends TestCase
         $command->processInput();
 
         $this->assertEquals(['ahmed', 'omar'], $command->getArgument('name'));
-        // ToDo: add the other values, and see how the $argv handles the bool!!
+        $this->assertEquals(15, $command->getArgument('age'));
+        $this->assertEquals(true, $command->getArgument('test'));
+        $this->assertEquals(['a', 'b', 'c'], $command->getOption('foo'));
+        $this->assertEquals(100.99, $command->getOption('bar'));
+        $this->assertEquals(true, $command->getOption('baz'));
+        $this->assertEquals(true, $command->getOption('qux'));
     }
 
     /**

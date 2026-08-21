@@ -50,6 +50,14 @@ class Argument
         $this->description = $description;
         $this->dataType = $dataType;
         $this->value = null;
+
+        // arguments can't be of type bool
+        if ($dataType == DataType::BOOL) {
+            throw new \InvalidArgumentException(
+                "Invalid data type for argument '{$this->name}', arguments " .
+                "can't be of type Boolean"
+            );
+        }
     }
 
     /**

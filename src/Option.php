@@ -63,24 +63,57 @@ class Option
      * @param string $shortcut
      * @param string $description
      * @param string $parameterOptionality
-     * @param string $parameterDataType
+     * @param DataType $parameterDataType
      * @param mixed $defaultValue
      */
     public function __construct(
         $name,
         $shortcut = '',
         $description = '',
-        $parameterOptionality = self::PARAMETER_NONE,
+        $parameterOptionality = self::PARAMETER_OPTIONAL,
         $parameterDataType = DataType::STRING,
         $defaultValue = null,
     ) {
         $this->name = $name;
         $this->shortcut = $shortcut;
         $this->description = $description;
+
+        $this->validate($parameterOptionality, $parameterDataType);
+
         $this->parameterOptionality = $parameterOptionality;
         $this->parameterDataType = $parameterDataType;
         $this->defaultValue = $defaultValue;
         $this->value = null;
+    }
+
+    /**
+     * Validate the data type and parameter's optionality of the option.
+     *
+     * @param string $parameterOptionality
+     * @param DataType $parameterDataType
+     * @return void
+     */
+    protected function validate($parameterOptionality, $parameterDataType)
+    {
+        // if the option accepts no parameter, then its data type should be bool
+        if ($parameterOptionality == self::PARAMETER_NONE &&
+            $parameterDataType != DataType::BOOL
+        ) {
+            throw new \InvalidArgumentException(
+                "Invalid data type for option '{$this->name}', none " .
+                "parameterized options can only be of type Boolean"
+            );
+        }
+
+        // also, goes the other way :D
+        if ($parameterDataType == DataType::BOOL &&
+            $parameterOptionality != self::PARAMETER_NONE
+        ) {
+            throw new \InvalidArgumentException(
+                "Invalid parameter's optionality for option '{$this->name}' " .
+                "options of type Boolean can't accept parameters"
+            );
+        }
     }
 
     /**

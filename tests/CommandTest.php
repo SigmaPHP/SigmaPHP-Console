@@ -449,14 +449,13 @@ class CommandTest extends TestCase
         $index = 2;
         $argv[$index++] = '[\'ahmed\', \'omar\']';
         $argv[$index++] = 15;
-        $argv[$index++] = true;
+        $argv[$index++] = 'test';
         $argv[$index++] = '--foo';
         $argv[$index++] = '[\'a\', \'b\', \'c\']';
         $argv[$index++] = '--bar';
         $argv[$index++] = 100.99;
         $argv[$index++] = '-bz';
         $argv[$index++] = '--qux';
-        $argv[$index++] = true;
 
         $command = new Test();
 
@@ -464,11 +463,38 @@ class CommandTest extends TestCase
 
         $this->assertEquals(['ahmed', 'omar'], $command->getArgument('name'));
         $this->assertEquals(15, $command->getArgument('age'));
-        $this->assertEquals(true, $command->getArgument('test'));
+        $this->assertEquals('test', $command->getArgument('test'));
         $this->assertEquals(['a', 'b', 'c'], $command->getOption('foo'));
         $this->assertEquals(100.99, $command->getOption('bar'));
         $this->assertEquals(true, $command->getOption('baz'));
         $this->assertEquals(true, $command->getOption('qux'));
+    }
+
+    /**
+     * Test option with no shortcut.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testOptionWithNoShortcut()
+    {
+        global $argv;
+
+        $argv[1] = 'test';
+
+        $index = 2;
+        $argv[$index++] = '--no-shortcut';
+        $argv[$index++] = '[\'ahmed\', \'omar\']';
+        $argv[$index++] = 15;
+        $argv[$index++] = 'test';
+
+        $command = new Test();
+
+        $command->addOption('no-shortcut');
+
+        $command->processInput();
+
+        $this->assertEquals(true, $command->getOption('no-shortcut'));
     }
 
     /**
@@ -511,24 +537,18 @@ class CommandTest extends TestCase
     }
 
     /**
-     * Test will throw exception if wrong boolean data type for argument.
+     * Test will throw exception if argument is of type boolean.
      *
      * @runInSeparateProcess
      * @return void
      */
-    public function testWillThrowExceptionIfWrongBooleanDataTypeForArgument()
+    public function testWillThrowExceptionIfArgumentIsOfTypeBoolean()
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        global $argv;
-
-        $argv[2] = '[\'list\']';
-        $argv[3] = 15;
-        $argv[4] = 'wrong boolean';
-
         $command = new Test();
 
-        $command->processInput();
+        $command->addArgument('y', '', DataType::BOOL);
     }
 
     /**
@@ -590,6 +610,39 @@ class CommandTest extends TestCase
 
         $command->processInput();
     }
+
+    /**
+     * Test will throw exception if no parameter option has none boolean type.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfNoParamOptionHasNoneBooleanType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $command = new Test();
+
+        $command->addOption('x', '', '',
+            Option::PARAMETER_NONE, DataType::LIST);
+    }
+
+    /**
+     * Test will throw exception if an option of type boolean got optionality
+     * of not none.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testThrowExceptionIfOptionOfTypeBoolGotOptionalityNotNone()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $command = new Test();
+
+        $command->addOption('x', '', '',
+            Option::PARAMETER_REQUIRED, DataType::BOOL);
+    }
 }
 
 class Test extends Command
@@ -597,14 +650,15 @@ class Test extends Command
     function init() {
         $this->addArgument('name', '', DataType::LIST);
         $this->addArgument('age', '', DataType::NUMBER);
-        $this->addArgument('test', '', DataType::BOOL);
+        $this->addArgument('test', '', DataType::STRING);
 
         $this->addOption('foo', 'fo', '', Option::PARAMETER_REQUIRED,
             DataType::LIST);
         $this->addOption('bar', 'br', '', Option::PARAMETER_OPTIONAL,
             DataType::NUMBER, 1000);
-        $this->addOption('baz', 'bz', '', Option::PARAMETER_NONE);
-        $this->addOption('qux', 'qx', '', Option::PARAMETER_REQUIRED,
+        $this->addOption('baz', 'bz', '', Option::PARAMETER_NONE,
+            DataType::BOOL);
+        $this->addOption('qux', 'qx', '', Option::PARAMETER_NONE,
             DataType::BOOL);
     }
 

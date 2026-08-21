@@ -12,9 +12,9 @@ class Option
     /**
      * Option's parameter optionality.
      */
-    public const REQUIRED = 'required';
-    public const OPTIONAL = 'optional';
-    public const NONE     = 'none';
+    public const PARAMETER_REQUIRED = 'required';
+    public const PARAMETER_OPTIONAL = 'optional';
+    public const PARAMETER_NONE     = 'none';
 
     /**
      * @var string $name
@@ -70,7 +70,7 @@ class Option
         $name,
         $shortcut = '',
         $description = '',
-        $parameterOptionality = self::NONE,
+        $parameterOptionality = self::PARAMETER_NONE,
         $parameterDataType = DataType::STRING,
         $defaultValue = null,
     ) {

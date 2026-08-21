@@ -23,9 +23,9 @@ class HelloCommand extends Command
         $this->addArgument('name', 'User\'s name that we want to greet');
 
         $this->addOption('greeting', 'g',
-            'Greeting verb like hi, hello..etc', Option::REQUIRED);
+            'Greeting verb like hi, hello..etc', Option::PARAMETER_REQUIRED);
         $this->addOption('title', 't',
-            'User\'s title like Mr., Ms. ..etc', Option::REQUIRED);
+            'User\'s title like Mr., Ms. ..etc', Option::PARAMETER_REQUIRED);
     }
 
     /**

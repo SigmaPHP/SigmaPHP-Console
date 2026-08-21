@@ -129,7 +129,7 @@ abstract class Command implements CommandInterface
                     ($option->getShortcut() == $opt)
                 ) {
                     if ($option->getParameterOptionality() ==
-                        Option::REQUIRED
+                        Option::PARAMETER_REQUIRED
                     ) {
                         // take next argument as a value
                         if (empty($val) && isset($_argv[$order + 1]) &&
@@ -151,7 +151,7 @@ abstract class Command implements CommandInterface
                         }
                     }
                     else if ($option->getParameterOptionality() ==
-                        Option::OPTIONAL
+                        Option::PARAMETER_OPTIONAL
                     ) {
                         // take next argument as a value
                         if (empty($val) && isset($_argv[$order + 1]) &&
@@ -173,7 +173,7 @@ abstract class Command implements CommandInterface
                         }
                     }
                     else if ($option->getParameterOptionality() ==
-                        Option::NONE
+                        Option::PARAMETER_NONE
                     ) {
                         if (!empty($val)) {
                             throw new \InvalidArgumentException(
@@ -386,7 +386,7 @@ abstract class Command implements CommandInterface
         $name,
         $shortcut = '',
         $description = '',
-        $parameterOptionality = Option::OPTIONAL,
+        $parameterOptionality = Option::PARAMETER_OPTIONAL,
         $dataType = DataType::STRING,
         $defaultValue = null
     ) {

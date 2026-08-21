@@ -301,7 +301,7 @@ class App implements AppInterface
         $name,
         $shortcut = '',
         $description = '',
-        $parameterOptionality = Option::NONE,
+        $parameterOptionality = Option::PARAMETER_NONE,
         $dataType = DataType::STRING,
         $defaultValue = null,
     ) {

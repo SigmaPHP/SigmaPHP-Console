@@ -599,11 +599,13 @@ class Test extends Command
         $this->addArgument('age', '', DataType::NUMBER);
         $this->addArgument('test', '', DataType::BOOL);
 
-        $this->addOption('foo', 'fo', '', Option::REQUIRED, DataType::LIST);
-        $this->addOption('bar', 'br', '', Option::OPTIONAL, DataType::NUMBER,
-            1000);
-        $this->addOption('baz', 'bz', '', Option::NONE);
-        $this->addOption('qux', 'qx', '', Option::REQUIRED, DataType::BOOL);
+        $this->addOption('foo', 'fo', '', Option::PARAMETER_REQUIRED,
+            DataType::LIST);
+        $this->addOption('bar', 'br', '', Option::PARAMETER_OPTIONAL,
+            DataType::NUMBER, 1000);
+        $this->addOption('baz', 'bz', '', Option::PARAMETER_NONE);
+        $this->addOption('qux', 'qx', '', Option::PARAMETER_REQUIRED,
+            DataType::BOOL);
     }
 
     function execute() {}

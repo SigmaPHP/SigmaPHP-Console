@@ -2,9 +2,7 @@
 
 namespace SigmaPHP\Console\Interfaces;
 
-use SigmaPHP\Console\Argument;
 use SigmaPHP\Console\DataType;
-use SigmaPHP\Console\Option;
 
 /**
  * Command Interface.
@@ -94,11 +92,11 @@ interface CommandInterface
      */
     public function addOption(
         $name,
-        $shortcut = '',
-        $description = '',
-        $parameterOptionality = Option::NONE,
-        $dataType = DataType::STRING,
-        $defaultValue = null
+        $shortcut,
+        $description,
+        $parameterOptionality,
+        $dataType,
+        $defaultValue
     );
 
     /**

@@ -26,6 +26,9 @@ class DataType
         // by default everything is a string :D
         switch ($targetType) {
             case DataType::LIST:
+                if (is_array($value)) {
+                    break;
+                }
 
                 // match list pattern:
                 //

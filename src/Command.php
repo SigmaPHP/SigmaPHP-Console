@@ -55,6 +55,11 @@ abstract class Command implements CommandInterface
         // register global options
         $this->addOption('help', 'h', 'Print the help menu');
 
+        // set default command name, using some lightweight dark magic :D
+        $this->setName(
+            strtolower(array_reverse(explode("\\", get_class($this)))[0])
+        );
+
         $this->init();
 
         $this->io = new IO();
@@ -169,6 +174,7 @@ abstract class Command implements CommandInterface
                         } else {
                             if (!empty($option->getDefaultValue())) {
                                 $option->setValue($option->getDefaultValue());
+                                $markForDelete[] = $order;
                             }
                         }
                     }

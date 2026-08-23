@@ -51,11 +51,34 @@ class Argument
         $this->dataType = $dataType;
         $this->value = null;
 
+        $this->validate();
+    }
+
+    /**
+     * Validate the data type.
+     *
+     * @return void
+     */
+    protected function validate()
+    {
         // arguments can't be of type bool
-        if ($dataType == DataType::BOOL) {
+        if ($this->dataType == DataType::BOOL) {
             throw new \InvalidArgumentException(
                 "Invalid data type for argument '{$this->name}', arguments " .
                 "can't be of type Boolean"
+            );
+        }
+
+        // validate data type
+        if (!in_array($this->dataType, [
+            DataType::LIST,
+            DataType::STRING,
+            DataType::NUMBER,
+            DataType::BOOL,
+        ])) {
+            throw new \InvalidArgumentException(
+                "Invalid data type '{$this->dataType}' for argument " .
+                "'{$this->name}'"
             );
         }
     }

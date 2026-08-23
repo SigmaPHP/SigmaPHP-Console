@@ -498,6 +498,37 @@ class CommandTest extends TestCase
     }
 
     /**
+     * Test default values for option's parameter.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testDefaultValuesForOptionParameter()
+    {
+        global $argv;
+
+        $argv[1] = 'test';
+
+        $index = 2;
+        $argv[$index++] = '[\'ahmed\', \'omar\']';
+        $argv[$index++] = 15;
+        $argv[$index++] = 'test';
+        $argv[$index++] = '-hd';
+
+        $command = new Test();
+
+        $command->addOption('has-default', 'hd', '', Option::PARAMETER_OPTIONAL,
+            DataType::LIST, ['x', 'y', 'z']);
+
+        $command->processInput();
+
+        $this->assertEquals(
+            ['x', 'y', 'z'],
+            $command->getOption('has-default')
+        );
+    }
+
+    /**
      * Test will throw exception if wrong list data type for argument.
      *
      * @runInSeparateProcess
@@ -549,6 +580,21 @@ class CommandTest extends TestCase
         $command = new Test();
 
         $command->addArgument('y', '', DataType::BOOL);
+    }
+
+    /**
+     * Test will throw exception if argument is of wrong type.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfArgumentIsOfWngType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $command = new Test();
+
+        $command->addArgument('y', '', 'Nobody_Knows');
     }
 
     /**
@@ -642,6 +688,68 @@ class CommandTest extends TestCase
 
         $command->addOption('x', '', '',
             Option::PARAMETER_REQUIRED, DataType::BOOL);
+    }
+
+    /**
+     * Test will throw exception if option has wrong optionality.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfOptionHasWrongOptionality()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $command = new Test();
+
+        $command->addOption('long', 'l', '', 'Whatever');
+    }
+
+    /**
+     * Test will throw exception if option has wrong data type.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfOptionHasWrongDataType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $command = new Test();
+
+        $command->addOption('long', 'l', '', option::PARAMETER_OPTIONAL, 'xyz');
+    }
+
+    /**
+     * Test will throw exception if default value was set with required.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfDefaultValueWasSetWithRequired()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $command = new Test();
+
+        $command->addOption('long', 'l', '', Option::PARAMETER_REQUIRED,
+            DataType::STRING, 'Not_Allowed');
+    }
+
+    /**
+     * Test will throw exception if default value was set with none.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfDefaultValueWasSetWithNone()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $command = new Test();
+
+        $command->addOption('long', 'l', '', Option::PARAMETER_NONE,
+            DataType::STRING, 'Not_Allowed');
     }
 }
 

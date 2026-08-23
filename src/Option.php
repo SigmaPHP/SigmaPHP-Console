@@ -77,27 +77,48 @@ class Option
         $this->name = $name;
         $this->shortcut = $shortcut;
         $this->description = $description;
-
-        $this->validate($parameterOptionality, $parameterDataType);
-
         $this->parameterOptionality = $parameterOptionality;
         $this->parameterDataType = $parameterDataType;
         $this->defaultValue = $defaultValue;
         $this->value = null;
+
+        $this->validate();
     }
 
     /**
      * Validate the data type and parameter's optionality of the option.
      *
-     * @param string $parameterOptionality
-     * @param DataType $parameterDataType
      * @return void
      */
-    protected function validate($parameterOptionality, $parameterDataType)
+    protected function validate()
     {
+        // make sure that optionality and data type are valid
+        if (!in_array($this->parameterOptionality, [
+            Option::PARAMETER_REQUIRED,
+            Option::PARAMETER_OPTIONAL,
+            Option::PARAMETER_NONE,
+        ])) {
+            throw new \InvalidArgumentException(
+                "Invalid optionality '{$this->parameterOptionality}' for " .
+                "option '{$this->name}'"
+            );
+        }
+
+        if (!in_array($this->parameterDataType, [
+            DataType::LIST,
+            DataType::STRING,
+            DataType::NUMBER,
+            DataType::BOOL,
+        ])) {
+            throw new \InvalidArgumentException(
+                "Invalid data type '{$this->parameterDataType}' for option " .
+                "'{$this->name}'"
+            );
+        }
+
         // if the option accepts no parameter, then its data type should be bool
-        if ($parameterOptionality == self::PARAMETER_NONE &&
-            $parameterDataType != DataType::BOOL
+        if ($this->parameterOptionality == self::PARAMETER_NONE &&
+            $this->parameterDataType != DataType::BOOL
         ) {
             throw new \InvalidArgumentException(
                 "Invalid data type for option '{$this->name}', none " .
@@ -106,12 +127,33 @@ class Option
         }
 
         // also, goes the other way :D
-        if ($parameterDataType == DataType::BOOL &&
-            $parameterOptionality != self::PARAMETER_NONE
+        if ($this->parameterDataType == DataType::BOOL &&
+            $this->parameterOptionality != self::PARAMETER_NONE
         ) {
             throw new \InvalidArgumentException(
-                "Invalid parameter's optionality for option '{$this->name}' " .
+                "Invalid parameter's optionality for option '{$this->name}', " .
                 "options of type Boolean can't accept parameters"
+            );
+        }
+
+        // default values doesn't work with REQUIRED and NONE
+        if ($this->parameterOptionality == self::PARAMETER_REQUIRED &&
+            !empty($this->defaultValue)
+        ) {
+            throw new \InvalidArgumentException(
+                "Invalid parameter's default value for option " .
+                "'{$this->name}', options with required parameters can't " .
+                "accept default values"
+            );
+        }
+
+        if ($this->parameterOptionality == self::PARAMETER_NONE &&
+            !empty($this->defaultValue)
+        ) {
+            throw new \InvalidArgumentException(
+                "Invalid parameter's default value for option " .
+                "'{$this->name}', options with no parameters can't " .
+                "accept default values"
             );
         }
     }

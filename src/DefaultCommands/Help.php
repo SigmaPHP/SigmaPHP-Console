@@ -146,25 +146,37 @@ class Help extends Command
             "\t{$this->appName} [COMMAND] [OPTIONS] [--] [ARGUMENTS]\n\n";
 
         if (!empty($this->commandsList)) {
+            $maxCommandName = max(array_map(function ($item) {
+                return strlen($item);
+            }, array_keys($this->commandsList))) + 2;
+
             $helpContent .= "Available Commands:\n";
 
             ksort($this->commandsList);
 
             foreach ($this->commandsList as $name => $description) {
-                $helpContent .= "\t{$name}\t\t{$description}\n";
+                $helpContent .= "\t" .
+                    str_pad($name, $maxCommandName) .
+                    "{$description}\n";
             }
         }
 
         $helpContent .= "\n";
 
         if (!empty($this->globalOptionsList)) {
+            $maxCommandName = max(array_map(function ($item) {
+                return strlen("-{$item['shortcut']}, --{$item['name']}");
+            }, $this->globalOptionsList)) + 2;
+
             $helpContent .= "Global Options:\n";
 
             ksort($this->globalOptionsList);
 
             foreach ($this->globalOptionsList as $name => $option) {
-                $helpContent .= "\t-{$option['shortcut']}, --{$name}" .
-                    "\t\t{$option['description']}\n";
+                $helpContent .= "\t" .
+                    str_pad("-{$option['shortcut']}, --{$name}",
+                        $maxCommandName) .
+                    "{$option['description']}\n";
             }
         }
 

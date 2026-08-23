@@ -39,6 +39,11 @@ abstract class Command implements CommandInterface
     protected $options;
 
     /**
+     * @var array<string> $shortcuts
+     */
+    protected $shortcuts;
+
+    /**
      * @var IO $io
      */
     protected $io;
@@ -51,9 +56,16 @@ abstract class Command implements CommandInterface
         $this->appName = '';
         $this->arguments = [];
         $this->options = [];
+        $this->shortcuts = [];
 
         // register global options
-        $this->addOption('help', 'h', 'Print the help menu');
+        $this->addOption(
+            'help',
+            'h',
+            'Print the help menu',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
 
         // set default command name, using some lightweight dark magic :D
         $this->setName(
@@ -317,6 +329,13 @@ abstract class Command implements CommandInterface
         $description = '',
         $dataType = DataType::STRING
     ) {
+        if (isset($this->arguments[$name])) {
+            throw new \InvalidArgumentException(
+                "The argument '{$name}' is already registered in the command " .
+                "'{$this->name}'"
+            );
+        }
+
         $this->arguments[$name] = new Argument(
             $name,
             $description,
@@ -396,6 +415,20 @@ abstract class Command implements CommandInterface
         $dataType = DataType::STRING,
         $defaultValue = null
     ) {
+        if (isset($this->options[$name])) {
+            throw new \InvalidArgumentException(
+                "The option '{$name}' is already registered in the command " .
+                "'{$this->name}'"
+            );
+        }
+
+        if (in_array($shortcut, $this->shortcuts)) {
+            throw new \InvalidArgumentException(
+                "The shortcut '{$shortcut}' is already registered for " .
+                "another option"
+            );
+        }
+
         $this->options[$name] = new Option(
             $name,
             $shortcut,
@@ -404,6 +437,8 @@ abstract class Command implements CommandInterface
             $dataType,
             $defaultValue
         );
+
+        $this->shortcuts[] = $shortcut;
     }
 
     /**

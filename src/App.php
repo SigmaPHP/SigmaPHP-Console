@@ -43,9 +43,21 @@ class App implements AppInterface
         $this->addCommand(Help::class);
         $this->addCommand(Version::class);
 
-        $this->addGlobalOption('help', 'h', 'Print the help menu');
-        $this->addGlobalOption('version', 'v',
-            'Print the application\'s version');
+        $this->addGlobalOption(
+            'help',
+            'h',
+            'Print the help menu',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addGlobalOption(
+            'version',
+            'V',
+            'Print the application\'s version',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
     }
 
     /**
@@ -117,13 +129,6 @@ class App implements AppInterface
         }
 
         $commandInst = new $command();
-
-        // if the command's name is not defined, we will generate a one
-        // based on the class name
-        if (empty($commandInst->getName())) {
-            $_parts = explode('\\', (string) $command);
-            $commandInst->setName(strtolower($_parts[count($_parts) - 1]));
-        }
 
         if ($this->hasCommand($commandInst->getName())) {
             throw new \InvalidArgumentException(
@@ -318,6 +323,7 @@ class App implements AppInterface
         if ($this->hasCommand('help')) {
             $options = $this->getCommand('help')->getGlobalOptionsList();
             $options[$name] = [
+                'name' => $name,
                 'shortcut' => $shortcut,
                 'description' => $description,
             ];

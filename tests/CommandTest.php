@@ -702,7 +702,7 @@ class CommandTest extends TestCase
 
         $command = new Test();
 
-        $command->addOption('long', 'l', '', 'Whatever');
+        $command->addOption('test', 't', '', 'Whatever');
     }
 
     /**
@@ -717,7 +717,7 @@ class CommandTest extends TestCase
 
         $command = new Test();
 
-        $command->addOption('long', 'l', '', option::PARAMETER_OPTIONAL, 'xyz');
+        $command->addOption('test', 't', '', option::PARAMETER_OPTIONAL, 'xyz');
     }
 
     /**
@@ -732,7 +732,7 @@ class CommandTest extends TestCase
 
         $command = new Test();
 
-        $command->addOption('long', 'l', '', Option::PARAMETER_REQUIRED,
+        $command->addOption('test', 't', '', Option::PARAMETER_REQUIRED,
             DataType::STRING, 'Not_Allowed');
     }
 
@@ -748,8 +748,54 @@ class CommandTest extends TestCase
 
         $command = new Test();
 
-        $command->addOption('long', 'l', '', Option::PARAMETER_NONE,
+        $command->addOption('test', 't', '', Option::PARAMETER_NONE,
             DataType::STRING, 'Not_Allowed');
+    }
+
+    /**
+     * Test will throw exception if argument already registered.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfArgumentAlreadyRegistered()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $command = new Test();
+
+        $command->addArgument('name', '', DataType::LIST);
+    }
+
+    /**
+     * Test will throw exception if option already registered.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfOptionAlreadyRegistered()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $command = new Test();
+
+        $command->addOption('qux', 'qx', '', Option::PARAMETER_NONE,
+            DataType::BOOL);
+    }
+
+    /**
+     * Test will throw exception if shortcut already registered.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfShortcutAlreadyRegistered()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $command = new Test();
+
+        $command->addOption('new', 'qx');
     }
 }
 

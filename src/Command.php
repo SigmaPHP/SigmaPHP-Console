@@ -221,7 +221,10 @@ abstract class Command implements CommandInterface
         $_argv = array_values($_argv);
 
         // arguments
-        if (count($_argv) < count($this->arguments)) {
+        if (empty($_argv) && $this->getOption('help')) {
+            return;
+        }
+        else if (count($_argv) < count($this->arguments)) {
             throw new \InvalidArgumentException(
                 "Missing arguments for command '{$this->getName()}'"
             );
@@ -506,31 +509,41 @@ abstract class Command implements CommandInterface
             "[OPTIONS] [--] [ARGUMENTS]\n\n";
 
         if (!empty($this->arguments)) {
+            $maxArgumentName = max(array_map(function ($item) {
+                return strlen($item);
+            }, array_keys($this->arguments))) + 2;
+
             $helpContent .= "Arguments:\n";
 
             ksort($this->arguments);
 
             foreach ($this->arguments as $argument) {
-                $helpContent .= "\t{$argument->getName()}\t" .
-                    "\t{$argument->getDescription()}\n";
+                $helpContent .= "\t" .
+                    str_pad($argument->getName(), $maxArgumentName) .
+                    "{$argument->getDescription()}\n";
             }
         }
 
         $helpContent .= "\n";
 
         if (!empty($this->options)) {
+            $maxOptionName = max(array_map(function ($item) {
+                return strlen(
+                    "-{$item->getShortcut()}, --{$item->getName()}"
+                );
+            }, $this->options)) + 2;
+
             $helpContent .= "Options:\n";
 
             ksort($this->options);
 
-            foreach ($this->options as $option) {
-                $helpContent .= "\t-{$option->getShortcut()}" .
-                    ", --{$option->getName()}" .
-                    "\t\t{$option->getDescription()}\n";
+            foreach ($this->options as $name => $option) {
+                $helpContent .= "\t" .
+                    str_pad("-{$option->getShortcut()}, --{$option->getName()}",
+                        $maxOptionName) .
+                    "{$option->getDescription()}\n";
             }
         }
-
-        $helpContent .= "\n";
 
         $this->io->write($helpContent);
     }

@@ -4,8 +4,6 @@ namespace SigmaPHP\Console;
 
 use SigmaPHP\Console\Interfaces\AppInterface;
 use SigmaPHP\Console\Command;
-use SigmaPHP\Console\DefaultCommands\Help;
-use SigmaPHP\Console\DefaultCommands\Version;
 use SigmaPHP\Console\FileUtility;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\Option;
@@ -20,6 +18,16 @@ class App implements AppInterface
      * @var string $appName
      */
     protected $appName;
+
+    /**
+     * @var string $appDescription
+     */
+    protected $appDescription;
+
+    /**
+     * @var string $appVersion
+     */
+    protected $appVersion;
 
     /**
      * @var array<Command> $commands
@@ -37,11 +45,11 @@ class App implements AppInterface
     public function __construct()
     {
         $this->appName = '';
+        $this->appDescription = 'A CLI utility to preform some tasks';
+        $this->appVersion = 'v1.0.0';
+
         $this->commands = [];
         $this->globalOptions = [];
-
-        $this->addCommand(Help::class);
-        $this->addCommand(Version::class);
 
         $this->addGlobalOption(
             'help',
@@ -63,57 +71,34 @@ class App implements AppInterface
     /**
      * Set app's name.
      *
-     * Note: could only be used when Default Commands are enabled.
-     *
      * @param string $appName
      * @return void
      */
     public function setAppName($appName)
     {
-        if (!$this->hasCommand('help')) {
-            throw new \Exception('App information could only be set when ' .
-                'default commands are enabled!');
-        }
-
-        $this->getCommand('help')->setAppName($appName);
-
         $this->appName = $appName;
     }
 
     /**
      * Set app's description.
      *
-     * Note: could only be used when Default Commands are enabled.
-     *
      * @param string $appDescription
      * @return void
      */
     public function setAppDescription($appDescription)
     {
-        if (!$this->hasCommand('help')) {
-            throw new \Exception('App information could only be set when' .
-                'default commands are enabled!');
-        }
-
-        $this->getCommand('help')->setAppDescription($appDescription);
+        $this->appDescription = $appDescription;
     }
 
     /**
      * Set app's version.
-     *
-     * Note: could only be used when Default Commands are enabled.
      *
      * @param string $appVersion
      * @return void
      */
     public function setAppVersion($appVersion)
     {
-        if (!$this->hasCommand('version')) {
-            throw new \Exception('App information could only be set when' .
-                'default commands are enabled!');
-        }
-
-        $this->getCommand('version')->setAppVersion($appVersion);
+        $this->appVersion = $appVersion;
     }
 
     /**
@@ -137,13 +122,6 @@ class App implements AppInterface
         }
 
         $this->commands[$commandInst->getName()] = $commandInst;
-
-        // add the command to the help menu
-        if ($this->hasCommand('help')) {
-            $commands = $this->getCommand('help')->getCommandsList();
-            $commands[$commandInst->getName()] = $commandInst->getDescription();
-            $this->getCommand('help')->setCommandsList($commands);
-        }
     }
 
     /**
@@ -187,6 +165,12 @@ class App implements AppInterface
      */
     public function getCommand($name)
     {
+        if (!$this->hasCommand($name)) {
+            throw new CommandNotFoundException(
+                "Trying to remove unknown command '{$name}'"
+            );
+        }
+
         return $this->commands[$name];
     }
 
@@ -208,6 +192,12 @@ class App implements AppInterface
      */
     public function removeCommand($commandName)
     {
+        if (!$this->hasCommand($commandName)) {
+            throw new CommandNotFoundException(
+                "Trying to remove unknown command '{$commandName}'"
+            );
+        }
+
         unset($this->commands[$commandName]);
     }
 
@@ -227,10 +217,7 @@ class App implements AppInterface
             }
 
             if (!isset($argv[1])) {
-                if ($this->hasCommand('help')){
-                    $this->getCommand('help')->execute();
-                }
-
+                $this->help();
                 exit(0);
             }
 
@@ -250,22 +237,16 @@ class App implements AppInterface
                 exit(0);
             }
             else if (strpos($input, '-') !== false) {
-                $command = '';
-
                 if (in_array($input, ['-v', '--version'])) {
-                    $command = 'version';
+                    $this->version();
                 }
                 else if (in_array($input, ['-h', '--help'])) {
-                    $command = 'help';
+                    $this->help();
                 }
                 else {
                     throw new \InvalidArgumentException(
                         "Unknown option '{$input}'"
                     );
-                }
-
-                if ($this->hasCommand($command)) {
-                    $this->getCommand($command)->execute();
                 }
 
                 exit(0);
@@ -370,9 +351,6 @@ class App implements AppInterface
      */
     public function disableDefaults()
     {
-        $this->removeCommand('help');
-        $this->removeCommand('version');
-
         $this->removeGlobalOption('help');
         $this->removeGlobalOption('version');
     }
@@ -395,5 +373,75 @@ class App implements AppInterface
     public function afterComplete()
     {
         // Up to the developer to use!
+    }
+
+    /**
+     * Help!
+     *
+     * @return void
+     */
+    public function help()
+    {
+        $helpContent = "{$this->appDescription}\n\n";
+
+        $helpContent .= "Usage:\n";
+        $helpContent .=
+            "\t{$this->appName} [COMMAND] [OPTIONS] [--] [ARGUMENTS]\n\n";
+
+        if (!empty($this->commands)) {
+            $maxCommandName = max(array_map(function ($item) {
+                return strlen($item);
+            }, array_keys($this->commands))) + 2;
+
+            $helpContent .= "Available Commands:\n";
+
+            ksort($this->commands);
+
+            foreach ($this->commands as $command) {
+                $helpContent .= "\t" .
+                    str_pad($command->getName(), $maxCommandName) .
+                    "{$command->getDescription()}\n";
+            }
+        }
+
+        $helpContent .= "\n";
+
+        if (!empty($this->globalOptions)) {
+            $maxGlobalOptionName = max(array_map(function ($item) {
+                return strlen(
+                    "-{$item->getShortcut()}, --{$item->getName()}"
+                );
+            }, $this->globalOptions)) + 2;
+
+            $helpContent .= "Global Options:\n";
+
+            ksort($this->globalOptions);
+
+            foreach ($this->globalOptions as $name => $option) {
+                $helpContent .= "\t" .
+                    str_pad("-{$option->getShortcut()}, --{$option->getName()}",
+                        $maxGlobalOptionName) .
+                    "{$option->getDescription()}\n";
+            }
+        }
+
+        $helpContent .= "\n";
+
+        $helpContent .= "Run '{$this->appName} [COMMAND] --help' to get ";
+        $helpContent .= "more information on a command\n";
+
+        // ToDo: use IO
+        echo $helpContent;
+    }
+
+    /**
+     * Print app's version.
+     *
+     * @return void
+     */
+    public function version()
+    {
+        // ToDo: use IO
+        echo "{$this->appVersion}\n";
     }
 }

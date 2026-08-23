@@ -5,8 +5,6 @@ namespace SigmaPHP\Console\Tests;
 use PHPUnit\Framework\TestCase;
 use SigmaPHP\Console\App;
 use SigmaPHP\Console\Command;
-use SigmaPHP\Console\DefaultCommands\Help;
-use SigmaPHP\Console\DefaultCommands\Version;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\Option;
 use SigmaPHP\Console\Tests\Examples\HelloCommand;
@@ -34,6 +32,8 @@ class AppTest extends TestCase
         parent::setUp();
 
         $this->app = new App();
+
+        $this->app->addCommand(HelloCommand::class);
     }
 
     /**
@@ -57,8 +57,8 @@ class AppTest extends TestCase
         $this->app->setAppName('test');
 
         $this->assertEquals('test', $this->inspectProperty(
-            Help::class,
-            $this->app->getCommand('help'),
+            App::class,
+            $this->app,
             'appName'
         ));
     }
@@ -74,8 +74,8 @@ class AppTest extends TestCase
         $this->app->setAppDescription('an app for testing');
 
         $this->assertEquals('an app for testing', $this->inspectProperty(
-            Help::class,
-            $this->app->getCommand('help'),
+            App::class,
+            $this->app,
             'appDescription'
         ));
     }
@@ -91,26 +91,10 @@ class AppTest extends TestCase
         $this->app->setAppVersion('beta');
 
         $this->assertEquals('beta', $this->inspectProperty(
-            Version::class,
-            $this->app->getCommand('version'),
+            App::class,
+            $this->app,
             'appVersion'
         ));
-    }
-
-    /**
-     * Test will throw exception if setting app's info while defaults are
-     * disabled.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testWillThrowExceptionSettingAppInfoWhileDefaultsDisabled()
-    {
-        $this->expectException(\Exception::class);
-
-        $this->app->disableDefaults();
-
-        $this->app->setAppVersion('beta');
     }
 
     /**
@@ -121,10 +105,8 @@ class AppTest extends TestCase
      */
     public function testAddCommand()
     {
-        $this->app->addCommand(HelloCommand::class);
-
         $this->assertEquals(
-            ['help', 'version', 'hello'],
+            ['hello'],
             array_keys(
                 $this->inspectProperty(App::class, $this->app, 'commands')
             )
@@ -141,10 +123,8 @@ class AppTest extends TestCase
     {
         $this->app->addCommand(NoName::class);
 
-        $this->app->disableDefaults();
-
         $this->assertEquals(
-            ['noname'],
+            ['hello', 'noname'],
             array_keys(
                 $this->inspectProperty(App::class, $this->app, 'commands')
             )
@@ -194,7 +174,7 @@ class AppTest extends TestCase
         );
 
         $this->assertEquals(
-            ['help', 'version', 'debug', 'hello'],
+            ['debug', 'hello'],
             array_keys(
                 $this->inspectProperty(App::class, $this->app, 'commands')
             )
@@ -209,7 +189,7 @@ class AppTest extends TestCase
      */
     public function testHasCommand()
     {
-        $this->assertTrue($this->app->hasCommand('version'));
+        $this->assertTrue($this->app->hasCommand('hello'));
     }
 
     /**
@@ -221,9 +201,22 @@ class AppTest extends TestCase
     public function testGetCommand()
     {
         $this->assertInstanceOf(
-            \SigmaPHP\Console\DefaultCommands\Version::class,
-            $this->app->getCommand('version')
+            HelloCommand::class,
+            $this->app->getCommand('hello')
         );
+    }
+
+    /**
+     * Test will throw exception if trying to get a command that doesn't exists.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfTryingToGetCommandDoesNotExists()
+    {
+        $this->expectException(CommandNotFoundException::class);
+
+        $this->app->getCommand('App\\Unknown');
     }
 
     /**
@@ -235,7 +228,7 @@ class AppTest extends TestCase
     public function testGetAllCommands()
     {
         $this->assertEquals(
-            ['help', 'version'],
+            ['hello'],
             array_keys($this->app->getCommands())
         );
     }
@@ -248,14 +241,27 @@ class AppTest extends TestCase
      */
     public function testRemoveCommand()
     {
-        $this->app->removeCommand('version');
+        $this->app->removeCommand('hello');
 
-        $this->assertEquals(
-            ['help'],
+        $this->assertEmpty(
             array_keys(
                 $this->inspectProperty(App::class, $this->app, 'commands')
             )
         );
+    }
+
+    /**
+     * Test will throw exception if trying to remove a command that doesn't
+     * exists.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfTryingToRemoveCommandDoesNotExists()
+    {
+        $this->expectException(CommandNotFoundException::class);
+
+        $this->app->removeCommand('App\\Unknown');
     }
 
     /**
@@ -337,10 +343,6 @@ class AppTest extends TestCase
         $this->app->disableDefaults();
 
         $this->assertEmpty(array_keys(
-            $this->inspectProperty(App::class, $this->app, 'commands')
-        ));
-
-        $this->assertEmpty(array_keys(
             $this->inspectProperty(App::class, $this->app, 'globalOptions')
         ));
     }
@@ -394,24 +396,6 @@ class AppTest extends TestCase
     }
 
     /**
-     * Test help command.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testHelpCommand()
-    {
-        $output = [];
-
-        exec(__DIR__ . '/bin/test_app help', $output);
-
-        // verify 'help menu'
-        $this->assertEquals('Testing Application', $output[0]);
-
-        $this->assertEquals(16, count($output));
-    }
-
-    /**
      * Test help global option.
      *
      * @runInSeparateProcess
@@ -427,21 +411,6 @@ class AppTest extends TestCase
         $this->assertEquals('Testing Application', $output[0]);
 
         $this->assertEquals(16, count($output));
-    }
-
-    /**
-     * Test version command.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testVersionCommand()
-    {
-        $output = [];
-
-        exec(__DIR__ . '/bin/test_app version', $output);
-
-        $this->assertEquals('v1.0.0', $output[0]);
     }
 
     /**

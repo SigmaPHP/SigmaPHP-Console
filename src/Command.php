@@ -186,8 +186,10 @@ abstract class Command implements CommandInterface
                         } else {
                             if (!empty($option->getDefaultValue())) {
                                 $option->setValue($option->getDefaultValue());
-                                $markForDelete[] = $order;
                             }
+
+                            // ToDo: check this case!
+                            $markForDelete[] = $order;
                         }
                     }
                     else if ($option->getParameterOptionality() ==
@@ -219,7 +221,7 @@ abstract class Command implements CommandInterface
         }
 
         $_argv = array_values($_argv);
-
+        d($_argv);
         // arguments
         if (empty($_argv) && $this->getOption('help')) {
             return;
@@ -510,8 +512,8 @@ abstract class Command implements CommandInterface
 
         if (!empty($this->arguments)) {
             $maxArgumentName = max(array_map(function ($item) {
-                return strlen($item);
-            }, array_keys($this->arguments))) + 2;
+                return strlen("{$item->getName()} <{$item->getDataType()}>");
+            }, $this->arguments)) + 2;
 
             $helpContent .= "Arguments:\n";
 
@@ -519,7 +521,9 @@ abstract class Command implements CommandInterface
 
             foreach ($this->arguments as $argument) {
                 $helpContent .= "\t" .
-                    str_pad($argument->getName(), $maxArgumentName) .
+                    str_pad(
+                        "{$argument->getName()} <{$argument->getDataType()}>",
+                        $maxArgumentName) .
                     "{$argument->getDescription()}\n";
             }
         }
@@ -529,7 +533,8 @@ abstract class Command implements CommandInterface
         if (!empty($this->options)) {
             $maxOptionName = max(array_map(function ($item) {
                 return strlen(
-                    "-{$item->getShortcut()}, --{$item->getName()}"
+                    "-{$item->getShortcut()}, --{$item->getName()} " .
+                    "<{$item->getParameterDataType()}>"
                 );
             }, $this->options)) + 2;
 
@@ -539,7 +544,9 @@ abstract class Command implements CommandInterface
 
             foreach ($this->options as $name => $option) {
                 $helpContent .= "\t" .
-                    str_pad("-{$option->getShortcut()}, --{$option->getName()}",
+                    str_pad(
+                        "-{$option->getShortcut()}, --{$option->getName()} " .
+                        "<{$option->getParameterDataType()}>",
                         $maxOptionName) .
                     "{$option->getDescription()}\n";
             }

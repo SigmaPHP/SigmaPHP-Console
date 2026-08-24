@@ -288,7 +288,7 @@ class App implements AppInterface
         $shortcut = '',
         $description = '',
         $parameterOptionality = Option::PARAMETER_NONE,
-        $dataType = DataType::STRING,
+        $dataType = DataType::BOOL,
         $defaultValue = null,
     ) {
         $this->globalOptions[$name] = new Option(

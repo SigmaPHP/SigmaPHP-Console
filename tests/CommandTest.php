@@ -248,7 +248,9 @@ class CommandTest extends TestCase
      */
     public function testArgumentOrder()
     {
-        $this->command->addArgument('name');
+        $this->command->removeArgument('name');
+
+        $this->command->addArgument('first_name');
         $this->command->addArgument('last_name');
 
         $args = $this->inspectProperty(
@@ -257,7 +259,7 @@ class CommandTest extends TestCase
             'arguments'
         );
 
-        $this->assertEquals(0, $args['name']->getOrder());
+        $this->assertEquals(0, $args['first_name']->getOrder());
         $this->assertEquals(1, $args['last_name']->getOrder());
     }
 
@@ -483,10 +485,10 @@ class CommandTest extends TestCase
         $argv[1] = 'test';
 
         $index = 2;
-        $argv[$index++] = '--no-shortcut';
         $argv[$index++] = '[\'ahmed\', \'omar\']';
         $argv[$index++] = 15;
         $argv[$index++] = 'test';
+        $argv[$index++] = '--no-shortcut';
 
         $command = new Test();
 

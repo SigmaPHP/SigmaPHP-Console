@@ -168,7 +168,9 @@ class AppTest extends TestCase
      */
     public function testLoadCommands()
     {
-        $this->app->loadCommands(
+        $app = new App();
+
+        $app->loadCommands(
             __DIR__ . "/Examples",
             'SigmaPHP\Console\Tests\Examples'
         );
@@ -176,7 +178,7 @@ class AppTest extends TestCase
         $this->assertEquals(
             ['debug', 'hello'],
             array_keys(
-                $this->inspectProperty(App::class, $this->app, 'commands')
+                $this->inspectProperty(App::class, $app, 'commands')
             )
         );
     }
@@ -299,7 +301,11 @@ class AppTest extends TestCase
         $this->assertEquals(
             ['help', 'version'],
             array_keys(
-                $this->inspectProperty(App::class, $this->app, 'commands')
+                $this->inspectProperty(
+                    App::class,
+                    $this->app,
+                    'globalOptions'
+                )
             )
         );
     }
@@ -392,7 +398,7 @@ class AppTest extends TestCase
         // verify 'help menu'
         $this->assertEquals('Testing Application', $output[0]);
 
-        $this->assertEquals(16, count($output));
+        $this->assertEquals(14, count($output));
     }
 
     /**
@@ -410,7 +416,7 @@ class AppTest extends TestCase
         // verify 'help menu'
         $this->assertEquals('Testing Application', $output[0]);
 
-        $this->assertEquals(16, count($output));
+        $this->assertEquals(14, count($output));
     }
 
     /**

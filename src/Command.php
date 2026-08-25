@@ -184,12 +184,15 @@ abstract class Command implements CommandInterface
                             $option->setValue($val);
                             $markForDelete[] = $order;
                         } else {
-                            if (!empty($option->getDefaultValue())) {
+                            if (!is_null($option->getDefaultValue())) {
                                 $option->setValue($option->getDefaultValue());
+                                $markForDelete[] = $order;
+                            } else {
+                                throw new \InvalidArgumentException(
+                                    "The option '{$_arg}' is missing default " .
+                                    "value for its parameter"
+                                );
                             }
-
-                            // ToDo: check this case!
-                            $markForDelete[] = $order;
                         }
                     }
                     else if ($option->getParameterOptionality() ==
@@ -197,7 +200,7 @@ abstract class Command implements CommandInterface
                     ) {
                         if (!empty($val)) {
                             throw new \InvalidArgumentException(
-                                "The Option '{$_arg}' doesn't require parameter"
+                                "The option '{$_arg}' doesn't require parameter"
                             );
                         } else {
                             $option->setValue(true);
@@ -221,7 +224,7 @@ abstract class Command implements CommandInterface
         }
 
         $_argv = array_values($_argv);
-        d($_argv);
+
         // arguments
         if (empty($_argv) && $this->getOption('help')) {
             return;
@@ -418,7 +421,7 @@ abstract class Command implements CommandInterface
         $description = '',
         $parameterOptionality = Option::PARAMETER_OPTIONAL,
         $dataType = DataType::STRING,
-        $defaultValue = null
+        $defaultValue = ''
     ) {
         if (isset($this->options[$name])) {
             throw new \InvalidArgumentException(

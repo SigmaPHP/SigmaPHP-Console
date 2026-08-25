@@ -496,7 +496,7 @@ class CommandTest extends TestCase
 
         $command->processInput();
 
-        $this->assertEquals(true, $command->getOption('no-shortcut'));
+        $this->assertEquals('', $command->getOption('no-shortcut'));
     }
 
     /**
@@ -798,6 +798,22 @@ class CommandTest extends TestCase
         $command = new Test();
 
         $command->addOption('new', 'qx');
+    }
+
+    /**
+     * Test will throw exception if optional parameter has no default value.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfOptionalParameterHasNoDefaultValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $command = new Test();
+
+        $command->addOption('new', 'n', '', Option::PARAMETER_OPTIONAL,
+            DataType::NUMBER, null);
     }
 }
 

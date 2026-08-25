@@ -156,6 +156,16 @@ class Option
                 "accept default values"
             );
         }
+
+        // optional parameters should have default values
+        if ($this->parameterOptionality == self::PARAMETER_OPTIONAL &&
+            is_null($this->defaultValue)
+        ) {
+            throw new \InvalidArgumentException(
+                "Invalid default value for option '{$this->name}', options " .
+                "with parameters of type optional, should have default value"
+            );
+        }
     }
 
     /**

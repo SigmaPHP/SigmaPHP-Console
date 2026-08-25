@@ -815,6 +815,45 @@ class CommandTest extends TestCase
         $command->addOption('new', 'n', '', Option::PARAMETER_OPTIONAL,
             DataType::NUMBER, null);
     }
+
+    /**
+     * Test multiple shortcuts.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testMultipleShortcuts()
+    {
+        global $argv;
+
+        $command = new MultiShortcutTest();
+
+        $argv[1] = 'multi_shortcut';
+
+        $index = 2;
+        $argv[$index++] = '-m1';
+        $argv[$index++] = '100';
+
+        $command->processInput();
+
+        $this->assertEquals(100, $command->getOption('multi'));
+
+        $index = 2;
+        $argv[$index++] = '-m2';
+        $argv[$index++] = '500';
+
+        $command->processInput();
+
+        $this->assertEquals(500, $command->getOption('multi'));
+
+        $index = 2;
+        $argv[$index++] = '-m3';
+        $argv[$index++] = '999';
+
+        $command->processInput();
+
+        $this->assertEquals(999, $command->getOption('multi'));
+    }
 }
 
 class Test extends Command
@@ -844,5 +883,17 @@ class Test extends Command
 class NoArgOrOptTest extends Command
 {
     function init() {}
+    function execute() {}
+}
+
+class MultiShortcutTest extends Command
+{
+    function init() {
+        $this->setName('multi_shortcut');
+
+        $this->addOption('multi', ['m1', 'm2', 'm3'], '',
+            Option::PARAMETER_REQUIRED, DataType::NUMBER);
+    }
+
     function execute() {}
 }

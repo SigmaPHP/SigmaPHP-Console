@@ -143,7 +143,7 @@ abstract class Command implements CommandInterface
 
             foreach ($this->options as $option) {
                 if (($option->getName() == $opt) ||
-                    ($option->getShortcut() == $opt)
+                    $option->shortcutExists($opt)
                 ) {
                     if ($option->getParameterOptionality() ==
                         Option::PARAMETER_REQUIRED

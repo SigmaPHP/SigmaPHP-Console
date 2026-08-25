@@ -22,7 +22,7 @@ class Option
     protected $name;
 
     /**
-     * @var string $shortcut
+     * @var array<string> $shortcut
      */
     protected $shortcut;
 
@@ -54,13 +54,8 @@ class Option
     /**
      * Option Constructor.
      *
-     * Note: PHP built-in getopt() function has weird rule for required/optional
-     * parameters, use ':' for 'required' parameters and '::' for 'optional'.
-     *
-     * Also, $name here refers to 'longname' while $shortcut for 'shortname'.
-     *
      * @param string $name
-     * @param string $shortcut
+     * @param string|array<string> $shortcut
      * @param string $description
      * @param string $parameterOptionality
      * @param DataType $parameterDataType
@@ -182,7 +177,7 @@ class Option
     /**
      * Set options's shortcut.
      *
-     * @param string $shortcut
+     * @param string|array<string> $shortcut
      * @return void
      */
     public function setShortcut($shortcut)
@@ -262,7 +257,7 @@ class Option
     /**
      * Get options's shortcut.
      *
-     * @return string
+     * @return string|array<string>
      */
     public function getShortcut()
     {
@@ -317,5 +312,18 @@ class Option
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * Check if an shortcut exists on option.
+     *
+     * @param string $shortcut
+     * @return bool
+     */
+    public function shortcutExists($shortcut)
+    {
+        return is_array($this->shortcut) ?
+            in_array($shortcut, $this->shortcut) :
+            ($shortcut == $this->shortcut);
     }
 }

@@ -18,6 +18,7 @@ class DebugCommand extends Command
     {
         $this->setName('debug');
         $this->setDescription('check different internal of the console app');
+        $this->setAliases(['old_debug']);
     }
 
     /**

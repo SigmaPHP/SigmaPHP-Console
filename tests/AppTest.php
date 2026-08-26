@@ -433,6 +433,21 @@ class AppTest extends TestCase
 
         $this->assertEquals('v1.0.0', $output[0]);
     }
+
+    /**
+     * Test aliases.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testAliases()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app old_debug', $output);
+
+        $this->assertEquals(__DIR__ . '/bin/test_app', $output[0]);
+    }
 }
 
 class NoName extends Command

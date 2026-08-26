@@ -154,7 +154,15 @@ class App implements AppInterface
      */
     public function hasCommand($name)
     {
-        return array_key_exists($name, $this->commands);
+        foreach ($this->commands as $command) {
+            if (($name == $command->getName()) ||
+                in_array($name, $command->getAliases())
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -171,7 +179,17 @@ class App implements AppInterface
             );
         }
 
-        return $this->commands[$name];
+        $_command = '';
+
+        foreach ($this->commands as $command) {
+            if (($name == $command->getName()) ||
+                in_array($name, $command->getAliases())
+            ) {
+                $_command = $command->getName();
+            }
+        }
+
+        return $this->commands[$_command];
     }
 
     /**

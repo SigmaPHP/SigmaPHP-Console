@@ -44,6 +44,11 @@ abstract class Command implements CommandInterface
     protected $shortcuts;
 
     /**
+     * @var array<string> $aliases
+     */
+    protected $aliases;
+
+    /**
      * @var IO $io
      */
     protected $io;
@@ -57,6 +62,7 @@ abstract class Command implements CommandInterface
         $this->arguments = [];
         $this->options = [];
         $this->shortcuts = [];
+        $this->aliases = [];
 
         // register global options
         $this->addOption(
@@ -513,6 +519,13 @@ abstract class Command implements CommandInterface
         $helpContent .= "\t{$this->appName} {$this->name} " .
             "[OPTIONS] [--] [ARGUMENTS]\n\n";
 
+        if (!empty($this->aliases)) {
+            $helpContent .= "Aliases:\n";
+
+            $helpContent .= "\t" . trim(implode(',', $this->aliases), ',') .
+                "\n";
+        }
+
         if (!empty($this->arguments)) {
             $maxArgumentName = max(array_map(function ($item) {
                 return strlen("{$item->getName()} <{$item->getDataType()}>");
@@ -598,5 +611,26 @@ abstract class Command implements CommandInterface
     public function isEmpty()
     {
         return $this->argumentsAreEmpty() && $this->optionsAreEmpty();
+    }
+
+    /**
+     * Set aliases.
+     *
+     * @param array<string> $aliases
+     * @return void
+     */
+    public function setAliases($aliases)
+    {
+        $this->aliases = $aliases;
+    }
+
+    /**
+     * Get aliases.
+     *
+     * @return array<string>
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
     }
 }

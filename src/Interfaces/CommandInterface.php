@@ -150,4 +150,19 @@ interface CommandInterface
      * @return bool
      */
     public function isEmpty();
+
+    /**
+     * Set aliases.
+     *
+     * @param array<string> $aliases
+     * @return void
+     */
+    public function setAliases($aliases);
+
+    /**
+     * Get aliases.
+     *
+     * @return array<string>
+     */
+    public function getAliases();
 }

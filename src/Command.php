@@ -168,8 +168,8 @@ abstract class Command implements CommandInterface
                             $_argc += 1;
                         }
                     } else {
-                        $opt = $opt[0];
                         $val = substr($opt, 1);
+                        $opt = $opt[0];
                     }
 
                     $markForDelete[] = $order;

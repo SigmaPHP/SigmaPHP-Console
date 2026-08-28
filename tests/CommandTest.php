@@ -882,8 +882,8 @@ class CommandTest extends TestCase
     {
         global $argv;
 
-        // [script] test ['ahmed', 'omar'] 15 test -f="['a', 'b', 'c']"
-        // --bar '100.99' -zq
+        // command:
+        // ... test ['ahmed', 'omar'] 15 test -f="['a', 'b', 'c']" -b100.99 -zq
 
         $argv[1] = 'test';
 
@@ -892,8 +892,7 @@ class CommandTest extends TestCase
         $argv[$index++] = 15;
         $argv[$index++] = 'test';
         $argv[$index++] = '-f=[\'a\', \'b\', \'c\']';
-        $argv[$index++] = '--bar';
-        $argv[$index++] = "100.99";
+        $argv[$index++] = '-b100.99';
         $argv[$index++] = '-zq';
 
         $command = new Test();

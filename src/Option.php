@@ -161,6 +161,19 @@ class Option
                 "with parameters of type optional, should have default value"
             );
         }
+
+        // make sur that all shortcuts are single characters
+        $_shortcuts = (is_array($this->shortcut)) ? $this->shortcut :
+            [$this->shortcut];
+
+        foreach ($_shortcuts as $shortcut) {
+            if (strlen($shortcut) > 1) {
+                throw new \InvalidArgumentException(
+                    "Invalid shortcut for option '{$this->name}', options " .
+                    "shortcut's length can't be more than one character"
+                );
+            }
+        }
     }
 
     /**

@@ -111,17 +111,25 @@ abstract class Command implements CommandInterface
         unset($_argv[1]);
 
         $_argv = array_values($_argv);
+        $_argc = count($_argv);
 
         // options
+        //
+        // Source:
+        // https://sourceware.org/glibc/manual/2.44/html_mono/
+        // libc.html#Argument-Syntax
         //
         // supported option patterns:
         // -i
         // --interactive
         // --connect xyz
+        // --connect=xyz
         // -c=xyz
+        // -cxyz
         // -ic
         $markForDelete = [];
-        foreach ($_argv as $order => $_arg) {
+        for ($order = 0;$order < $_argc;$order++) {
+            $_arg = $_argv[$order];
             $opt = '';
             $val = '';
             $unknown = 0;
@@ -132,6 +140,40 @@ abstract class Command implements CommandInterface
             }
             else if (strpos($_arg, '-') !== false) {
                 $opt = str_replace('-', '', $_arg);
+
+                // check chained options and option/parameter combined cases
+                $isChained = false;
+
+                if ((strlen($opt) > 1) && (strpos($opt, '=') === false)) {
+                    $_opt = str_split($opt);
+
+                    foreach ($_opt as $o) {
+                        if (in_array($o, $this->shortcuts)) {
+                            $isChained = true;
+                        } else {
+                            $isChained = false;
+                        }
+                    }
+
+                    if ($isChained) {
+                        $opt = $_opt[0];
+                        unset($_opt[0]);
+
+                        // if options are chained, we take the first for loop
+                        // and append the rest for the upcoming loops
+                        //
+                        // ! yes i know, appending during iterating array is BAD
+                        foreach ($_opt as $o) {
+                            $_argv[] = '-' . $o;
+                            $_argc += 1;
+                        }
+                    } else {
+                        $opt = $opt[0];
+                        $val = substr($opt, 1);
+                    }
+
+                    $markForDelete[] = $order;
+                }
             }
             else {
                 continue;
@@ -225,7 +267,9 @@ abstract class Command implements CommandInterface
 
         if (!empty($markForDelete)) {
             foreach ($markForDelete as $i) {
-                unset($_argv[$i]);
+                if (isset($_argv[$i])) {
+                    unset($_argv[$i]);
+                }
             }
         }
 

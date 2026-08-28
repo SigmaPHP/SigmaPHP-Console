@@ -271,8 +271,10 @@ class CommandTest extends TestCase
      */
     public function testAddOptionToCommand()
     {
+        $this->command->addOption('test');
+
         $this->assertEquals(
-            ['help', 'greeting', 'title'],
+            ['help', 'greeting', 'title', 'test'],
             array_keys($this->inspectProperty(
                 HelloCommand::class,
                 $this->command,
@@ -394,12 +396,27 @@ class CommandTest extends TestCase
 
         global $argv;
 
-        $argv[2] = '-bz';
+        $argv[2] = '-z';
         $argv[3] = 'Wrong';
 
         $command = new Test();
 
         $command->processInput();
+    }
+
+    /**
+     * Test will throw exception if option shortcut is more than one character.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfOptionShortcutIsMoreThanOneChar()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->command->addOption('test', 'ts');
+
+        $this->command->processInput();
     }
 
     /**
@@ -456,7 +473,7 @@ class CommandTest extends TestCase
         $argv[$index++] = '[\'a\', \'b\', \'c\']';
         $argv[$index++] = '--bar';
         $argv[$index++] = 100.99;
-        $argv[$index++] = '-bz';
+        $argv[$index++] = '-z';
         $argv[$index++] = '--qux';
 
         $command = new Test();
@@ -515,11 +532,11 @@ class CommandTest extends TestCase
         $argv[$index++] = '[\'ahmed\', \'omar\']';
         $argv[$index++] = 15;
         $argv[$index++] = 'test';
-        $argv[$index++] = '-hd';
+        $argv[$index++] = '-d';
 
         $command = new Test();
 
-        $command->addOption('has-default', 'hd', '', Option::PARAMETER_OPTIONAL,
+        $command->addOption('has-default', 'd', '', Option::PARAMETER_OPTIONAL,
             DataType::LIST, ['x', 'y', 'z']);
 
         $command->processInput();
@@ -831,7 +848,7 @@ class CommandTest extends TestCase
         $argv[1] = 'multi_shortcut';
 
         $index = 2;
-        $argv[$index++] = '-m1';
+        $argv[$index++] = '-m';
         $argv[$index++] = '100';
 
         $command->processInput();
@@ -839,7 +856,7 @@ class CommandTest extends TestCase
         $this->assertEquals(100, $command->getOption('multi'));
 
         $index = 2;
-        $argv[$index++] = '-m2';
+        $argv[$index++] = '-n';
         $argv[$index++] = '500';
 
         $command->processInput();
@@ -847,12 +864,49 @@ class CommandTest extends TestCase
         $this->assertEquals(500, $command->getOption('multi'));
 
         $index = 2;
-        $argv[$index++] = '-m3';
+        $argv[$index++] = '-o';
         $argv[$index++] = '999';
 
         $command->processInput();
 
         $this->assertEquals(999, $command->getOption('multi'));
+    }
+
+    /**
+     * Test options different formats.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testOptionsDifferentFormats()
+    {
+        global $argv;
+
+        // [script] test ['ahmed', 'omar'] 15 test -f="['a', 'b', 'c']"
+        // --bar '100.99' -zq
+
+        $argv[1] = 'test';
+
+        $index = 2;
+        $argv[$index++] = '[\'ahmed\', \'omar\']';
+        $argv[$index++] = 15;
+        $argv[$index++] = 'test';
+        $argv[$index++] = '-f=[\'a\', \'b\', \'c\']';
+        $argv[$index++] = '--bar';
+        $argv[$index++] = "100.99";
+        $argv[$index++] = '-zq';
+
+        $command = new Test();
+
+        $command->processInput();
+
+        $this->assertEquals(['ahmed', 'omar'], $command->getArgument('name'));
+        $this->assertEquals(15, $command->getArgument('age'));
+        $this->assertEquals('test', $command->getArgument('test'));
+        $this->assertEquals(['a', 'b', 'c'], $command->getOption('foo'));
+        $this->assertEquals(100.99, $command->getOption('bar'));
+        $this->assertEquals(true, $command->getOption('baz'));
+        $this->assertEquals(true, $command->getOption('qux'));
     }
 }
 
@@ -863,13 +917,13 @@ class Test extends Command
         $this->addArgument('age', '', DataType::NUMBER);
         $this->addArgument('test', '', DataType::STRING);
 
-        $this->addOption('foo', 'fo', '', Option::PARAMETER_REQUIRED,
+        $this->addOption('foo', 'f', '', Option::PARAMETER_REQUIRED,
             DataType::LIST);
-        $this->addOption('bar', 'br', '', Option::PARAMETER_OPTIONAL,
+        $this->addOption('bar', 'b', '', Option::PARAMETER_OPTIONAL,
             DataType::NUMBER, 1000);
-        $this->addOption('baz', 'bz', '', Option::PARAMETER_NONE,
+        $this->addOption('baz', 'z', '', Option::PARAMETER_NONE,
             DataType::BOOL);
-        $this->addOption('qux', 'qx', '', Option::PARAMETER_NONE,
+        $this->addOption('qux', 'q', '', Option::PARAMETER_NONE,
             DataType::BOOL);
     }
 
@@ -891,7 +945,7 @@ class MultiShortcutTest extends Command
     function init() {
         $this->setName('multi_shortcut');
 
-        $this->addOption('multi', ['m1', 'm2', 'm3'], '',
+        $this->addOption('multi', ['m', 'n', 'o'], '',
             Option::PARAMETER_REQUIRED, DataType::NUMBER);
     }
 

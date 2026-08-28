@@ -339,21 +339,6 @@ class AppTest extends TestCase
     }
 
     /**
-     * Test disable default commands.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testDisableDefaultCommands()
-    {
-        $this->app->disableDefaults();
-
-        $this->assertEmpty(array_keys(
-            $this->inspectProperty(App::class, $this->app, 'globalOptions')
-        ));
-    }
-
-    /**
      * Test set app's name to script's name.
      *
      * @runInSeparateProcess

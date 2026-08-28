@@ -139,13 +139,6 @@ interface AppInterface
     public function getGlobalOptions();
 
     /**
-     * Disable the defaults options and commands (version & help).
-     *
-     * @return void
-     */
-    public function disableDefaults();
-
-    /**
      * Do actions before executing any command.
      *
      * @return void

@@ -66,6 +66,62 @@ class App implements AppInterface
             Option::PARAMETER_NONE,
             DataType::BOOL
         );
+
+        $this->addGlobalOption(
+            'quiet',
+            'q',
+            'Suppress normal output; show errors only',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addGlobalOption(
+            'silent',
+            's',
+            'Suppress all output, including errors',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addGlobalOption(
+            'verbose',
+            'v',
+            'Show detailed debug information; use default values',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addGlobalOption(
+            'no-color',
+            '',
+            'Disable colored output',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addGlobalOption(
+            'no-interactive',
+            '',
+            'Disable interactive prompts and input',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addGlobalOption(
+            'plain',
+            '',
+            'Use plain, human-readable output without formatting',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addGlobalOption(
+            'json',
+            '',
+            'Output results in JSON format',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
     }
 
     /**
@@ -175,7 +231,7 @@ class App implements AppInterface
     {
         if (!$this->hasCommand($name)) {
             throw new CommandNotFoundException(
-                "Trying to remove unknown command '{$name}'"
+                "Trying to call unknown command '{$name}'"
             );
         }
 
@@ -317,17 +373,6 @@ class App implements AppInterface
             $dataType,
             $defaultValue
         );
-
-        // add the command to the help menu
-        if ($this->hasCommand('help')) {
-            $options = $this->getCommand('help')->getGlobalOptionsList();
-            $options[$name] = [
-                'name' => $name,
-                'shortcut' => $shortcut,
-                'description' => $description,
-            ];
-            $this->getCommand('help')->setGlobalOptionsList($options);
-        }
     }
 
     /**
@@ -338,6 +383,12 @@ class App implements AppInterface
      */
     public function removeGlobalOption($name)
     {
+        if (!isset($this->globalOptions[$name])) {
+            throw new CommandNotFoundException(
+                "Trying to remove unknown global option '{$name}'"
+            );
+        }
+
         unset($this->globalOptions[$name]);
     }
 
@@ -349,6 +400,12 @@ class App implements AppInterface
      */
     public function getGlobalOption($name)
     {
+        if (!isset($this->globalOptions[$name])) {
+            throw new CommandNotFoundException(
+                "Trying to call unknown global option '{$name}'"
+            );
+        }
+
         return $this->globalOptions[$name];
     }
 
@@ -362,16 +419,6 @@ class App implements AppInterface
         return $this->globalOptions;
     }
 
-    /**
-     * Disable the defaults options and commands (version & help).
-     *
-     * @return void
-     */
-    public function disableDefaults()
-    {
-        $this->removeGlobalOption('help');
-        $this->removeGlobalOption('version');
-    }
 
     /**
      * Do actions before executing any command.
@@ -425,20 +472,23 @@ class App implements AppInterface
         $helpContent .= "\n";
 
         if (!empty($this->globalOptions)) {
-            $maxGlobalOptionName = max(array_map(function ($item) {
-                return strlen(
-                    "-{$item->getShortcut()}, --{$item->getName()}"
-                );
+            $maxGlobalOptionName = max(array_map(function ($option) {
+                return !empty($option->getShortcut()) ? strlen(
+                    "-{$option->getShortcut()}, --{$option->getName()}"
+                ) : strlen("    --{$option->getName()}");
             }, $this->globalOptions)) + 2;
 
             $helpContent .= "Global Options:\n";
 
             ksort($this->globalOptions);
 
-            foreach ($this->globalOptions as $name => $option) {
+            foreach ($this->globalOptions as $option) {
+                $optionTitle = !empty($option->getShortcut()) ?
+                    "-{$option->getShortcut()}, --{$option->getName()}" :
+                    "    --{$option->getName()}";
+
                 $helpContent .= "\t" .
-                    str_pad("-{$option->getShortcut()}, --{$option->getName()}",
-                        $maxGlobalOptionName) .
+                    str_pad($optionTitle, $maxGlobalOptionName) .
                     "{$option->getDescription()}\n";
             }
         }

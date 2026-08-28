@@ -40,6 +40,11 @@ class App implements AppInterface
     protected $globalOptions;
 
     /**
+     * @var array<string> $shortcuts
+     */
+    protected $shortcuts;
+
+    /**
      * App Constructor.
      */
     public function __construct()
@@ -50,6 +55,7 @@ class App implements AppInterface
 
         $this->commands = [];
         $this->globalOptions = [];
+        $this->shortcuts = [];
 
         $this->addGlobalOption(
             'help',
@@ -169,7 +175,14 @@ class App implements AppInterface
             throw new CommandNotFoundException("Unknown command: {$command}");
         }
 
-        $commandInst = new $command();
+        // register global options except 'version'
+        $_globalOptions = $this->globalOptions;
+        unset($_globalOptions['version']);
+
+        $_shortcuts = $this->shortcuts;
+        unset($_shortcuts['v']);
+
+        $commandInst = new $command($_globalOptions, $_shortcuts);
 
         if ($this->hasCommand($commandInst->getName())) {
             throw new \InvalidArgumentException(
@@ -365,6 +378,19 @@ class App implements AppInterface
         $dataType = DataType::BOOL,
         $defaultValue = null,
     ) {
+        if (isset($this->globalOptions[$name])) {
+            throw new \InvalidArgumentException(
+                "The global option '{$name}' is already registered in the app"
+            );
+        }
+
+        if (in_array($shortcut, $this->shortcuts)) {
+            throw new \InvalidArgumentException(
+                "The shortcut '{$shortcut}' is already registered for " .
+                "another global option"
+            );
+        }
+
         $this->globalOptions[$name] = new Option(
             $name,
             $shortcut,
@@ -373,6 +399,10 @@ class App implements AppInterface
             $dataType,
             $defaultValue
         );
+
+        if (!empty($shortcut)) {
+            $this->shortcuts[] = $shortcut;
+        }
     }
 
     /**
@@ -387,6 +417,10 @@ class App implements AppInterface
             throw new CommandNotFoundException(
                 "Trying to remove unknown global option '{$name}'"
             );
+        }
+
+        if (!empty($this->globalOptions[$name]->getShortcut())) {
+            unset($this->shortcuts[$this->globalOptions[$name]->getShortcut()]);
         }
 
         unset($this->globalOptions[$name]);
@@ -454,8 +488,8 @@ class App implements AppInterface
             "\t{$this->appName} [COMMAND] [OPTIONS] [--] [ARGUMENTS]\n\n";
 
         if (!empty($this->commands)) {
-            $maxCommandName = max(array_map(function ($item) {
-                return strlen($item);
+            $maxCommandName = max(array_map(function ($command) {
+                return strlen($command);
             }, array_keys($this->commands))) + 2;
 
             $helpContent .= "Available Commands:\n";

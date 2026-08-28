@@ -55,79 +55,17 @@ abstract class Command implements CommandInterface
 
     /**
      * Command Constructor.
+     *
+     * @param array<Option> $options
+     * @param array<string> $shortcuts
      */
-    public function __construct()
+    public function __construct($options = [], $shortcuts = [])
     {
         $this->appName = '';
         $this->arguments = [];
-        $this->options = [];
-        $this->shortcuts = [];
+        $this->options = $options;
+        $this->shortcuts = $shortcuts;
         $this->aliases = [];
-
-        // register global options
-        $this->addOption(
-            'help',
-            'h',
-            'Print the help menu',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
-
-        $this->addOption(
-            'quiet',
-            'q',
-            'Suppress normal output; show errors only',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
-
-        $this->addOption(
-            'silent',
-            's',
-            'Suppress all output, including errors',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
-
-        $this->addOption(
-            'verbose',
-            'v',
-            'Show detailed debug information; use default values',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
-
-        $this->addOption(
-            'no-color',
-            '',
-            'Disable colored output',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
-
-        $this->addOption(
-            'no-interactive',
-            '',
-            'Disable interactive prompts and input',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
-
-        $this->addOption(
-            'plain',
-            '',
-            'Use plain, human-readable output without formatting',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
-
-        $this->addOption(
-            'json',
-            '',
-            'Output results in JSON format',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
 
         // set default command name, using some lightweight dark magic :D
         $this->setName(
@@ -552,7 +490,9 @@ abstract class Command implements CommandInterface
             $defaultValue
         );
 
-        $this->shortcuts[] = $shortcut;
+        if (!empty($shortcut)) {
+            $this->shortcuts[] = $shortcut;
+        }
     }
 
     /**
@@ -565,6 +505,10 @@ abstract class Command implements CommandInterface
     {
         if (!isset($this->options[$name])) {
             return;
+        }
+
+        if (!empty($this->options[$name]->getShortcut())) {
+            unset($this->shortcuts[$this->options[$name]->getShortcut()]);
         }
 
         unset($this->options[$name]);
@@ -627,8 +571,8 @@ abstract class Command implements CommandInterface
         }
 
         if (!empty($this->arguments)) {
-            $maxArgumentName = max(array_map(function ($item) {
-                return strlen("{$item->getName()} <{$item->getDataType()}>");
+            $maxArgumentName = max(array_map(function ($arg) {
+                return strlen("{$arg->getName()} <{$arg->getDataType()}>");
             }, $this->arguments)) + 2;
 
             $helpContent .= "Arguments:\n";
@@ -647,10 +591,10 @@ abstract class Command implements CommandInterface
         $helpContent .= "\n";
 
         if (!empty($this->options)) {
-            $maxOptionName = max(array_map(function ($item) {
+            $maxOptionName = max(array_map(function ($option) {
                 return strlen(
-                    "-{$item->getShortcut()}, --{$item->getName()} " .
-                    "<{$item->getParameterDataType()}>"
+                    "-{$option->getShortcut()}, --{$option->getName()} " .
+                    "<{$option->getParameterDataType()}>"
                 );
             }, $this->options)) + 2;
 

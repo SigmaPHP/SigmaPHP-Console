@@ -190,7 +190,7 @@ class Option
     /**
      * Set options's shortcut.
      *
-     * @param string|array<string> $shortcut
+     * @param string $shortcut
      * @return void
      */
     public function setShortcut($shortcut)
@@ -270,7 +270,7 @@ class Option
     /**
      * Get options's shortcut.
      *
-     * @return string|array<string>
+     * @return string
      */
     public function getShortcut()
     {
@@ -325,18 +325,5 @@ class Option
     public function getValue()
     {
         return $this->value;
-    }
-
-    /**
-     * Check if an shortcut exists on option.
-     *
-     * @param string $shortcut
-     * @return bool
-     */
-    public function shortcutExists($shortcut)
-    {
-        return is_array($this->shortcut) ?
-            in_array($shortcut, $this->shortcut) :
-            ($shortcut == $this->shortcut);
     }
 }

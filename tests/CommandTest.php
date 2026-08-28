@@ -834,45 +834,6 @@ class CommandTest extends TestCase
     }
 
     /**
-     * Test multiple shortcuts.
-     *
-     * @runInSeparateProcess
-     * @return void
-     */
-    public function testMultipleShortcuts()
-    {
-        global $argv;
-
-        $command = new MultiShortcutTest();
-
-        $argv[1] = 'multi_shortcut';
-
-        $index = 2;
-        $argv[$index++] = '-m';
-        $argv[$index++] = '100';
-
-        $command->processInput();
-
-        $this->assertEquals(100, $command->getOption('multi'));
-
-        $index = 2;
-        $argv[$index++] = '-n';
-        $argv[$index++] = '500';
-
-        $command->processInput();
-
-        $this->assertEquals(500, $command->getOption('multi'));
-
-        $index = 2;
-        $argv[$index++] = '-o';
-        $argv[$index++] = '999';
-
-        $command->processInput();
-
-        $this->assertEquals(999, $command->getOption('multi'));
-    }
-
-    /**
      * Test options different formats.
      *
      * @runInSeparateProcess
@@ -936,17 +897,5 @@ class Test extends Command
 class NoArgOrOptTest extends Command
 {
     function init() {}
-    function execute() {}
-}
-
-class MultiShortcutTest extends Command
-{
-    function init() {
-        $this->setName('multi_shortcut');
-
-        $this->addOption('multi', ['m', 'n', 'o'], '',
-            Option::PARAMETER_REQUIRED, DataType::NUMBER);
-    }
-
     function execute() {}
 }

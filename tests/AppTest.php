@@ -299,7 +299,17 @@ class AppTest extends TestCase
         $this->app->removeGlobalOption('test');
 
         $this->assertEquals(
-            ['help', 'version'],
+            [
+                'help',
+                'version',
+                'quiet',
+                'silent',
+                'verbose',
+                'no-color',
+                'no-interactive',
+                'plain',
+                'json',
+            ],
             array_keys(
                 $this->inspectProperty(
                     App::class,
@@ -333,7 +343,17 @@ class AppTest extends TestCase
     public function testGetGlobalOptions()
     {
         $this->assertEquals(
-            ['help', 'version'],
+            [
+                'help',
+                'version',
+                'quiet',
+                'silent',
+                'verbose',
+                'no-color',
+                'no-interactive',
+                'plain',
+                'json',
+            ],
             array_keys($this->app->getGlobalOptions())
         );
     }
@@ -383,7 +403,7 @@ class AppTest extends TestCase
         // verify 'help menu'
         $this->assertEquals('Testing Application', $output[0]);
 
-        $this->assertEquals(14, count($output));
+        $this->assertEquals(21, count($output));
     }
 
     /**
@@ -401,7 +421,7 @@ class AppTest extends TestCase
         // verify 'help menu'
         $this->assertEquals('Testing Application', $output[0]);
 
-        $this->assertEquals(14, count($output));
+        $this->assertEquals(21, count($output));
     }
 
     /**

@@ -73,6 +73,62 @@ abstract class Command implements CommandInterface
             DataType::BOOL
         );
 
+        $this->addOption(
+            'quiet',
+            'q',
+            'Suppress normal output; show errors only',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addOption(
+            'silent',
+            's',
+            'Suppress all output, including errors',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addOption(
+            'verbose',
+            'v',
+            'Show detailed debug information; use default values',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addOption(
+            'no-color',
+            '',
+            'Disable colored output',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addOption(
+            'no-interactive',
+            '',
+            'Disable interactive prompts and input',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addOption(
+            'plain',
+            '',
+            'Use plain, human-readable output without formatting',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
+        $this->addOption(
+            'json',
+            '',
+            'Output results in JSON format',
+            Option::PARAMETER_NONE,
+            DataType::BOOL
+        );
+
         // set default command name, using some lightweight dark magic :D
         $this->setName(
             strtolower(array_reverse(explode("\\", get_class($this)))[0])

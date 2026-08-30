@@ -598,8 +598,11 @@ abstract class Command implements CommandInterface
 
         if (!empty($this->options)) {
             $maxOptionName = max(array_map(function ($option) {
+                $shortcut = empty($option->getShortcut()) ? "    " :
+                    "-{$option->getShortcut()}, ";
+
                 return strlen(
-                    "-{$option->getShortcut()}, --{$option->getName()} " .
+                    $shortcut . "--{$option->getName()} " .
                     "<{$option->getParameterDataType()}>"
                 );
             }, $this->options)) + 2;
@@ -609,9 +612,12 @@ abstract class Command implements CommandInterface
             ksort($this->options);
 
             foreach ($this->options as $name => $option) {
+                $shortcut = empty($option->getShortcut()) ? "    " :
+                    "-{$option->getShortcut()}, ";
+
                 $helpContent .= "\t" .
                     str_pad(
-                        "-{$option->getShortcut()}, --{$option->getName()} " .
+                        $shortcut . "--{$option->getName()} " .
                         "<{$option->getParameterDataType()}>",
                         $maxOptionName) .
                     "{$option->getDescription()}\n";

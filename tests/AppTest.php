@@ -359,6 +359,46 @@ class AppTest extends TestCase
     }
 
     /**
+     * Test will throw exception if trying to add a global option that already
+     * exists.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfTryingToAddOptionAlreadyExists()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->app->addGlobalOption('help');
+    }
+
+    /**
+     * Test will throw exception if shortcut already registered.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfShortcutAlreadyRegistered()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->app->addGlobalOption('new', 'h');
+    }
+
+    /**
+     * Test will throw exception if trying to remove unregistered global option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfTryingToRemoveUnregisteredOption()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->app->removeGlobalOption('new');
+    }
+
+    /**
      * Test set app's name to script's name.
      *
      * @runInSeparateProcess

@@ -150,6 +150,19 @@ class CommandTest extends TestCase
     }
 
     /**
+     * Test will throw exception if trying to remove unregistered argument.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfTryingToRemoveUnregisteredArgument()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->command->removeArgument('new');
+    }
+
+    /**
      * Test has argument.
      *
      * @runInSeparateProcess
@@ -274,7 +287,7 @@ class CommandTest extends TestCase
         $this->command->addOption('test');
 
         $this->assertEquals(
-            ['help', 'greeting', 'title', 'test'],
+            ['greeting', 'title', 'test'],
             array_keys($this->inspectProperty(
                 HelloCommand::class,
                 $this->command,
@@ -294,13 +307,26 @@ class CommandTest extends TestCase
         $this->command->removeOption('greeting');
 
         $this->assertEquals(
-            ['help', 'title'],
+            ['title'],
             array_keys($this->inspectProperty(
                 HelloCommand::class,
                 $this->command,
                 'options'
             ))
         );
+    }
+
+    /**
+     * Test will throw exception if trying to remove unregistered option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfTryingToRemoveUnregisteredOption()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->command->removeOption('new');
     }
 
     /**

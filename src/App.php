@@ -414,7 +414,7 @@ class App implements AppInterface
     public function removeGlobalOption($name)
     {
         if (!isset($this->globalOptions[$name])) {
-            throw new CommandNotFoundException(
+            throw new \InvalidArgumentException(
                 "Trying to remove unknown global option '{$name}'"
             );
         }

@@ -406,7 +406,10 @@ abstract class Command implements CommandInterface
     public function removeArgument($name)
     {
         if (!isset($this->arguments[$name])) {
-            return;
+            throw new \InvalidArgumentException(
+                "Trying to remove unknown argument '{$name}' from the command "
+                . "'{$this->name}'"
+            );
         }
 
         unset($this->arguments[$name]);
@@ -504,7 +507,10 @@ abstract class Command implements CommandInterface
     public function removeOption($name)
     {
         if (!isset($this->options[$name])) {
-            return;
+            throw new \InvalidArgumentException(
+                "Trying to remove unknown option '{$name}' from the command " .
+                "'{$this->name}'"
+            );
         }
 
         if (!empty($this->options[$name]->getShortcut())) {

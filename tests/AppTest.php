@@ -304,11 +304,7 @@ class AppTest extends TestCase
                 'version',
                 'quiet',
                 'silent',
-                'verbose',
-                'no-color',
-                'no-interactive',
-                'plain',
-                'json',
+                'verbose'
             ],
             array_keys(
                 $this->inspectProperty(
@@ -348,11 +344,7 @@ class AppTest extends TestCase
                 'version',
                 'quiet',
                 'silent',
-                'verbose',
-                'no-color',
-                'no-interactive',
-                'plain',
-                'json',
+                'verbose'
             ],
             array_keys($this->app->getGlobalOptions())
         );
@@ -443,7 +435,7 @@ class AppTest extends TestCase
         // verify 'help menu'
         $this->assertEquals('Testing Application', $output[0]);
 
-        $this->assertEquals(21, count($output));
+        $this->assertEquals(17, count($output));
     }
 
     /**
@@ -461,7 +453,7 @@ class AppTest extends TestCase
         // verify 'help menu'
         $this->assertEquals('Testing Application', $output[0]);
 
-        $this->assertEquals(21, count($output));
+        $this->assertEquals(17, count($output));
     }
 
     /**
@@ -477,6 +469,73 @@ class AppTest extends TestCase
         exec(__DIR__ . '/bin/test_app --version', $output);
 
         $this->assertEquals('v1.0.0', $output[0]);
+    }
+
+    /**
+     * Test quit global option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testQuietGlobalOption()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app hello ahmed --quiet', $output);
+
+        $this->assertEmpty($output);
+    }
+
+    /**
+     * Test quit global option with echo.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testQuietGlobalOptionWithEcho()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app debug --quiet', $output);
+
+        $this->assertEmpty($output);
+    }
+
+    /**
+     * Test silent global option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testSilentGlobalOption()
+    {
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app hello ahmed --silent', $output);
+
+        $this->assertEmpty($output);
+
+        $output = [];
+
+        exec(__DIR__ . '/bin/test_app hello -t ahmed --silent', $output);
+
+        $this->assertEmpty($output);
+    }
+
+    /**
+     * Test verbose global option.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testVerboseGlobalOption()
+    {
+        $output = [];
+        $ret = 0;
+
+        exec(__DIR__ . '/bin/test_app debug --verbose', $output, $ret);
+
+        $this->assertEquals(3, count($output));
     }
 
     /**

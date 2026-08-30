@@ -56,13 +56,12 @@ abstract class Command implements CommandInterface
     /**
      * Command Constructor.
      *
-     * @param string $appName
      * @param array<Option> $options
      * @param array<string> $shortcuts
      */
-    public function __construct($appName, $options = [], $shortcuts = [])
+    public function __construct($options = [], $shortcuts = [])
     {
-        $this->appName = $appName;
+        $this->appName = '';
         $this->options = $options;
         $this->shortcuts = $shortcuts;
         $this->arguments = [];
@@ -121,6 +120,7 @@ abstract class Command implements CommandInterface
         // -cxyz
         // -ic
         $markForDelete = [];
+
         for ($order = 0;$order < $_argc;$order++) {
             $_arg = $_argv[$order];
             $opt = '';

@@ -51,7 +51,7 @@ interface IOInterface
      * Write to console (STDOUT).
      *
      * @param string $text
-     * @return bool
+     * @return int|false
      */
     public function write($text);
 
@@ -59,7 +59,7 @@ interface IOInterface
      * Write to console (STDOUT) with new line.
      *
      * @param string $text
-     * @return bool
+     * @return int|false
      */
     public function writeln($text);
 
@@ -67,14 +67,14 @@ interface IOInterface
      * Write to console (STDERR).
      *
      * @param string $text
-     * @return bool
+     * @return int|false
      */
     public function writeErr($text);
 
     /**
      * Read from console.
      *
-     * @return string
+     * @return string|false
      */
     public function read();
 

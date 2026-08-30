@@ -106,43 +106,43 @@ class IO implements IOInterface
      * Write to console (STDOUT).
      *
      * @param string $text
-     * @return bool
+     * @return int|false
      */
     public function write($text)
     {
-        return fwrite($this->outputStream, $text) !== false;
+        return $this->isQuiet ? false: fwrite($this->outputStream, $text);
     }
 
     /**
      * Write to console (STDOUT) with new line.
      *
      * @param string $text
-     * @return bool
+     * @return int|false
      */
     public function writeln($text)
     {
-        return fwrite($this->outputStream, $text . "\n") !== false;
+        return $this->write($text . "\n");
     }
 
     /**
      * Write to console (STDERR).
      *
      * @param string $text
-     * @return bool
+     * @return int|false
      */
     public function writeErr($text)
     {
-        return fwrite($this->errorStream, $text) !== false;
+        return $this->isSilent ? false: fwrite($this->errorStream, $text);
     }
 
     /**
      * Read from console.
      *
-     * @return string
+     * @return string|false
      */
     public function read()
     {
-        return fgets($this->inputStream) ?: '';
+        return fgets($this->inputStream);
     }
 
     /**

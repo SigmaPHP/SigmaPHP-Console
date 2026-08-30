@@ -28,6 +28,11 @@ class DebugCommand extends Command
      */
     public function execute()
     {
+        if ($this->hasOption('verbose')) {
+            echo $this->getName() . PHP_EOL;
+            echo $this->getDescription() . PHP_EOL;
+        }
+
         echo $this->appName . PHP_EOL;
     }
 }

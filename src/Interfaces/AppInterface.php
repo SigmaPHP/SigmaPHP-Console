@@ -124,6 +124,14 @@ interface AppInterface
     public function removeGlobalOption($name);
 
     /**
+     * Has global option.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasGlobalOption($name);
+
+    /**
      * Get global option' value.
      *
      * @param string $name

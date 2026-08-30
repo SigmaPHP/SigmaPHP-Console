@@ -25,12 +25,26 @@ class IO implements IOInterface
     protected $inputStream;
 
     /**
+     * @var bool $isQuiet
+     */
+    protected $isQuiet;
+
+    /**
+     * @var bool $isSilent
+     */
+    protected $isSilent;
+
+    /**
      * IO Constructor.
+     *
      */
     public function __construct() {
         $this->outputStream = fopen('php://stdout', 'w');
         $this->errorStream = fopen('php://stderr', 'w');
         $this->inputStream = fopen('php://stdin', 'r');
+
+        $this->isQuiet = false;
+        $this->isSilent = false;
     }
 
     /**
@@ -64,6 +78,28 @@ class IO implements IOInterface
     public function setInputStream($stream)
     {
         $this->inputStream = $stream;
+    }
+
+    /**
+     * Set is quiet flag.
+     *
+     * @param bool $value
+     * @return void
+     */
+    public function setIsQuiet($value)
+    {
+        $this->isQuiet = $value;
+    }
+
+    /**
+     * Set is silent flag.
+     *
+     * @param bool $value
+     * @return void
+     */
+    public function setIsSilent($value)
+    {
+        $this->isSilent = $value;
     }
 
     /**

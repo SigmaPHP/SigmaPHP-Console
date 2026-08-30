@@ -56,15 +56,16 @@ abstract class Command implements CommandInterface
     /**
      * Command Constructor.
      *
+     * @param string $appName
      * @param array<Option> $options
      * @param array<string> $shortcuts
      */
-    public function __construct($options = [], $shortcuts = [])
+    public function __construct($appName, $options = [], $shortcuts = [])
     {
-        $this->appName = '';
-        $this->arguments = [];
+        $this->appName = $appName;
         $this->options = $options;
         $this->shortcuts = $shortcuts;
+        $this->arguments = [];
         $this->aliases = [];
 
         // set default command name, using some lightweight dark magic :D
@@ -73,8 +74,6 @@ abstract class Command implements CommandInterface
         );
 
         $this->init();
-
-        $this->io = new IO();
     }
 
     /**
@@ -313,6 +312,17 @@ abstract class Command implements CommandInterface
         } else {
             $this->execute();
         }
+    }
+
+    /**
+     * Set IO handler.
+     *
+     * @param IO $handler
+     * @return void
+     */
+    public function setIOHandler($handler)
+    {
+        $this->io = $handler;
     }
 
     /**

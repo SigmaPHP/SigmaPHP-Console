@@ -24,6 +24,30 @@ interface IOInterface
     public function setErrorStream($stream);
 
     /**
+     * Set the input stream.
+     *
+     * @param resource $stream
+     * @return bool
+     */
+    public function setInputStream($stream);
+
+    /**
+     * Set is quiet flag.
+     *
+     * @param bool $value
+     * @return void
+     */
+    public function setIsQuiet($value);
+
+    /**
+     * Set is silent flag.
+     *
+     * @param bool $value
+     * @return void
+     */
+    public function setIsSilent($value);
+
+    /**
      * Write to console (STDOUT).
      *
      * @param string $text

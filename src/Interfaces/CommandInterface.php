@@ -3,6 +3,7 @@
 namespace SigmaPHP\Console\Interfaces;
 
 use SigmaPHP\Console\DataType;
+use SigmaPHP\Console\IO;
 
 /**
  * Command Interface.
@@ -36,6 +37,14 @@ interface CommandInterface
      * @return void
      */
     public function executionHandler();
+
+    /**
+     * Set IO handler.
+     *
+     * @param IO $handler
+     * @return void
+     */
+    public function setIOHandler($handler);
 
     /**
      * Set app's name.

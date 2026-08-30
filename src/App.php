@@ -45,6 +45,11 @@ class App implements AppInterface
     protected $shortcuts;
 
     /**
+     * @var IO $io
+     */
+    protected $io;
+
+    /**
      * App Constructor.
      */
     public function __construct()
@@ -56,6 +61,8 @@ class App implements AppInterface
         $this->commands = [];
         $this->globalOptions = [];
         $this->shortcuts = [];
+
+        $this->io = new IO();
 
         $this->addGlobalOption(
             'help',
@@ -93,38 +100,6 @@ class App implements AppInterface
             'verbose',
             'v',
             'Show detailed debug information; use default values',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
-
-        $this->addGlobalOption(
-            'no-color',
-            '',
-            'Disable colored output',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
-
-        $this->addGlobalOption(
-            'no-interactive',
-            '',
-            'Disable interactive prompts and input',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
-
-        $this->addGlobalOption(
-            'plain',
-            '',
-            'Use plain, human-readable output without formatting',
-            Option::PARAMETER_NONE,
-            DataType::BOOL
-        );
-
-        $this->addGlobalOption(
-            'json',
-            '',
-            'Output results in JSON format',
             Option::PARAMETER_NONE,
             DataType::BOOL
         );
@@ -182,7 +157,11 @@ class App implements AppInterface
         $_shortcuts = $this->shortcuts;
         unset($_shortcuts['v']);
 
-        $commandInst = new $command($_globalOptions, $_shortcuts);
+        $commandInst = new $command(
+            $this->appName,
+            $_globalOptions,
+            $_shortcuts
+        );
 
         if ($this->hasCommand($commandInst->getName())) {
             throw new \InvalidArgumentException(
@@ -303,44 +282,56 @@ class App implements AppInterface
                 $this->setAppName($this->appName);
             }
 
-            if (!isset($argv[1])) {
+            if (count($argv) == 1) {
                 $this->help();
                 exit(0);
             }
 
-            $input = $argv[1];
+            if ($this->hasGlobalOption('help')) {
+                $this->help();
+                exit(0);
+            }
+
+            if ($this->hasGlobalOption('version')) {
+                $this->version();
+                exit(0);
+            }
+
+            $isQuiet = $this->hasGlobalOption('quiet');
+
+            $isSilent = $this->hasGlobalOption('silent');
+
+            $isVerbose = $this->hasGlobalOption('verbose');
+
+            $this->io->setIsQuiet($isQuiet);
+            $this->io->setIsSilent($isSilent);
+
+            $command = $argv[1];
 
             // if no input was provided, check the global options if any were
             // set else show 'help' if enabled, otherwise do nothing!
-            if ($this->hasCommand($input)) {
+            if ($this->hasCommand($command)) {
+                if ($isQuiet || $isSilent) {
+                    ob_start();
+                }
+
                 // start execution cycle
                 $this->beforeStart();
 
-                $this->getCommand($input)->setAppName($this->appName);
-                $this->getCommand($input)->executionHandler();
+                $this->getCommand($command)->setIOHandler($this->io);
+                $this->getCommand($command)->executionHandler();
 
                 $this->afterComplete();
 
-                exit(0);
-            }
-            else if (strpos($input, '-') !== false) {
-                if (in_array($input, ['-v', '--version'])) {
-                    $this->version();
-                }
-                else if (in_array($input, ['-h', '--help'])) {
-                    $this->help();
-                }
-                else {
-                    throw new \InvalidArgumentException(
-                        "Unknown option '{$input}'"
-                    );
+                if ($isQuiet || $isSilent) {
+                    ob_end_clean();
                 }
 
                 exit(0);
             }
             else {
                 throw new CommandNotFoundException(
-                    "Unknown command: {$input}"
+                    "Unknown command: {$command}"
                 );
             }
         } catch (\Exception $e) {
@@ -424,6 +415,27 @@ class App implements AppInterface
         }
 
         unset($this->globalOptions[$name]);
+    }
+
+    /**
+     * Has global option.
+     *
+     * @param string $name
+     * @return Option
+     */
+    public function hasGlobalOption($name)
+    {
+        if (!isset($this->globalOptions[$name])) {
+            throw new CommandNotFoundException(
+                "Trying to call unknown global option '{$name}'"
+            );
+        }
+
+        global $argv;
+
+        return
+            in_array('--' . $this->getGlobalOption($name)->getName(), $argv) ||
+            in_array('-' . $this->getGlobalOption($name)->getShortcut(), $argv);
     }
 
     /**

@@ -22,89 +22,109 @@ class Color implements ColorInterface
     /**
      * Foreground.
      */
-    public const FG_DEFAULT       = "39";
-    public const FG_BLACK         = "30";
-    public const FG_RED           = "31";
-    public const FG_GREEN         = "32";
-    public const FG_YELLOW        = "33";
-    public const FG_BLUE          = "34";
-    public const FG_MAGENTA       = "35";
-    public const FG_CYAN          = "36";
-    public const FG_LIGHT_GRAY    = "37";
-    public const FG_DARK_GRAY     = "90";
-    public const FG_LIGHT_RED     = "91";
-    public const FG_LIGHT_GREEN   = "92";
-    public const FG_LIGHT_YELLOW  = "93";
-    public const FG_LIGHT_BLUE    = "94";
-    public const FG_LIGHT_MAGENTA = "95";
-    public const FG_LIGHT_CYAN    = "96";
-    public const FG_WHITE         = "97";
+    public $fgColors = [
+        "default"       => "39",
+        "black"         => "30",
+        "red"           => "31",
+        "green"         => "32",
+        "yellow"        => "33",
+        "blue"          => "34",
+        "magenta"       => "35",
+        "cyan"          => "36",
+        "light_gray"    => "37",
+        "dark_gray"     => "90",
+        "light_red"     => "91",
+        "light_green"   => "92",
+        "light_yellow"  => "93",
+        "light_blue"    => "94",
+        "light_magenta" => "95",
+        "light_cyan"    => "96",
+        "white"         => "97"
+    ];
 
     /**
      * Background.
      */
-    public const BG_DEFAULT = "49";
-    public const BG_BLACK = "40";
-    public const BG_RED = "41";
-    public const BG_GREEN = "42";
-    public const BG_YELLOW = "43";
-    public const BG_BLUE = "44";
-    public const BG_MAGENTA = "45";
-    public const BG_CYAN = "46";
-    public const BG_LIGHT_GRAY = "47";
-    public const BG_DARK_GRAY = "100";
-    public const BG_LIGHT_RED = "101";
-    public const BG_LIGHT_GREEN = "102";
-    public const BG_LIGHT_YELLOW = "103";
-    public const BG_LIGHT_BLUE = "104";
-    public const BG_LIGHT_MAGENTA = "105";
-    public const BG_LIGHT_CYAN = "106";
-    public const BG_WHITE = "107";
+    public $bgColors = [
+        "default"       => "49",
+        "black"         => "40",
+        "red"           => "41",
+        "green"         => "42",
+        "yellow"        => "43",
+        "blue"          => "44",
+        "magenta"       => "45",
+        "cyan"          => "46",
+        "light_gray"    => "47",
+        "dark_gray"     => "100",
+        "light_red"     => "101",
+        "light_green"   => "102",
+        "light_yellow"  => "103",
+        "light_blue"    => "104",
+        "light_magenta" => "105",
+        "light_cyan"    => "106",
+        "white"         => "107"
+    ];
 
     /**
      * Colorize a text using standard ANSI escape characters.
      *
+     * Please Note:
+     * - For ANSI-16 use string color values
+     * - For ANSI-256 use integer color values
+     *
      * @param string $text
-     * @param string $color
+     * @param string|int $color
      * @param bool $bg
      * @return string
      */
     public function colorize($text, $color, $bg = false)
     {
+        if (is_numeric($color) && (($color < 1) || ($color > 256))) {
+            throw new \InvalidArgumentException(
+                "Invalid color value '{$color}', ANSI-256 colors " .
+                "can only accept values between 1 and 256"
+            );
+        }
+        else if (!is_numeric($color) && !isset($this->bgColors[$color])) {
+            throw new \InvalidArgumentException(
+                "Invalid ANSI-16 color value '{$color}', kindly " .
+                "check the documentation for more information about " .
+                "the available ANSI-16 colors"
+            );
+        }
 
+        $colorSequence = $bg ?
+            $this->getBG($color, is_numeric($color)) :
+            $this->getFG($color, is_numeric($color));
+
+        return $colorSequence . $text . self::RESET;
     }
 
     /**
      * Get foreground color sequence.
      *
-     * @param string $color
+     * @param string|int $color
+     * @param bool $is256
      * @return string
      */
-    protected function getFG($color)
+    protected function getFG($color, $is256 = false)
     {
-        if (($color < 1) || ($color > 256)) {
-            $color = self::FG_DEFAULT;
-        }
-
-        // ToDo: check the 16 or 256 for the correct sequence
-
-        return ($color > 16) ? "" : "\033[{$color}m";
+        return $is256 ?
+            "\033[38;5;{$color}m" :
+            "\033[{$this->fgColors[$color]}m";
     }
 
     /**
      * Get background color sequence.
      *
-     * @param string $color
+     * @param string|int $color
+     * @param bool $is256
      * @return string
      */
-    protected function getBG($color)
+    protected function getBG($color, $is256)
     {
-        if (($color < 1) || ($color > 256)) {
-            $color = self::FG_DEFAULT;
-        }
-
-        // ToDo: check the 16 or 256 for the correct sequence
-
-        return ($color > 16) ? "" : "\033[{$color}m";
+        return $is256 ?
+            "\033[48;5;{$color}m" :
+            "\033[{$this->bgColors[$color]}m";
     }
 }

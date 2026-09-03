@@ -51,25 +51,28 @@ interface IOInterface
      * Write to console (STDOUT).
      *
      * @param string $text
+     * @param string $style
      * @return int|false
      */
-    public function write($text);
+    public function write($text, $style);
 
     /**
      * Write to console (STDOUT) with new line.
      *
      * @param string $text
+     * @param string $style
      * @return int|false
      */
-    public function writeln($text);
+    public function writeln($text, $style);
 
     /**
      * Write to console (STDERR).
      *
      * @param string $text
+     * @param string $style
      * @return int|false
      */
-    public function writeErr($text);
+    public function writeErr($text, $style);
 
     /**
      * Read from console.

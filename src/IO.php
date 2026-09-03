@@ -35,6 +35,16 @@ class IO implements IOInterface
     protected $isSilent;
 
     /**
+     * @var Color $color
+     */
+    protected $color;
+
+    /**
+     * @var TextFormatter
+     */
+    protected $textFormatter;
+
+    /**
      * IO Constructor.
      *
      */
@@ -45,6 +55,9 @@ class IO implements IOInterface
 
         $this->isQuiet = false;
         $this->isSilent = false;
+
+        $this->color = new Color();
+        $this->textFormatter = new TextFormatter();
     }
 
     /**
@@ -106,33 +119,40 @@ class IO implements IOInterface
      * Write to console (STDOUT).
      *
      * @param string $text
+     * @param string $style
      * @return int|false
      */
-    public function write($text)
+    public function write($text, $style = '')
     {
-        return $this->isQuiet ? false: fwrite($this->outputStream, $text);
+        return $this->isQuiet ?
+            false :
+            fwrite($this->outputStream, $this->stylize($text, $style));
     }
 
     /**
      * Write to console (STDOUT) with new line.
      *
      * @param string $text
+     * @param string $style
      * @return int|false
      */
-    public function writeln($text)
+    public function writeln($text, $style = '')
     {
-        return $this->write($text . "\n");
+        return $this->write($text . "\n", $style);
     }
 
     /**
      * Write to console (STDERR).
      *
      * @param string $text
+     * @param string $style
      * @return int|false
      */
-    public function writeErr($text)
+    public function writeErr($text, $style = '')
     {
-        return $this->isSilent ? false: fwrite($this->errorStream, $text);
+        return $this->isSilent ?
+            false :
+            fwrite($this->errorStream, $this->stylize($text, $style));
     }
 
     /**
@@ -160,5 +180,42 @@ class IO implements IOInterface
             ) &&
             !isset($_SERVER['NO_COLOR'])
         );
+    }
+
+    /**
+     * Apply styling to text.
+     *
+     * @param string $text
+     * @param string $style
+     * @return string
+     */
+    public function stylize($text, $style)
+    {
+        if (empty($style)) {
+            return $text;
+        }
+
+        $_options = explode(';', $style);
+
+        foreach ($_options as $option) {
+            if (strpos($option, '=') !== false) {
+                $parts = explode('=', $option);
+
+                if ($parts[0] == 'fg') {
+                    $text = $this->color->colorize($text, $parts[1]);
+                }
+                else if ($parts[0] == 'bg') {
+                    $text = $this->color->colorize($text, $parts[1], true);
+                } else {
+                    throw new \InvalidArgumentException(
+                        "Unknown styling option'{$parts[0]}'"
+                    );
+                }
+            } else {
+                $text = $this->textFormatter->format($text, $option);
+            }
+        }
+
+        return $text;
     }
 }

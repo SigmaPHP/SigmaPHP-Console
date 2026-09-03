@@ -134,4 +134,55 @@ class IOTest extends TestCase
 
         $this->assertFalse($this->io->hasColorSupport());
     }
+
+    /**
+     * Test styling.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testStyling()
+    {
+        $this->io->setOutputStream($this->testStream);
+        $this->io->write('Hello World', 'fg=red;bg=180;bold');
+
+        $result = stream_get_contents($this->testStream, -1, 0);
+
+        $this->assertEquals(
+            '\033[1m\033[48;5;180m\033[31mHello World\033[0m\033[0m\033[0m',
+            str_replace("\033", "\\033", $result)
+        );
+    }
+
+    /**
+     * Test error styling.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testErrorStyling()
+    {
+        $this->io->setErrorStream($this->testStream);
+        $this->io->writeErr('Wrong', 'fg=blue;bg=90;bold');
+
+        $result = stream_get_contents($this->testStream, -1, 0);
+
+        $this->assertEquals(
+            '\033[1m\033[48;5;90m\033[34mWrong\033[0m\033[0m\033[0m',
+            str_replace("\033", "\\033", $result)
+        );
+    }
+
+    /**
+     * Test will throw exception if invalid style.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfInvalidStyle()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->io->write('Hello World', 'fg=red;gb=180;bold');
+    }
 }

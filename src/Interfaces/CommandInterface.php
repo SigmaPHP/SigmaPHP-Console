@@ -174,4 +174,70 @@ interface CommandInterface
      * @return array<string>
      */
     public function getAliases();
+
+    /**
+     * Write to console (STDOUT).
+     *
+     * @param string $text
+     * @param string $style
+     * @return int|false
+     */
+    public function write($text, $style);
+
+    /**
+     * Write to console (STDOUT) with new line.
+     *
+     * @param string $text
+     * @param string $style
+     * @return int|false
+     */
+    public function writeln($text, $style);
+
+    /**
+     * Write to console (STDERR).
+     *
+     * @param string $text
+     * @param string $style
+     * @return int|false
+     */
+    public function writeErr($text, $style);
+
+    /**
+     * Read from console.
+     *
+     * @return string|false
+     */
+    public function read();
+
+    /**
+     * Print info message.
+     *
+     * @param string $text
+     * @return int|false
+     */
+    public function info($text);
+
+    /**
+     * Print success message.
+     *
+     * @param string $text
+     * @return int|false
+     */
+    public function success($text);
+
+    /**
+     * Print warning message.
+     *
+     * @param string $text
+     * @return int|false
+     */
+    public function warning($text);
+
+    /**
+     * Print error message.
+     *
+     * @param string $text
+     * @return int|false
+     */
+    public function error($text);
 }

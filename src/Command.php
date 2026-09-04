@@ -699,4 +699,94 @@ abstract class Command implements CommandInterface
     {
         return $this->aliases;
     }
+
+    /**
+     * Write to console (STDOUT).
+     *
+     * @param string $text
+     * @param string $style
+     * @return int|false
+     */
+    public function write($text, $style = '')
+    {
+        return $this->io->write($text, $style);
+    }
+
+    /**
+     * Write to console (STDOUT) with new line.
+     *
+     * @param string $text
+     * @param string $style
+     * @return int|false
+     */
+    public function writeln($text, $style = '')
+    {
+        return $this->io->writeln($text, $style);
+    }
+
+    /**
+     * Write to console (STDERR).
+     *
+     * @param string $text
+     * @param string $style
+     * @return int|false
+     */
+    public function writeErr($text, $style = '')
+    {
+        return $this->io->writeErr($text, $style);
+    }
+
+    /**
+     * Read from console.
+     *
+     * @return string|false
+     */
+    public function read()
+    {
+        return $this->io->read();
+    }
+
+    /**
+     * Print info message.
+     *
+     * @param string $text
+     * @return int|false
+     */
+    public function info($text)
+    {
+        $this->io->writeln($text, 'fg=blue;bold');
+    }
+
+    /**
+     * Print success message.
+     *
+     * @param string $text
+     * @return int|false
+     */
+    public function success($text)
+    {
+        $this->io->writeln($text, 'fg=green;bold');
+    }
+
+    /**
+     * Print warning message.
+     *
+     * @param string $text
+     * @return int|false
+     */
+    public function warning($text)
+    {
+        $this->io->writeln($text, 'fg=yellow;bold');
+    }
+
+    /**
+     * Print error message.
+     *
+     * @param string $text
+     * @return int|false
+     */
+    public function error($text)
+    {
+        $this->io->writeln($text, 'fg=red;bold');
+    }
 }

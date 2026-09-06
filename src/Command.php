@@ -754,7 +754,7 @@ abstract class Command implements CommandInterface
      */
     public function info($text)
     {
-        $this->io->writeln($text, 'fg=blue;bold');
+        $this->writeln($text, 'fg=light_blue;bold');
     }
 
     /**
@@ -765,7 +765,7 @@ abstract class Command implements CommandInterface
      */
     public function success($text)
     {
-        $this->io->writeln($text, 'fg=green;bold');
+        $this->writeln($text, 'fg=light_green;bold');
     }
 
     /**
@@ -776,7 +776,7 @@ abstract class Command implements CommandInterface
      */
     public function warning($text)
     {
-        $this->io->writeln($text, 'fg=yellow;bold');
+        $this->writeln($text, 'fg=light_yellow;bold');
     }
 
     /**
@@ -787,6 +787,6 @@ abstract class Command implements CommandInterface
      */
     public function error($text)
     {
-        $this->io->writeln($text, 'fg=red;bold');
+        $this->writeln($text, 'fg=light_red;bold');
     }
 }

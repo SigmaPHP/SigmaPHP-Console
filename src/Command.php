@@ -7,6 +7,7 @@ use SigmaPHP\Console\IO;
 use SigmaPHP\Console\Argument;
 use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\Option;
+use SigmaPHP\Console\Question;
 
 /**
  * Command Class.
@@ -54,6 +55,11 @@ abstract class Command implements CommandInterface
     protected $io;
 
     /**
+     * @var Question $question
+     */
+    protected $question;
+
+    /**
      * Command Constructor.
      *
      * @param array<Option> $options
@@ -66,6 +72,8 @@ abstract class Command implements CommandInterface
         $this->shortcuts = $shortcuts;
         $this->arguments = [];
         $this->aliases = [];
+
+        $this->question = new Question();
 
         // set default command name, using some lightweight dark magic :D
         $this->setName(
@@ -323,6 +331,7 @@ abstract class Command implements CommandInterface
     public function setIOHandler($handler)
     {
         $this->io = $handler;
+        $this->question->setIOHandler($this->io);
     }
 
     /**

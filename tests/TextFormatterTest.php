@@ -28,7 +28,7 @@ class TextFormatterTest extends TestCase
     }
 
     /**
-     * ColorTest TearDown
+     * TextFormatterTest TearDown
      *
      * @return void
      */

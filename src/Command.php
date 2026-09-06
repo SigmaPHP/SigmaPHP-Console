@@ -8,6 +8,7 @@ use SigmaPHP\Console\Argument;
 use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\Option;
 use SigmaPHP\Console\Question;
+use SigmaPHP\Console\Box;
 
 /**
  * Command Class.
@@ -60,6 +61,11 @@ abstract class Command implements CommandInterface
     protected $question;
 
     /**
+     * @var Box $box
+     */
+    protected $box;
+
+    /**
      * Command Constructor.
      *
      * @param array<Option> $options
@@ -74,6 +80,7 @@ abstract class Command implements CommandInterface
         $this->aliases = [];
 
         $this->question = new Question();
+        $this->box = new Box();
 
         // set default command name, using some lightweight dark magic :D
         $this->setName(
@@ -332,6 +339,7 @@ abstract class Command implements CommandInterface
     {
         $this->io = $handler;
         $this->question->setIOHandler($this->io);
+        $this->box->setIOHandler($this->io);
     }
 
     /**
@@ -763,7 +771,7 @@ abstract class Command implements CommandInterface
      */
     public function info($text)
     {
-        $this->writeln($text, 'fg=light_blue;bold');
+        return $this->writeln($text, 'fg=light_blue;bold');
     }
 
     /**
@@ -774,7 +782,7 @@ abstract class Command implements CommandInterface
      */
     public function success($text)
     {
-        $this->writeln($text, 'fg=light_green;bold');
+        return $this->writeln($text, 'fg=light_green;bold');
     }
 
     /**
@@ -785,7 +793,7 @@ abstract class Command implements CommandInterface
      */
     public function warning($text)
     {
-        $this->writeln($text, 'fg=light_yellow;bold');
+        return $this->writeln($text, 'fg=light_yellow;bold');
     }
 
     /**
@@ -796,6 +804,6 @@ abstract class Command implements CommandInterface
      */
     public function error($text)
     {
-        $this->writeln($text, 'fg=light_red;bold');
+        return $this->writeln($text, 'fg=light_red;bold');
     }
 }

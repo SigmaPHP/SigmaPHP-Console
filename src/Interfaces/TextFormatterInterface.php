@@ -3,7 +3,7 @@
 namespace SigmaPHP\Console\Interfaces;
 
 /**
- * TextFormatter Interface.
+ * Text Formatter Interface.
  */
 interface TextFormatterInterface
 {

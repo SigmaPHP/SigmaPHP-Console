@@ -162,7 +162,9 @@ class IO implements IOInterface
      */
     public function read()
     {
-        return trim(fgets($this->inputStream));
+        $input = fgets($this->inputStream);
+
+        return ($input !== false) ? trim($input) : false;
     }
 
     /**

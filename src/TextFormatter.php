@@ -5,7 +5,7 @@ namespace SigmaPHP\Console;
 use SigmaPHP\Console\Interfaces\TextFormatterInterface;
 
 /**
- * TextFormatter Class.
+ * Text Formatter Class.
  *
  * Reference:
  * https://misc.flogisoft.com/bash/tip_colors_and_formatting

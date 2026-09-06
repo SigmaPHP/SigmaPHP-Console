@@ -139,6 +139,39 @@ class App implements AppInterface
     }
 
     /**
+     * Set the output stream.
+     *
+     * @param resource $stream
+     * @return bool
+     */
+    public function setOutputStream($stream)
+    {
+        $this->io->setOutputStream($stream);
+    }
+
+    /**
+     * Set the error stream.
+     *
+     * @param resource $stream
+     * @return bool
+     */
+    public function setErrorStream($stream)
+    {
+        $this->io->setErrorStream($stream);
+    }
+
+    /**
+     * Set the input stream.
+     *
+     * @param resource $stream
+     * @return bool
+     */
+    public function setInputStream($stream)
+    {
+        $this->io->setInputStream($stream);
+    }
+
+    /**
      * Add command to app.
      *
      * @param Command $command

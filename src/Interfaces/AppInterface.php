@@ -41,6 +41,30 @@ interface AppInterface
     public function setAppVersion($appVersion);
 
     /**
+     * Set the output stream.
+     *
+     * @param resource $stream
+     * @return void
+     */
+    public function setOutputStream($stream);
+
+    /**
+     * Set the error stream.
+     *
+     * @param resource $stream
+     * @return void
+     */
+    public function setErrorStream($stream);
+
+    /**
+     * Set the input stream.
+     *
+     * @param resource $stream
+     * @return bool
+     */
+    public function setInputStream($stream);
+
+    /**
      * Add command to app.
      *
      * @param Command $command

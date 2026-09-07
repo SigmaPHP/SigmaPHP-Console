@@ -35,21 +35,23 @@ class HelloCommand extends Command
      */
     public function execute()
     {
-        $buffer = 'Hello ';
+        // $buffer = 'Hello ';
 
-        if ($this->hasOption('greeting')) {
-            $buffer = $this->getOption('greeting') . ' ';
-        }
+        // if ($this->hasOption('greeting')) {
+        //     $buffer = $this->getOption('greeting') . ' ';
+        // }
 
-        if ($this->hasOption('title')) {
-            $buffer .= $this->getOption('title') . ' ';
-        }
+        // if ($this->hasOption('title')) {
+        //     $buffer .= $this->getOption('title') . ' ';
+        // }
 
-        if ($this->hasArgument('name')) {
-            $buffer .= $this->getArgument('name');
-        }
+        // if ($this->hasArgument('name')) {
+        //     $buffer .= $this->getArgument('name');
+        // }
 
-        echo $buffer . PHP_EOL;
+        // echo $buffer . PHP_EOL;
+
+        $this->table->create(['name', 'age'], [['ahmed', '15'], ['ali', '21']]);
     }
 }
 

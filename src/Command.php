@@ -9,6 +9,7 @@ use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\Option;
 use SigmaPHP\Console\Question;
 use SigmaPHP\Console\Box;
+use SigmaPHP\Console\Table;
 
 /**
  * Command Class.
@@ -66,6 +67,11 @@ abstract class Command implements CommandInterface
     protected $box;
 
     /**
+     * @var Table $table
+     */
+    protected $table;
+
+    /**
      * Command Constructor.
      *
      * @param array<Option> $options
@@ -81,6 +87,7 @@ abstract class Command implements CommandInterface
 
         $this->question = new Question();
         $this->box = new Box();
+        $this->table = new Table();
 
         // set default command name, using some lightweight dark magic :D
         $this->setName(
@@ -340,6 +347,7 @@ abstract class Command implements CommandInterface
         $this->io = $handler;
         $this->question->setIOHandler($this->io);
         $this->box->setIOHandler($this->io);
+        $this->table->setIOHandler($this->io);
     }
 
     /**

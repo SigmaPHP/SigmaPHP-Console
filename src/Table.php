@@ -25,63 +25,68 @@ class Table implements TableInterface
      */
     public function create($header, $data, $style = '', $border = '*')
     {
-        // height = (top border) + header + (header separator) + data rows +
-        //        = (bottom border)
-        $height = 4 + count($data);
+        $data = array_merge([$header], $data);
 
-        // width = (left border) + ((cell width) + (right border for each cell))
-        $width = 1;
-
-        $maxCellWidth = 0;
+        $maxCellWidth = array_fill(0, count($header), 0);
 
         foreach ($data as $row) {
-            foreach ($row as $cell) {
-                if (strlen($cell) > $maxCellWidth) {
-                    $maxCellWidth = strlen($cell);
+            foreach ($row as $index => $cell) {
+                if (strlen(' ' . $cell . ' ') > $maxCellWidth[$index]) {
+                    $maxCellWidth[$index] = strlen(' ' . $cell . ' ');
                 }
-
-                $width += strlen($cell) + 1;
             }
         }
 
-        // ToDo: create $matrix, that will contain all chars in one array
+        $lines = [];
+        $_line = '';
+
+        foreach ($data as $row) {
+            $_line = $border;
+
+            foreach ($row as $index => $cell) {
+                $_line .= str_pad((' ' . $cell . ' '),
+                    $maxCellWidth[$index], ' ', STR_PAD_BOTH) . $border;
+            }
+
+            $lines[] = $_line;
+        }
 
         // render
-        for ($i = 0;$i < $height;$i++) {
-            for ($j = 0;$j < $width;$j++) {
-                // top border
-                if ($i == 0) {
+        for ($i = 0;$i < count($lines);$i++) {
+            // top border / header separator
+            if ($i == 0) {
+                for ($j = 0;$j < strlen($lines[$i]);$j++) {
                     $this->io->write($border, $style);
                 }
-                // header
-                else if ($i == 1) {
-                    // left border
-                    if ($j == 0) {
-                        $this->io->write($border, $style);
-                    }
-                    // data
-                    else {
-                        $this->io->write(' ' . $border, $style);
-                    }
+
+                $this->io->writeln('');
+
+                for ($j = 0;$j < strlen($lines[$i]);$j++) {
+                    $this->io->write($lines[$i][$j], $style);
                 }
-                // header separator
-                else if ($i == 2) {
+
+                $this->io->writeln('');
+
+                for ($j = 0;$j < strlen($lines[$i]);$j++) {
                     $this->io->write($border, $style);
                 }
-                // bottom border
-                else if ($i == ($height - 1)) {
+            }
+            // bottom border
+            else if ($i == (count($lines) - 1)) {
+                for ($j = 0;$j < strlen($lines[$i]);$j++) {
+                    $this->io->write($lines[$i][$j], $style);
+                }
+
+                $this->io->writeln('');
+
+                for ($j = 0;$j < strlen($lines[$i]);$j++) {
                     $this->io->write($border, $style);
                 }
-                // data
-                else {
-                    // left border
-                    if ($j == 0) {
-                        $this->io->write($border, $style);
-                    }
-                    // data
-                    else {
-                        $this->io->write(' ' . $border, $style);
-                    }
+            }
+            // rest of the rows
+            else {
+                for ($j = 0;$j < strlen($lines[$i]);$j++) {
+                    $this->io->write($lines[$i][$j], $style);
                 }
             }
 

@@ -15,10 +15,9 @@ interface TableInterface
      * @param array<string> $header
      * @param array<array<string>> $data
      * @param string $style
-     * @param string $border
      * @return void
      */
-    public function create($header, $data, $style, $border);
+    public function create($header, $data, $style);
 
     /**
      * Set IO handler.

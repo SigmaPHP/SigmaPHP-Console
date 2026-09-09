@@ -20,43 +20,50 @@ class Table implements TableInterface
      * @param array<string> $header
      * @param array<array<string>> $data
      * @param string $style
-     * @param string $border
      * @return void
      */
-    public function create($header, $data, $style = '', $border = '*')
+    public function create($header, $data, $style = '')
     {
         $data = array_merge([$header], $data);
 
+        // extract max number of chars for each column
+        // these values will be used to align each cell inside
+        // the column, so all match exact width
         $maxCellWidth = array_fill(0, count($header), 0);
 
         foreach ($data as $row) {
-            foreach ($row as $index => $cell) {
-                if (strlen(' ' . $cell . ' ') > $maxCellWidth[$index]) {
-                    $maxCellWidth[$index] = strlen(' ' . $cell . ' ');
+            foreach ($row as $index => $column) {
+                if (strlen(' ' . $column . ' ') > $maxCellWidth[$index]) {
+                    $maxCellWidth[$index] = strlen(' ' . $column . ' ');
                 }
             }
         }
 
+        // prepare the render buffer
         $lines = [];
         $_line = '';
+        $vBorder = '|';
+        $hBorder = '-';
 
         foreach ($data as $row) {
-            $_line = $border;
+            $_line = $vBorder;
 
-            foreach ($row as $index => $cell) {
-                $_line .= str_pad((' ' . $cell . ' '),
-                    $maxCellWidth[$index], ' ', STR_PAD_BOTH) . $border;
+            foreach ($row as $index => $column) {
+                $column = str_replace(["\n", "\r"], '', $column);
+
+                $_line .= str_pad((' ' . $column . ' '),
+                    $maxCellWidth[$index], ' ', STR_PAD_RIGHT) . $vBorder;
             }
 
             $lines[] = $_line;
         }
 
-        // render
+        // do render
         for ($i = 0;$i < count($lines);$i++) {
             // top border / header separator
             if ($i == 0) {
                 for ($j = 0;$j < strlen($lines[$i]);$j++) {
-                    $this->io->write($border, $style);
+                    $this->io->write($hBorder, $style);
                 }
 
                 $this->io->writeln('');
@@ -68,7 +75,7 @@ class Table implements TableInterface
                 $this->io->writeln('');
 
                 for ($j = 0;$j < strlen($lines[$i]);$j++) {
-                    $this->io->write($border, $style);
+                    $this->io->write($hBorder, $style);
                 }
             }
             // bottom border
@@ -80,7 +87,7 @@ class Table implements TableInterface
                 $this->io->writeln('');
 
                 for ($j = 0;$j < strlen($lines[$i]);$j++) {
-                    $this->io->write($border, $style);
+                    $this->io->write($hBorder, $style);
                 }
             }
             // rest of the rows

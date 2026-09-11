@@ -10,10 +10,11 @@ interface ProgressBarInterface
     /**
      * Start a new progress bar.
      *
+     * @param int $total
      * @param int $position
      * @return void
      */
-    public function start($position);
+    public function start($total, $position);
 
     /**
      * Update a progress bar.

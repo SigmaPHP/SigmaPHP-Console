@@ -10,6 +10,11 @@ use SigmaPHP\Console\Interfaces\ProgressBarInterface;
 class ProgressBar implements ProgressBarInterface
 {
     /**
+     * Progress bar width (without the counter !).
+     */
+    public const BAR_WIDTH = 70;
+
+    /**
      * @var IO $io
      */
     protected $io;
@@ -100,7 +105,9 @@ class ProgressBar implements ProgressBarInterface
      */
     public function update($steps)
     {
-
+        $this->currentPosition += $steps;
+        $this->io->clear();
+        $this->draw();
     }
 
     /**
@@ -121,21 +128,22 @@ class ProgressBar implements ProgressBarInterface
      */
     protected function draw()
     {
-        $counter = floor($this->currentPosition / $this->totalSteps);
+        $counter = floor(($this->currentPosition / $this->totalSteps) * 100);
+        $complete = floor(($counter * self::BAR_WIDTH) / 100);
 
-        $this->io->write($this->leftBorder);
+        $this->io->write($this->leftBorder, $this->style);
 
-        for ($i = 0;$i < $this->totalSteps;$i++) {
-            if ($i <= $this->currentPosition) {
-                $this->io->write($this->completeSymbol);
+        for ($i = 0;$i < self::BAR_WIDTH;$i++) {
+            if ($i <= $complete) {
+                $this->io->write($this->completeSymbol, $this->style);
             } else {
-                $this->io->write($this->inProgressSymbol);
+                $this->io->write($this->inProgressSymbol, $this->style);
             }
         }
 
-        $this->io->write($this->rightBorder);
+        $this->io->write($this->rightBorder, $this->style);
 
-        $this->io->write($counter . '%');
+        $this->io->write(' ' . $counter . '%', $this->style);
 
         $this->io->newLine();
     }

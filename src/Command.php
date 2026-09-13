@@ -10,6 +10,7 @@ use SigmaPHP\Console\Option;
 use SigmaPHP\Console\Question;
 use SigmaPHP\Console\Box;
 use SigmaPHP\Console\Table;
+use SigmaPHP\Console\ProgressBar;
 
 /**
  * Command Class.
@@ -813,5 +814,32 @@ abstract class Command implements CommandInterface
     public function error($text)
     {
         return $this->writeln($text, 'fg=light_red;bold');
+    }
+
+    /**
+     * Create a new progress bar.
+     *
+     * @param string $leftBorder
+     * @param string $rightBorder
+     * @param string $inProgressSymbol
+     * @param string $completeSymbol
+     * @param string $style
+     * @return ProgressBar
+     */
+    public function createProgressBar(
+        $leftBorder = '[',
+        $rightBorder = ']',
+        $inProgressSymbol = '-',
+        $completeSymbol = '=',
+        $style = ''
+    ) {
+        return new ProgressBar(
+            $this->io,
+            $leftBorder,
+            $rightBorder,
+            $inProgressSymbol,
+            $completeSymbol,
+            $style
+        );
     }
 }

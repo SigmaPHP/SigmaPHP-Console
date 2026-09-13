@@ -4,6 +4,7 @@ namespace SigmaPHP\Console\Interfaces;
 
 use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\IO;
+use SigmaPHP\Console\ProgressBar;
 
 /**
  * Command Interface.
@@ -240,4 +241,22 @@ interface CommandInterface
      * @return int|false
      */
     public function error($text);
+
+    /**
+     * Create a new progress bar.
+     *
+     * @param string $leftBorder
+     * @param string $rightBorder
+     * @param string $inProgressSymbol
+     * @param string $completeSymbol
+     * @param string $style
+     * @return ProgressBar
+     */
+    public function createProgressBar(
+        $leftBorder = '[',
+        $rightBorder = ']',
+        $inProgressSymbol = '-',
+        $completeSymbol = '=',
+        $style = ''
+    );
 }

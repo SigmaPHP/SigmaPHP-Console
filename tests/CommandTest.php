@@ -7,6 +7,7 @@ use SigmaPHP\Console\Argument;
 use SigmaPHP\Console\Command;
 use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\Option;
+use SigmaPHP\Console\ProgressBar;
 use SigmaPHP\Console\Tests\Examples\HelloCommand;
 use SigmaPHP\Console\Tests\Helpers;
 
@@ -893,6 +894,20 @@ class CommandTest extends TestCase
         $this->assertEquals(100.99, $command->getOption('bar'));
         $this->assertEquals(true, $command->getOption('baz'));
         $this->assertEquals(true, $command->getOption('qux'));
+    }
+
+    /**
+     * Test create new progress bar.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testCreateNewProgressBar()
+    {
+        $this->assertInstanceOf(
+            ProgressBar::class,
+            $this->command->createProgressBar()
+        );
     }
 }
 

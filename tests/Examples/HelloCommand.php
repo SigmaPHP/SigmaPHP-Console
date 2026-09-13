@@ -52,4 +52,3 @@ class HelloCommand extends Command
         echo $buffer . PHP_EOL;
     }
 }
-

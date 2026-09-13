@@ -54,6 +54,11 @@ class QuestionTest extends TestCase
     public function tearDown(): void
     {
         parent::tearDown();
+
+        if (file_exists('tests/fake_stream')) {
+            fclose($this->testStream);
+            unlink('tests/fake_stream');
+        }
     }
 
     /**

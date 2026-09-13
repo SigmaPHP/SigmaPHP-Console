@@ -107,7 +107,7 @@ class Box implements BoxInterface
                 }
             }
 
-            $this->io->writeln('');
+            $this->io->newLine();
         }
     }
 

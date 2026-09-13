@@ -87,4 +87,18 @@ interface IOInterface
      * @return bool
      */
     public function hasColorSupport();
+
+    /**
+     * Clear console.
+     *
+     * @return void
+     */
+    public function clear();
+
+    /**
+     * Write a new line to console (STDOUT).
+     *
+     * @return void
+     */
+    public function newLine();
 }

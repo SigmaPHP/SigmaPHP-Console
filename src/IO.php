@@ -220,4 +220,25 @@ class IO implements IOInterface
 
         return $text;
     }
+
+
+    /**
+     * Clear console.
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        $this->write("\033[H\033[J");
+    }
+
+    /**
+     * Write a new line to console (STDOUT).
+     *
+     * @return void
+     */
+    public function newLine()
+    {
+        $this->writeln('');
+    }
 }

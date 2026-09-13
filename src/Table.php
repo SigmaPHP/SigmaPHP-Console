@@ -66,13 +66,13 @@ class Table implements TableInterface
                     $this->io->write($hBorder, $style);
                 }
 
-                $this->io->writeln('');
+                $this->io->newLine();
 
                 for ($j = 0;$j < strlen($lines[$i]);$j++) {
                     $this->io->write($lines[$i][$j], $style);
                 }
 
-                $this->io->writeln('');
+                $this->io->newLine();
 
                 for ($j = 0;$j < strlen($lines[$i]);$j++) {
                     $this->io->write($hBorder, $style);
@@ -84,7 +84,7 @@ class Table implements TableInterface
                     $this->io->write($lines[$i][$j], $style);
                 }
 
-                $this->io->writeln('');
+                $this->io->newLine();
 
                 for ($j = 0;$j < strlen($lines[$i]);$j++) {
                     $this->io->write($hBorder, $style);
@@ -97,7 +97,7 @@ class Table implements TableInterface
                 }
             }
 
-            $this->io->writeln('');
+            $this->io->newLine();
         }
     }
 

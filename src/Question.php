@@ -96,7 +96,7 @@ class Question implements QuestionInterface
 
         system('stty echo');
 
-        $this->io->writeln('');
+        $this->io->newLine();
 
         return $input;
     }

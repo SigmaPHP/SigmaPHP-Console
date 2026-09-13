@@ -115,17 +115,6 @@ class ProgressBar implements ProgressBarInterface
     }
 
     /**
-     * Clear console.
-     *
-     * @return void
-     */
-    protected function clear()
-    {
-        // ToDo: move to IO
-        $this->io->write("\033[H\033[J");
-    }
-
-    /**
      * Draw new frame.
      *
      * @return void
@@ -148,6 +137,6 @@ class ProgressBar implements ProgressBarInterface
 
         $this->io->write($counter . '%');
 
-        $this->io->writeln('');
+        $this->io->newLine();
     }
 }

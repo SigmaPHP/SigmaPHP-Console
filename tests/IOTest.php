@@ -34,6 +34,10 @@ class IOTest extends TestCase
         touch('tests/fake_stream');
 
         $this->testStream = fopen('tests/fake_stream', 'r+');
+
+        // reset stream
+        ftruncate($this->testStream, 0);
+        rewind($this->testStream);
     }
 
     /**
@@ -184,5 +188,41 @@ class IOTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $this->io->write('Hello World', 'fg=red;gb=180;bold');
+    }
+
+    /**
+     * Test clear console.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testClearConsole()
+    {
+        $this->io->setOutputStream($this->testStream);
+        $this->io->clear();
+
+        $result = stream_get_contents($this->testStream, -1, 0);
+
+        $this->assertEquals(
+            '\033[H\033[J',
+            str_replace("\033", "\\033", $result)
+        );
+    }
+
+    /**
+     * Test new line.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testNewLine()
+    {
+        $this->io->setOutputStream($this->testStream);
+        $this->io->newLine();
+
+        $this->assertEquals(
+            "\n",
+            stream_get_contents($this->testStream, -1, 0)
+        );
     }
 }

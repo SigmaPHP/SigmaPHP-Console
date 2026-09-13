@@ -3,11 +3,11 @@
 namespace SigmaPHP\Console\Tests;
 
 use PHPUnit\Framework\TestCase;
-use SigmaPHP\Console\Argument;
 use SigmaPHP\Console\Command;
 use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\Option;
 use SigmaPHP\Console\ProgressBar;
+use SigmaPHP\Console\LoadingSpinner;
 use SigmaPHP\Console\Tests\Examples\HelloCommand;
 use SigmaPHP\Console\Tests\Helpers;
 
@@ -897,7 +897,7 @@ class CommandTest extends TestCase
     }
 
     /**
-     * Test create new progress bar.
+     * Test create new a progress bar.
      *
      * @runInSeparateProcess
      * @return void
@@ -907,6 +907,20 @@ class CommandTest extends TestCase
         $this->assertInstanceOf(
             ProgressBar::class,
             $this->command->createProgressBar()
+        );
+    }
+
+    /**
+     * Test create new a loading spinner.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testCreateNewLoadingSpinner()
+    {
+        $this->assertInstanceOf(
+            LoadingSpinner::class,
+            $this->command->createLoadingSpinner()
         );
     }
 }

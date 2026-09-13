@@ -85,7 +85,7 @@ class ProgressBar implements ProgressBarInterface
     }
 
     /**
-     * Start a new progress bar.
+     * Start a progress bar.
      *
      * @param int $total
      * @param int $position

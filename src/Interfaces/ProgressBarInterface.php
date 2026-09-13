@@ -8,7 +8,7 @@ namespace SigmaPHP\Console\Interfaces;
 interface ProgressBarInterface
 {
     /**
-     * Start a new progress bar.
+     * Start a progress bar.
      *
      * @param int $total
      * @param int $position

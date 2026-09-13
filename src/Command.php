@@ -842,4 +842,22 @@ abstract class Command implements CommandInterface
             $style
         );
     }
+
+    /**
+     * Create a new loading spinner.
+     *
+     * @param string $pattern
+     * @param string $style
+     * @return LoadingSpinner
+     */
+    public function createLoadingSpinner(
+        $pattern = 'frames',
+        $style = ''
+    ) {
+        return new LoadingSpinner(
+            $this->io,
+            $pattern,
+            $style
+        );
+    }
 }

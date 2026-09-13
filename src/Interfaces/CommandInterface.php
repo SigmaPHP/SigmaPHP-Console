@@ -4,6 +4,7 @@ namespace SigmaPHP\Console\Interfaces;
 
 use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\IO;
+use SigmaPHP\Console\LoadingSpinner;
 use SigmaPHP\Console\ProgressBar;
 
 /**
@@ -257,6 +258,18 @@ interface CommandInterface
         $rightBorder = ']',
         $inProgressSymbol = '-',
         $completeSymbol = '=',
+        $style = ''
+    );
+
+    /**
+     * Create a new loading spinner.
+     *
+     * @param string $pattern
+     * @param string $style
+     * @return LoadingSpinner
+     */
+    public function createLoadingSpinner(
+        $pattern = 'frames',
         $style = ''
     );
 }

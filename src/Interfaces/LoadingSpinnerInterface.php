@@ -8,16 +8,10 @@ namespace SigmaPHP\Console\Interfaces;
 interface LoadingSpinnerInterface
 {
     /**
-     * Start a loading spinner.
+     * Run a loading spinner.
      *
+     * @param callable $callback
      * @return void
      */
-    public function start();
-
-    /**
-     * Stop a loading spinner.
-     *
-     * @return void
-     */
-    public function stop();
+    public function run($callback);
 }

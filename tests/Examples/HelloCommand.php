@@ -53,12 +53,10 @@ class HelloCommand extends Command
 
         $spinner = $this->createLoadingSpinner('frames', 'fg=red');
 
-        $spinner->start();
-
-        for ($i = 0;$i < 10;$i++) {
-            sleep(1);
-        }
-
-        $spinner->stop();
+        $spinner->run(function () {
+            for ($i = 0;$i < 2;$i++) {
+                sleep(1);
+            }
+        });
     }
 }

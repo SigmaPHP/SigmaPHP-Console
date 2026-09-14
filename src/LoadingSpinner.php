@@ -6,13 +6,20 @@ use SigmaPHP\Console\Interfaces\LoadingSpinnerInterface;
 
 /**
  * Loading Spinner Class.
+ *
+ * !! This feature requires "pcntl" extension to be installed/enabled.
+ * !!
+ * !! Also, this feature only supported on UNIX-like systems, since there
+ * !! no "pcntl" extension for Windows. Maybe in future this part could be
+ * !! replaced with the "parallel" extension, which is by the time of writing
+ * !! this comment, still not mature enough.
  */
 class LoadingSpinner implements LoadingSpinnerInterface
 {
     /**
      * Rendering speed in microseconds.
      */
-    public const SPEED = 100;
+    public const SPEED = 250;
 
     /**
      * Spinner Patterns.
@@ -43,11 +50,6 @@ class LoadingSpinner implements LoadingSpinnerInterface
     protected $style;
 
     /**
-     * @var bool $run
-     */
-    protected $run;
-
-    /**
      * LoadingSpinner Constructor.
      *
      * @param IO $IOHandler
@@ -59,10 +61,15 @@ class LoadingSpinner implements LoadingSpinnerInterface
         $pattern = 'frames',
         $style = ''
     ) {
+        if (!extension_loaded('pcntl')) {
+            throw new \RuntimeException(
+                "Missing extension 'pcntl', required for Loading Spinner"
+            );
+        }
+
         $this->io = $IOHandler;
         $this->pattern = $pattern;
         $this->style = $style;
-        $this->run = false;
 
         if (!isset($this->patterns[$pattern])) {
             throw new \InvalidArgumentException(
@@ -74,33 +81,52 @@ class LoadingSpinner implements LoadingSpinnerInterface
     }
 
     /**
-     * Start a loading spinner.
+     * Run a loading spinner.
      *
+     * @param callable $callback
      * @return void
      */
-    public function start()
+    public function run($callback)
     {
-        $this->run = true;
+        // some parallelism magic :)
 
-        $this->io->write("\033[?25l");
+        // pcntl_signal(SIGTERM, $this->clean());
+        // pcntl_signal(SIGQUIT, $this->clean());
+        // pcntl_signal(SIGINT, $this->clean());
+        pcntl_async_signals(true);
 
-        while ($this->run) {
-            $this->io->clear();
-            $this->draw();
+        $pId = pcntl_fork();
 
-            usleep(self::SPEED);
+        if ($pId == -1) {
+            die("Process couldn't be forked!");
         }
-    }
+        // parent process = $pId
+        else if ($pId) {
+            pcntl_wait($status);
 
-    /**
-     * Stop a loading spinner.
-     *
-     * @return void
-     */
-    public function stop()
-    {
-        $this->run = false;
-        $this->io->write("\033[?25h");
+            // hide cursor
+            $this->io->write("\033[?25l");
+
+            while (true) {
+                $this->io->clear();
+                $this->draw();
+
+                usleep(self::SPEED);
+            }
+        }
+        // child process = 0
+        else {
+            $callback();
+            $this->io->write("\033[?25h");
+
+            exit;
+            // $this->clean();
+        }
+
+        // detach from the controlling terminal
+        if (posix_setsid() == -1) {
+            die("Could not detach from terminal!");
+        }
     }
 
     /**
@@ -121,5 +147,18 @@ class LoadingSpinner implements LoadingSpinnerInterface
         $this->io->newLine();
 
         $frame += 1;
+    }
+
+    /**
+     * Clean after execution.
+     *
+     * @return void
+     */
+    protected function clean()
+    {
+        // show cursor
+        $this->io->write("\033[?25h");
+
+        exit;
     }
 }

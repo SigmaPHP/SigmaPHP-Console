@@ -50,6 +50,16 @@ class LoadingSpinner implements LoadingSpinnerInterface
     protected $style;
 
     /**
+     * @var bool $running
+     */
+    protected $running;
+
+    /**
+     * @var int $childPid
+     */
+    protected $childPid;
+
+    /**
      * LoadingSpinner Constructor.
      *
      * @param IO $IOHandler
@@ -67,10 +77,6 @@ class LoadingSpinner implements LoadingSpinnerInterface
             );
         }
 
-        $this->io = $IOHandler;
-        $this->pattern = $pattern;
-        $this->style = $style;
-
         if (!isset($this->patterns[$pattern])) {
             throw new \InvalidArgumentException(
                 "Invalid loading spinner's pattern '{$pattern}', kindly " .
@@ -78,6 +84,12 @@ class LoadingSpinner implements LoadingSpinnerInterface
                 "the available loading spinner patterns"
             );
         }
+
+        $this->io = $IOHandler;
+        $this->pattern = $pattern;
+        $this->style = $style;
+        $this->running = false;
+        $this->childPid = 0;
     }
 
     /**
@@ -90,42 +102,63 @@ class LoadingSpinner implements LoadingSpinnerInterface
     {
         // some parallelism magic :)
 
-        // pcntl_signal(SIGTERM, $this->clean());
-        // pcntl_signal(SIGQUIT, $this->clean());
-        // pcntl_signal(SIGINT, $this->clean());
         pcntl_async_signals(true);
 
-        $pId = pcntl_fork();
+        $this->childPid = pcntl_fork();
 
-        if ($pId == -1) {
-            die("Process couldn't be forked!");
+        if ($this->childPid === -1) {
+            throw new \RuntimeException(
+                "Process couldn't be forked!"
+            );
         }
-        // parent process = $pId
-        else if ($pId) {
-            pcntl_wait($status);
+
+        // parent process
+        else if ($this->childPid !== 0) {
+            pcntl_signal(SIGTERM, function () {
+                $this->running = false;
+
+                // Tell child to terminate
+                posix_kill($this->childPid, SIGTERM);
+            });
+
+            try {
+                $callback();
+            } finally {
+                // stop the spinner process
+                $this->running = false;
+                posix_kill($this->childPid, SIGTERM);
+
+                // wait for the child status
+                pcntl_waitpid($this->childPid, $status);
+
+                // show cursor
+                $this->io->write("\033[?25h");
+            }
+        }
+
+        // child process = 0
+        else {
+            $this->running = true;
+
+            pcntl_signal(SIGTERM, function () {
+                // Stop loader gracefully
+                exit(0);
+            });
+
+            pcntl_signal(SIGINT, function () {
+                exit(0);
+            });
 
             // hide cursor
             $this->io->write("\033[?25l");
 
-            while (true) {
+            while ($this->running) {
                 $this->io->clear();
                 $this->draw();
+                fflush(STDOUT);
 
                 usleep(self::SPEED);
             }
-        }
-        // child process = 0
-        else {
-            $callback();
-            $this->io->write("\033[?25h");
-
-            exit;
-            // $this->clean();
-        }
-
-        // detach from the controlling terminal
-        if (posix_setsid() == -1) {
-            die("Could not detach from terminal!");
         }
     }
 

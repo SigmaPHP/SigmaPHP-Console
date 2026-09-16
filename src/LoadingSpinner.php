@@ -19,7 +19,7 @@ class LoadingSpinner implements LoadingSpinnerInterface
     /**
      * Rendering speed in microseconds.
      */
-    public const SPEED = 250;
+    public const SPEED = 250000;
 
     /**
      * Spinner Patterns.
@@ -48,11 +48,6 @@ class LoadingSpinner implements LoadingSpinnerInterface
      * @var string $style
      */
     protected $style;
-
-    /**
-     * @var bool $running
-     */
-    protected $running;
 
     /**
      * @var int $childPid
@@ -88,7 +83,6 @@ class LoadingSpinner implements LoadingSpinnerInterface
         $this->io = $IOHandler;
         $this->pattern = $pattern;
         $this->style = $style;
-        $this->running = false;
         $this->childPid = 0;
     }
 
@@ -115,47 +109,35 @@ class LoadingSpinner implements LoadingSpinnerInterface
         // parent process
         else if ($this->childPid !== 0) {
             pcntl_signal(SIGTERM, function () {
-                $this->running = false;
-
-                // Tell child to terminate
                 posix_kill($this->childPid, SIGTERM);
             });
 
             try {
                 $callback();
             } finally {
-                // stop the spinner process
-                $this->running = false;
+                // terminate the child process
                 posix_kill($this->childPid, SIGTERM);
 
                 // wait for the child status
                 pcntl_waitpid($this->childPid, $status);
-
-                // show cursor
-                $this->io->write("\033[?25h");
             }
         }
 
         // child process = 0
         else {
-            $this->running = true;
-
             pcntl_signal(SIGTERM, function () {
-                // Stop loader gracefully
-                exit(0);
+                $this->clean();
             });
 
             pcntl_signal(SIGINT, function () {
-                exit(0);
+                $this->clean();
             });
 
-            // hide cursor
-            $this->io->write("\033[?25l");
+            $this->io->hideCursor();
 
-            while ($this->running) {
+            while (true) {
                 $this->io->clear();
                 $this->draw();
-                fflush(STDOUT);
 
                 usleep(self::SPEED);
             }
@@ -189,9 +171,8 @@ class LoadingSpinner implements LoadingSpinnerInterface
      */
     protected function clean()
     {
-        // show cursor
-        $this->io->write("\033[?25h");
+        $this->io->showCursor();
 
-        exit;
+        exit(0);
     }
 }

@@ -225,4 +225,42 @@ class IOTest extends TestCase
             stream_get_contents($this->testStream, -1, 0)
         );
     }
+
+    /**
+     * Test hide cursor.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testHideCursor()
+    {
+        $this->io->setOutputStream($this->testStream);
+        $this->io->hideCursor();
+
+        $result = stream_get_contents($this->testStream, -1, 0);
+
+        $this->assertEquals(
+            '\033[?25l',
+            str_replace("\033", "\\033", $result)
+        );
+    }
+
+    /**
+     * Test show cursor.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testShowCursor()
+    {
+        $this->io->setOutputStream($this->testStream);
+        $this->io->showCursor();
+
+        $result = stream_get_contents($this->testStream, -1, 0);
+
+        $this->assertEquals(
+            '\033[?25h',
+            str_replace("\033", "\\033", $result)
+        );
+    }
 }

@@ -101,4 +101,18 @@ interface IOInterface
      * @return void
      */
     public function newLine();
+
+    /**
+     * Hide the cursor.
+     *
+     * @return void
+     */
+    public function hideCursor();
+
+    /**
+     * Show the cursor.
+     *
+     * @return void
+     */
+    public function showCursor();
 }

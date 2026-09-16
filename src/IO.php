@@ -241,4 +241,24 @@ class IO implements IOInterface
     {
         $this->writeln('');
     }
+
+    /**
+     * Hide the cursor.
+     *
+     * @return void
+     */
+    public function hideCursor()
+    {
+        $this->write("\033[?25l");
+    }
+
+    /**
+     * Show the cursor.
+     *
+     * @return void
+     */
+    public function showCursor()
+    {
+        $this->write("\033[?25h");
+    }
 }

@@ -51,7 +51,7 @@ class HelloCommand extends Command
 
         // echo $buffer . PHP_EOL;
 
-        $spinner = $this->createLoadingSpinner('frames', 'fg=red');
+        $spinner = $this->createLoadingSpinner('frames');
 
         $spinner->run(function () {
             for ($i = 0;$i < 10;$i++) {

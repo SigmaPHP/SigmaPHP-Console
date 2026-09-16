@@ -3,13 +3,13 @@
 namespace SigmaPHP\Console\Tests;
 
 use PHPUnit\Framework\TestCase;
-use SigmaPHP\Console\ProgressBar;
+use SigmaPHP\Console\LoadingSpinner;
 use SigmaPHP\Console\IO;
 
 /**
- * Progress Bar Test.
+ * Loading Spinner Test.
  */
-class ProgressBarTest extends TestCase
+class LoadingSpinnerTest extends TestCase
 {
     /**
      * @var IO $io
@@ -22,12 +22,12 @@ class ProgressBarTest extends TestCase
     private $testStream;
 
     /**
-     * @var ProgressBar $progressBar
+     * @var LoadingSpinner $progressBar
      */
-    private $progressBar;
+    private $loadingSpinner;
 
     /**
-     * ProgressBarTest SetUp
+     * LoadingSpinnerTest SetUp
      *
      * @return void
      */
@@ -43,11 +43,11 @@ class ProgressBarTest extends TestCase
 
         $this->io->setOutputStream($this->testStream);
 
-        $this->progressBar = new ProgressBar($this->io);
+        $this->loadingSpinner = new LoadingSpinner($this->io);
     }
 
     /**
-     * ProgressBarTest TearDown
+     * LoadingSpinnerTest TearDown
      *
      * @return void
      */
@@ -62,32 +62,13 @@ class ProgressBarTest extends TestCase
     }
 
     /**
-     * Test create new progress bar.
+     * Test create new loading spinner.
      *
      * @runInSeparateProcess
      * @return void
      */
-    public function testCreateNewProgressBar()
+    public function testCreateNewLoadingSpinner()
     {
-        // run
-        $items = 10;
 
-        $this->progressBar->start($items);
-
-        for ($i = 0;$i < $items;$i++) {
-            $this->progressBar->update(1);
-        }
-
-        $this->progressBar->end();
-
-        // assert the output
-        $actual = explode("\n",
-            file_get_contents(__DIR__ . '/fake_stream'));
-        $expected = explode("\n",
-            file_get_contents(__DIR__ . '/progress_bar_output'));
-
-        foreach ($expected as $i => $line) {
-            $this->assertEquals($line, $actual[$i]);
-        }
     }
 }

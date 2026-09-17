@@ -22,7 +22,7 @@ class LoadingSpinnerTest extends TestCase
     private $testStream;
 
     /**
-     * @var LoadingSpinner $progressBar
+     * @var LoadingSpinner $loadingSpinner
      */
     private $loadingSpinner;
 
@@ -69,6 +69,55 @@ class LoadingSpinnerTest extends TestCase
      */
     public function testCreateNewLoadingSpinner()
     {
+        // ? in order not to get into to much hassle with testing forked
+        // ? processes. Only the drawing part will be covered by unit testing
+        $_spinner = new class($this->io, 'frames', 'fg=red')
+            extends LoadingSpinner
+        {
+            public function __construct(
+                $IOHandler,
+                $pattern = 'frames',
+                $style = ''
+            ) {
+                parent::__construct($IOHandler, $pattern, $style);
+            }
 
+            public function doDraw()
+            {
+                $i = 0;
+
+                while ($i < 100) {
+                    $this->io->clear();
+                    $this->draw();
+
+                    $i += 1;
+                }
+            }
+        };
+
+        $_spinner->doDraw();
+
+        // assert the output
+        $actual = explode("\n",
+            file_get_contents(__DIR__ . '/fake_stream'));
+        $expected = explode("\n",
+            file_get_contents(__DIR__ . '/loading_spinner_output'));
+
+        foreach ($expected as $i => $line) {
+            $this->assertEquals($line, $actual[$i]);
+        }
+    }
+
+    /**
+     * Test will throw exception if invalid spinner's pattern.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testWillThrowExceptionIfInvalidSpinnerPattern()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $spinner = new LoadingSpinner($this->io, 'unknown');
     }
 }

@@ -22,11 +22,6 @@ class LoadingSpinnerTest extends TestCase
     private $testStream;
 
     /**
-     * @var LoadingSpinner $loadingSpinner
-     */
-    private $loadingSpinner;
-
-    /**
      * LoadingSpinnerTest SetUp
      *
      * @return void
@@ -42,8 +37,6 @@ class LoadingSpinnerTest extends TestCase
         $this->testStream = fopen('tests/fake_stream', 'r+');
 
         $this->io->setOutputStream($this->testStream);
-
-        $this->loadingSpinner = new LoadingSpinner($this->io);
     }
 
     /**
@@ -69,31 +62,9 @@ class LoadingSpinnerTest extends TestCase
      */
     public function testCreateNewLoadingSpinner()
     {
-        // ? in order not to get into to much hassle with testing forked
+        // ? in order not to get into too much hassle with testing forked
         // ? processes. Only the drawing part will be covered by unit testing
-        $_spinner = new class($this->io, 'frames', 'fg=red')
-            extends LoadingSpinner
-        {
-            public function __construct(
-                $IOHandler,
-                $pattern = 'frames',
-                $style = ''
-            ) {
-                parent::__construct($IOHandler, $pattern, $style);
-            }
-
-            public function doDraw()
-            {
-                $i = 0;
-
-                while ($i < 100) {
-                    $this->io->clear();
-                    $this->draw();
-
-                    $i += 1;
-                }
-            }
-        };
+        $_spinner = new DummySpinner($this->io, 'frames', 'fg=red');
 
         $_spinner->doDraw();
 
@@ -119,5 +90,20 @@ class LoadingSpinnerTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $spinner = new LoadingSpinner($this->io, 'unknown');
+    }
+}
+
+class DummySpinner extends LoadingSpinner
+{
+    public function doDraw()
+    {
+        $i = 0;
+
+        while ($i < 100) {
+            $this->io->clear();
+            $this->draw();
+
+            $i += 1;
+        }
     }
 }

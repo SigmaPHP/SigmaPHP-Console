@@ -67,15 +67,15 @@ php my-app
 ```
 ## Documentation
 
-* [Application](#docs/application)
-* [Commands](#docs/commands)
-* [Colors](#docs/colors)
-* [Text Format](#docs/text-format)
-* [Boxes](#docs/boxes)
-* [Tables](#docs/tables)
-* [Questions](#docs/questions)
-* [Progress Bar](#docs/progress-bar)
-* [Loading Spinner](#docs/loading-spinner)
+* [Application](https://github.com/SigmaPHP/SigmaPHP-Console/blob/master/docs/application.md)
+* [Commands](https://github.com/SigmaPHP/SigmaPHP-Console/blob/master/docs/commands.md)
+* [Colors](https://github.com/SigmaPHP/SigmaPHP-Console/blob/master/docs/colors.md)
+* [Text Format](https://github.com/SigmaPHP/SigmaPHP-Console/blob/master/docs/text-format.md)
+* [Boxes](https://github.com/SigmaPHP/SigmaPHP-Console/blob/master/docs/boxes.md)
+* [Tables](https://github.com/SigmaPHP/SigmaPHP-Console/blob/master/docs/tables.md)
+* [Questions](https://github.com/SigmaPHP/SigmaPHP-Console/blob/master/docs/questions.md)
+* [Progress Bar](https://github.com/SigmaPHP/SigmaPHP-Console/blob/master/docs/progress-bar.md)
+* [Loading Spinner](https://github.com/SigmaPHP/SigmaPHP-Console/blob/master/docs/loading-spinner.md)
 
 ## Example
 

@@ -346,7 +346,7 @@ $app = new App();
 $app->run();
 ```
 
-This approach keeps application-specific lifecycle logic inside the application's own `App` implementation while allowing SigmaPHP Console to manage the command execution lifecycle.
+This approach keeps application-specific lifecycle logic inside the application's own `App` implementation while allowing `SigmaPHP-Console` to manage the command execution lifecycle.
 
 
 ## Running the Application

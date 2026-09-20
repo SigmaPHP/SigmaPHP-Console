@@ -69,8 +69,6 @@ php my-app
 
 * [Application](#docs/application)
 * [Commands](#docs/commands)
-* [Arguments](#docs/arguments)
-* [Options](#docs/options)
 * [Colors](#docs/colors)
 * [Text Format](#docs/text-format)
 * [Boxes](#docs/boxes)

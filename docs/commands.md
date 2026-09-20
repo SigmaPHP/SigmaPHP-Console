@@ -1,6 +1,6 @@
 # Command
 
-A `Command` represents an executable action within a SigmaPHP Console application. Commands are responsible for defining the arguments and options they accept, processing user input, executing application logic, and communicating with the user through the console.
+A `Command` represents an executable action within a `SigmaPHP-Console` application. Commands are responsible for defining the arguments and options they accept, processing user input, executing application logic, and communicating with the user through the console.
 
 A command can also provide aliases, formatted output, interactive input, progress bars, and loading spinners.
 
@@ -19,7 +19,7 @@ A command can also provide aliases, formatted output, interactive input, progres
 
 ## Creating a Command
 
-A command is typically created by extending the SigmaPHP Console `Command` class and implementing the required command lifecycle methods.
+A command is typically created by extending the `SigmaPHP-Console` `Command` class and implementing the required command lifecycle methods.
 
 ```
 <?php
@@ -106,7 +106,7 @@ This method is called when the command is executed by the application.
 
 Arguments represent positional values provided to a command.
 
-Arguments are **required by default**. If a command defines an argument and the user does not provide it, SigmaPHP Console will throw an exception during input processing.
+Arguments are **required by default**. If a command defines an argument and the user does not provide it, `SigmaPHP-Console` will throw an exception during input processing.
 
 For example:
 
@@ -220,7 +220,7 @@ For example, both of the following are valid:
 ```
 ### Option Parameter Types
 
-Each option can define whether it accepts a parameter. SigmaPHP Console supports three parameter types:
+Each option can define whether it accepts a parameter. `SigmaPHP-Console` supports three parameter types:
 
 | Parameter Type | Description |
 | --- | --- |
@@ -325,7 +325,7 @@ The method accepts:
 
 ### Supported Option Patterns
 
-SigmaPHP Console supports several common option formats:
+`SigmaPHP-Console` supports several common option formats:
 
 ```php
 -i
@@ -405,7 +405,7 @@ $this->removeOption('verbose');
 
 ## Data Types
 
-Arguments and options can define an expected data type. SigmaPHP Console provides four built-in data types.
+Arguments and options can define an expected data type. `SigmaPHP-Console` provides four built-in data types.
 
 | Data Type          | Value    | Description                                                     |
 | ------------------ | -------- | --------------------------------------------------------------- |
@@ -617,7 +617,7 @@ $this->writeln('Processing complete.');
 Both methods accept an optional style:
 
 ```
-$this->writeln('Processing complete.', 'success');
+$this->writeln('Processing complete.', 'fg=green;bold');
 ```
 
 ### Writing to Standard Error

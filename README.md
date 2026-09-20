@@ -67,17 +67,17 @@ php my-app
 ```
 ## Documentation
 
-* [Application](#application)
-* [Commands](#command)
-* [Arguments](#application)
-* [Options](#application)
-* [Colors](#application)
-* [Text Format](#application)
-* [Boxes](#application)
-* [Tables](#application)
-* [Questions](#application)
-* [Progress Bar](#application)
-* [Loading Spinner](#application)
+* [Application](#docs/application)
+* [Commands](#docs/commands)
+* [Arguments](#docs/arguments)
+* [Options](#docs/options)
+* [Colors](#docs/colors)
+* [Text Format](#docs/text-format)
+* [Boxes](#docs/boxes)
+* [Tables](#docs/tables)
+* [Questions](#docs/questions)
+* [Progress Bar](#docs/progress-bar)
+* [Loading Spinner](#docs/loading-spinner)
 
 ## Example
 

@@ -4,6 +4,16 @@ The `App` component is the central entry point of `SigmaPHP-Console` application
 
 An application can be configured programmatically by adding commands individually or by loading commands from a directory. It can also define options that are available globally to all commands.
 
+## Table of Contents
+
+- [Creating an Application](#creating-an-application)
+- [Application Metadata](#application-metadata)
+- [Commands](#commands)
+- [Global Options](#global-options)
+- [Input and Output Streams](#input-and-output-streams)
+- [Application Lifecycle](#application-lifecycle)
+- [Running the Application](#running-the-application)
+
 ## Creating an Application
 
 A basic Console application can be created by instantiating the `App` class:
@@ -96,7 +106,7 @@ $app->removeCommand('users');
 
 This is useful when commands are registered automatically but need to be disabled or replaced during application configuration.
 
-## Loading Commands Automatically
+### Loading Commands Automatically
 
 Instead of registering every command manually, commands can be loaded from a directory using `loadCommands()`.
 

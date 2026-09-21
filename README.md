@@ -22,7 +22,6 @@ composer require sigmaphp/sigmaphp-console
 - **Text Formatting** — Format console output with bold, underline, dim, inverse, and more.
 - **Full Customization** — Customize virtually every aspect of your console application's behavior and output.
 - **Automatic Help Menus** — Built-in help menus for applications and individual commands.
-- **File System Utilities** — A powerful file system API with numerous helpers for working with files and directories.
 - **Text Boxes** — Create visually structured text sections using customizable box shapes.
 - **Interactive Questions** — Prompt users with text input, choices, and hidden secret/password input.
 - **Tables** — Display structured data in clean, formatted tables with headers.

@@ -4,10 +4,10 @@ namespace SigmaPHP\Console;
 
 use SigmaPHP\Console\Interfaces\AppInterface;
 use SigmaPHP\Console\Command;
-use SigmaPHP\Console\FileUtility;
 use SigmaPHP\Console\Exceptions\CommandNotFoundException;
 use SigmaPHP\Console\Option;
 use SigmaPHP\Console\DataType;
+use SigmaPHP\Filesystem\Filesystem;
 
 /**
  * App Class.
@@ -213,7 +213,7 @@ class App implements AppInterface
      */
     public function loadCommands($path, $nameSpace = '')
     {
-        foreach ((new FileUtility())->list($path, false, false) as $command) {
+        foreach ((new Filesystem())->list($path, false, false) as $command) {
             require_once($path . '/' . $command . '.php');
 
             $fullClassPath = $command;

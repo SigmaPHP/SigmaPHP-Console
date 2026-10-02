@@ -67,7 +67,7 @@ class Option
         $description = '',
         $parameterOptionality = self::PARAMETER_OPTIONAL,
         $parameterDataType = DataType::STRING,
-        $defaultValue = null,
+        $defaultValue = '',
     ) {
         $this->name = $name;
         $this->shortcut = $shortcut;

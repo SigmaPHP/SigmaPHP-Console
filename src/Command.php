@@ -473,7 +473,7 @@ abstract class Command implements CommandInterface
      * Get argument.
      *
      * @param string $name
-     * @return Argument|null
+     * @return mixed
      */
     public function getArgument($name)
     {
@@ -578,7 +578,7 @@ abstract class Command implements CommandInterface
      * Get option's value.
      *
      * @param string $name
-     * @return Option|null
+     * @return mixed
      */
     public function getOption($name)
     {

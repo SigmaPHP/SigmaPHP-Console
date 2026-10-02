@@ -320,8 +320,11 @@ class App implements AppInterface
             // parse input
             for ($i = 0; $i < $argc;$i++) {
                 // app name
-                if (($i == 0) && empty($this->appName))  {
-                    $this->setAppName($argv[$i]);
+                if (($i == 0))  {
+                    if (empty($this->appName)) {
+                        $this->setAppName($argv[$i]);
+                    }
+
                     continue;
                 }
 

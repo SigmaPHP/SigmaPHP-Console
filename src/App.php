@@ -214,6 +214,12 @@ class App implements AppInterface
     public function loadCommands($path, $nameSpace = '')
     {
         foreach ((new Filesystem())->list($path, false, false) as $command) {
+            if (is_dir($path . '/' . $command) ||
+                !file_exists($path . '/' . $command . '.php')
+            ) {
+                continue;
+            }
+
             require_once($path . '/' . $command . '.php');
 
             $fullClassPath = $command;

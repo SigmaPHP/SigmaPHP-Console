@@ -2,9 +2,11 @@
 
 namespace SigmaPHP\Console\Interfaces;
 
+use SigmaPHP\Console\Argument;
 use SigmaPHP\Console\DataType;
 use SigmaPHP\Console\IO;
 use SigmaPHP\Console\LoadingSpinner;
+use SigmaPHP\Console\Option;
 use SigmaPHP\Console\ProgressBar;
 
 /**
@@ -91,6 +93,13 @@ interface CommandInterface
     public function getArgument($name);
 
     /**
+     * Get all registered arguments.
+     *
+     * @return array<Argument>
+     */
+    public function getArguments();
+
+    /**
      * Add option.
      *
      * @param string $name
@@ -133,6 +142,13 @@ interface CommandInterface
      * @return mixed
      */
     public function getOption($name);
+
+    /**
+     * Get all registered options.
+     *
+     * @return array<Option>
+     */
+    public function getOptions();
 
     /**
      * Help option's handler.

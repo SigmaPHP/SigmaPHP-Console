@@ -488,6 +488,16 @@ abstract class Command implements CommandInterface
     }
 
     /**
+     * Get all registered arguments.
+     *
+     * @return array<Argument>
+     */
+    public function getArguments()
+    {
+        return $this->arguments;
+    }
+
+    /**
      * Add option.
      *
      * @param string $name
@@ -590,6 +600,16 @@ abstract class Command implements CommandInterface
         }
 
         return $this->options[$name]->getValue();
+    }
+
+    /**
+     * Get all registered options.
+     *
+     * @return array<Option>
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     /**

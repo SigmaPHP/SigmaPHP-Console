@@ -235,7 +235,7 @@ class CommandTest extends TestCase
     }
 
     /**
-     * Test get argument.
+     * Test get argument's value.
      *
      * @runInSeparateProcess
      * @return void
@@ -251,6 +251,24 @@ class CommandTest extends TestCase
         $this->assertEquals(
             'Ahmed',
             $this->command->getArgument('name')
+        );
+    }
+
+    /**
+     * Test get arguments.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testGetArguments()
+    {
+        $this->assertEquals(
+            ['name'],
+            array_keys($this->inspectProperty(
+                HelloCommand::class,
+                $this->command,
+                'arguments'
+            ))
         );
     }
 
@@ -352,7 +370,7 @@ class CommandTest extends TestCase
     }
 
     /**
-     * Test get options.
+     * Test get option's value.
      *
      * @runInSeparateProcess
      * @return void
@@ -370,6 +388,24 @@ class CommandTest extends TestCase
         $this->assertEquals(
             'Mr.',
             $this->command->getOption('title')
+        );
+    }
+
+    /**
+     * Test get options.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testGetOptions()
+    {
+        $this->assertEquals(
+            ['greeting', 'title'],
+            array_keys($this->inspectProperty(
+                HelloCommand::class,
+                $this->command,
+                'options'
+            ))
         );
     }
 

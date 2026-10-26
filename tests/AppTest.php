@@ -184,6 +184,30 @@ class AppTest extends TestCase
     }
 
     /**
+     * Test load commands can exclude.
+     *
+     * @runInSeparateProcess
+     * @return void
+     */
+    public function testLoadCommandsCanExclude()
+    {
+        $app = new App();
+
+        $app->loadCommands(
+            __DIR__ . "/Examples",
+            'SigmaPHP\Console\Tests\Examples',
+            ['DebugCommand']
+        );
+
+        $this->assertEquals(
+            ['hello'],
+            array_keys(
+                $this->inspectProperty(App::class, $app, 'commands')
+            )
+        );
+    }
+
+    /**
      * Test has commands.
      *
      * @runInSeparateProcess

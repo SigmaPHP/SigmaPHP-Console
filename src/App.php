@@ -209,23 +209,26 @@ class App implements AppInterface
      *
      * @param string $path
      * @param string $nameSpace
+     * @param array $exclude
      * @return void
      */
-    public function loadCommands($path, $nameSpace = '')
+    public function loadCommands($path, $nameSpace = '', $exclude = [])
     {
-        foreach ((new Filesystem())->list($path, false, false) as $command) {
-            if (is_dir($path . '/' . $command) ||
-                !file_exists($path . '/' . $command . '.php')
-            ) {
+        $filesystem = new Filesystem();
+
+        foreach ($filesystem->list($path, true, true, true) as $command) {
+            $fullClassPath = $filesystem->removeExtension(
+                $filesystem->getFileName($command)
+            );
+
+            if (in_array($fullClassPath, $exclude)) {
                 continue;
             }
 
-            require_once($path . '/' . $command . '.php');
-
-            $fullClassPath = $command;
+            require_once($command);
 
             if (!empty($nameSpace)) {
-                $fullClassPath = $nameSpace . "\\" . $command;
+                $fullClassPath = $nameSpace . "\\" . $fullClassPath;
             }
 
             $this->addCommand($fullClassPath);

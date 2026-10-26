@@ -77,9 +77,10 @@ interface AppInterface
      *
      * @param string $path
      * @param string $nameSpace
+     * @param array $exclude
      * @return void
      */
-    public function loadCommands($path, $nameSpace);
+    public function loadCommands($path, $nameSpace = '', $exclude = []);
 
     /**
      * Check if command exists in app.

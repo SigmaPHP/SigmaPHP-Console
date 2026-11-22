@@ -367,9 +367,18 @@ class App implements AppInterface
                 if (
                     empty($command) && ($unknown == count($this->globalOptions))
                 ) {
-                    throw new \InvalidArgumentException(
-                        "Unknown global option '{$argv[$i]}'"
-                    );
+                    // if the input has '-' that means it's a wrong global
+                    // option was provided or misspelling, if not, that means
+                    // a command came after a global option, which is wrong!
+                    if (strpos($argv[$i], '-') === false) {
+                        throw new \InvalidArgumentException(
+                            "global options can't be used before commands!"
+                        );
+                    } else {
+                        throw new \InvalidArgumentException(
+                            "Unknown global option '{$argv[$i]}'"
+                        );
+                    }
                 }
             }
 
@@ -429,7 +438,12 @@ class App implements AppInterface
                 $buffer .= "Debug Trace:\n{$e->getTraceAsString()}\n\n";
             }
 
-            if (isset($argv[1]) && !($e instanceof CommandNotFoundException)) {
+            // check if the mistake is in the command usage or in the app usage
+            // based on that recommend the correct help command
+            if (isset($argv[1]) &&
+                !($e instanceof CommandNotFoundException) &&
+                (strpos($argv[1], '-') === false)
+            ) {
                 $buffer .= "Run '{$this->appName} {$argv[1]} --help' ";
             } else {
                 $buffer .= "Run '{$this->appName} --help' ";

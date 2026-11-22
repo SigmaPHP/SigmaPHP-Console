@@ -34,7 +34,7 @@ To create a new console app, you can start from the provided template by copy it
 as you like, in the example below, we copy the default template and create new app called `my-app`:
 
 ```bash
-cp bin/app.template my-app
+cp vendor/sigmaphp/sigmaphp-console/bin/app.template my-app
 
 chmod +x my-app
 ```
